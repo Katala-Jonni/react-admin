@@ -10,7 +10,9 @@
     "chartist": "0.10.1",
     "classnames": "2.2.6",
     "history": "4.7.2",
+    "i": "^0.3.6",
     "moment": "^2.24.0",
+    "npm": "^6.9.0",
     "perfect-scrollbar": "1.4.0",
     "prettier": "1.16.4",
     "prop-types": "15.7.1",
@@ -30,6 +32,8 @@
     "reactstrap": "^7.1.0",
     "redux": "^4.0.1",
     "redux-actions": "^2.6.5",
+    "redux-form": "^8.2.0",
+    "redux-form-website-template": "^1.0.7",
     "redux-saga": "^1.0.2",
     "reselect": "^4.0.0"
   },

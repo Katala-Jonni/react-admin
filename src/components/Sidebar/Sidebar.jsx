@@ -104,6 +104,7 @@ const Sidebar = ({ ...props }) => {
   );
   return (
     <div>
+
       <Hidden mdUp implementation="css">
         <Drawer
           variant="temporary"
@@ -162,3 +163,4 @@ Sidebar.propTypes = {
 };
 
 export default withStyles(sidebarStyle)(Sidebar);
+

@@ -47,6 +47,7 @@ class Dashboard extends React.Component {
       mobileOpen: false
     };
   }
+
   handleImageClick = image => {
     this.setState({ image: image });
   };
@@ -63,20 +64,24 @@ class Dashboard extends React.Component {
   handleDrawerToggle = () => {
     this.setState({ mobileOpen: !this.state.mobileOpen });
   };
+
   getRoute() {
     return this.props.location.pathname !== "/admin/maps";
   }
+
   resizeFunction = () => {
     if (window.innerWidth >= 960) {
       this.setState({ mobileOpen: false });
     }
   };
+
   componentDidMount() {
     if (navigator.platform.indexOf("Win") > -1) {
       const ps = new PerfectScrollbar(this.refs.mainPanel);
     }
     window.addEventListener("resize", this.resizeFunction);
   }
+
   componentDidUpdate(e) {
     if (e.history.location.pathname !== e.location.pathname) {
       this.refs.mainPanel.scrollTop = 0;
@@ -85,9 +90,11 @@ class Dashboard extends React.Component {
       }
     }
   }
+
   componentWillUnmount() {
     window.removeEventListener("resize", this.resizeFunction);
   }
+
   render() {
     const { classes, ...rest } = this.props;
     return (

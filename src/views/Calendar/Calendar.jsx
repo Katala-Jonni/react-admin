@@ -221,7 +221,7 @@ class Calendar extends Component {
     if (event.action === "click" || event.action === "doubleClick") return; // КАСТОМНО СДЕЛАЛ
     if (event.slots.length && !event.bounds) return; // КАСТОМНО СДЕЛАЛ
 
-    this.addNewEventAlert(event);
+    // this.addNewEventAlert(event);
 
     let idList = this.props.events.map(a => a.id);
     console.log(event.resourceId);

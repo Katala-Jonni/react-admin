@@ -16,7 +16,7 @@ import Dashboard from "@material-ui/icons/Dashboard";
 import Search from "@material-ui/icons/Search";
 // core components
 import CustomInput from "components/CustomInput/CustomInput.jsx";
-import Button from "components/CustomButtons/Button.jsx";
+import Button from "../../components/CustomButtons/Button.jsx";
 
 import headerLinksStyle from "assets/jss/material-dashboard-react/components/headerLinksStyle.jsx";
 
@@ -54,17 +54,17 @@ class HeaderLinks extends React.Component {
             }}
           />
           <Button color="white" aria-label="edit" justIcon round>
-            <Search />
+            <Search/>
           </Button>
         </div>
         <Button
           color={window.innerWidth > 959 ? "transparent" : "white"}
           justIcon={window.innerWidth > 959}
-          simple={!(window.innerWidth > 959)}
+          // simple={!(window.innerWidth > 959)}
           aria-label="Dashboard"
           className={classes.buttonLink}
         >
-          <Dashboard className={classes.icons} />
+          <Dashboard className={classes.icons}/>
           <Hidden mdUp implementation="css">
             <p className={classes.linkText}>Dashboard</p>
           </Hidden>
@@ -76,13 +76,13 @@ class HeaderLinks extends React.Component {
             }}
             color={window.innerWidth > 959 ? "transparent" : "white"}
             justIcon={window.innerWidth > 959}
-            simple={!(window.innerWidth > 959)}
+            // simple={!(window.innerWidth > 959)}
             aria-owns={open ? "menu-list-grow" : null}
             aria-haspopup="true"
             onClick={this.handleToggle}
             className={classes.buttonLink}
           >
-            <Notifications className={classes.icons} />
+            <Notifications className={classes.icons}/>
             <span className={classes.notifications}>5</span>
             <Hidden mdUp implementation="css">
               <p onClick={this.handleClick} className={classes.linkText}>
@@ -153,11 +153,11 @@ class HeaderLinks extends React.Component {
         <Button
           color={window.innerWidth > 959 ? "transparent" : "white"}
           justIcon={window.innerWidth > 959}
-          simple={!(window.innerWidth > 959)}
+          // simple={!(window.innerWidth > 959)}
           aria-label="Person"
           className={classes.buttonLink}
         >
-          <Person className={classes.icons} />
+          <Person className={classes.icons}/>
           <Hidden mdUp implementation="css">
             <p className={classes.linkText}>Profile</p>
           </Hidden>

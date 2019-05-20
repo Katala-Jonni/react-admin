@@ -28,6 +28,12 @@ import React from "react";
 
 const newCal = () => <CalendarPage/>;
 
+const CustomComponent = () => {
+  return (
+    <div>Custom</div>
+  );
+};
+
 const dashboardRoutes = [
   {
     path: "/dashboard",

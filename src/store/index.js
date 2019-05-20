@@ -7,11 +7,13 @@ import {
 import createSagaMiddleware from "redux-saga";
 import rootSaga from "../modules";
 import calendar from "../modules/Calendar";
+import { reducer as forReducer } from "redux-form";
 
 const sagaMiddleware = createSagaMiddleware();
 
 const mainReducer = combineReducers({
-  calendar
+  calendar,
+  form: forReducer
 });
 
 const composeEnhancers = typeof window === "object"
