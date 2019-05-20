@@ -1,5 +1,5 @@
 // ##############################
-// // // Button styles
+// // // IconButton styles
 // #############################
 
 import {
@@ -12,41 +12,42 @@ import {
   dangerColor
 } from "assets/jss/material-dashboard-pro-react.jsx";
 
-const buttonStyle = {
+const iconButtonStyle = {
   button: {
-    minWidth: "auto",
-    minHeight: "auto",
-    backgroundColor: grayColor,
     color: "#FFFFFF",
+    height: "42px",
+    minWidth: "42px",
+    width: "42px",
+    borderRadius: "50%",
+    fontSize: "20px",
+    padding: "11px 11px",
+    lineHeight: "1em",
+    margin: "auto",
     boxShadow:
       "0 2px 2px 0 rgba(153, 153, 153, 0.14), 0 3px 1px -2px rgba(153, 153, 153, 0.2), 0 1px 5px 0 rgba(153, 153, 153, 0.12)",
-    border: "none",
-    borderRadius: "3px",
+    overflow: "hidden",
     position: "relative",
-    padding: "12px 30px",
-    margin: "10px 1px",
-    fontSize: "12px",
+    border: "none",
     fontWeight: "400",
     textTransform: "uppercase",
     letterSpacing: "0",
     willChange: "box-shadow, transform",
     transition:
       "box-shadow 0.2s cubic-bezier(0.4, 0, 1, 1), background-color 0.2s cubic-bezier(0.4, 0, 0.2, 1)",
-    lineHeight: "1.3",
+    display: "inline-block",
     textAlign: "center",
     whiteSpace: "nowrap",
     verticalAlign: "middle",
     touchAction: "manipulation",
     cursor: "pointer",
+    userSelect: "none",
+    backgroundImage: "none",
+    backgroundColor: grayColor,
     "&:hover": {
       backgroundColor: grayColor,
-      color: "#FFFFFF",
       boxShadow:
         "0 14px 26px -12px rgba(153, 153, 153, 0.42), 0 4px 23px 0px rgba(0, 0, 0, 0.12), 0 8px 10px -5px rgba(153, 153, 153, 0.2)"
     }
-  },
-  fullWidth: {
-    width: "100%"
   },
   primary: {
     backgroundColor: primaryColor,
@@ -164,49 +165,9 @@ const buttonStyle = {
     }
   },
   simple: {
-    "&,&:focus,&:hover": {
-      backgroundColor: "transparent",
-      color: grayColor,
-      boxShadow: "none"
-    }
-  },
-  transparent: {
-    "&,&:focus,&:hover": {
-      color: "inherit",
-      background: "transparent",
-      boxShadow: "none"
-    }
-  },
-  round: {
-    borderRadius: "30px"
-  },
-  disabled: {
-    opacity: "0.65",
-    pointerEvents: "none"
-  },
-  right: {
-    float: "right"
-  },
-  justIcon: {
-    minWidth: "10px",
-    paddingLeft: "12px",
-    paddingRight: "12px",
-    fontSize: "20px"
-  },
-  wd: {
-    minWidth: "160px"
-  },
-  lg: {
-    fontSize: "14px",
-    padding: "18px 36px"
-  },
-  sm: {
-    padding: "5px 20px",
-    fontSize: "11px"
-  },
-  xs: {
-    padding: "4px 15px",
-    fontSize: "10px"
+    color: "#FFFFFF",
+    background: "transparent",
+    boxShadow: "none"
   },
   twitter: {
     backgroundColor: "#55acee",
@@ -419,4 +380,4 @@ const buttonStyle = {
   }
 };
 
-export default buttonStyle;
+export default iconButtonStyle;

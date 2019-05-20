@@ -1,40 +1,43 @@
+// ##############################
+// // // Footer styles
+// #############################
+
 import {
   defaultFont,
   container,
-  primaryColor,
-  grayColor
-} from "assets/jss/material-dashboard-react.jsx";
+  containerFluid,
+  primaryColor
+} from "assets/jss/material-dashboard-pro-react.jsx";
 
 const footerStyle = {
-  block: {
-    color: "inherit",
-    padding: "15px",
-    textTransform: "uppercase",
-    borderRadius: "3px",
-    textDecoration: "none",
-    position: "relative",
-    display: "block",
-    ...defaultFont,
-    fontWeight: "500",
-    fontSize: "12px"
-  },
+  block: {},
   left: {
     float: "left!important",
     display: "block"
   },
   right: {
-    padding: "15px 0",
     margin: "0",
     fontSize: "14px",
-    float: "right!important"
+    float: "right!important",
+    padding: "15px"
   },
   footer: {
     bottom: "0",
-    borderTop: "1px solid " + grayColor[11],
+    borderTop: "1px solid #e7e7e7",
     padding: "15px 0",
-    ...defaultFont
+    ...defaultFont,
+    zIndex: 4
   },
-  container,
+  container: {
+    zIndex: 3,
+    ...container,
+    position: "relative"
+  },
+  containerFluid: {
+    zIndex: 3,
+    ...containerFluid,
+    position: "relative"
+  },
   a: {
     color: primaryColor,
     textDecoration: "none",
@@ -47,8 +50,13 @@ const footerStyle = {
   },
   inlineBlock: {
     display: "inline-block",
-    padding: "0px",
+    padding: "0",
     width: "auto"
+  },
+  whiteColor: {
+    "&,&:hover,&:focus": {
+      color: "#FFFFFF"
+    }
   }
 };
 export default footerStyle;

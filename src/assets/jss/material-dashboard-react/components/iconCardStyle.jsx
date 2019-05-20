@@ -11,7 +11,7 @@ import {
   blueCardHeader,
   purpleCardHeader,
   roseCardHeader
-} from "../../../../assets/jss/material-dashboard-react.jsx";
+} from "assets/jss/material-dashboard-pro-react.jsx";
 
 const iconCardStyle = {
   card,

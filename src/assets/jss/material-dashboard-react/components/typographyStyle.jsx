@@ -1,12 +1,15 @@
+// ##############################
+// // // Typography styles
+// #############################
+
 import {
   defaultFont,
   primaryColor,
   infoColor,
   successColor,
   warningColor,
-  dangerColor,
-  grayColor
-} from "assets/jss/material-dashboard-react.jsx";
+  dangerColor
+} from "assets/jss/material-dashboard-pro-react.jsx";
 
 const typographyStyle = {
   defaultFontStyle: {
@@ -21,7 +24,7 @@ const typographyStyle = {
     padding: "10px 20px",
     margin: "0 0 20px",
     fontSize: "17.5px",
-    borderLeft: "5px solid " + grayColor[10]
+    borderLeft: "5px solid #eee"
   },
   quoteText: {
     margin: "0 0 10px",
@@ -31,26 +34,26 @@ const typographyStyle = {
     display: "block",
     fontSize: "80%",
     lineHeight: "1.42857143",
-    color: grayColor[1]
+    color: "#777"
   },
   mutedText: {
-    color: grayColor[1]
+    color: "#777"
   },
   primaryText: {
-    color: primaryColor[0]
+    color: primaryColor
   },
   infoText: {
-    color: infoColor[0]
+    color: infoColor
   },
   successText: {
-    color: successColor[0]
+    color: successColor
   },
   warningText: {
-    color: warningColor[0]
+    color: warningColor
   },
   dangerText: {
-    color: dangerColor[0]
-  }
+    color: dangerColor
+  },
 };
 
 export default typographyStyle;

@@ -1,15 +1,17 @@
+// ##############################
+// // // Header styles
+// #############################
+
 import {
-  container,
+  containerFluid,
   defaultFont,
   primaryColor,
   defaultBoxShadow,
   infoColor,
   successColor,
   warningColor,
-  dangerColor,
-  whiteColor,
-  grayColor
-} from "assets/jss/material-dashboard-react.jsx";
+  dangerColor
+} from "assets/jss/material-dashboard-pro-react.jsx";
 
 const headerStyle = theme => ({
   appBar: {
@@ -21,7 +23,7 @@ const headerStyle = theme => ({
     width: "100%",
     paddingTop: "10px",
     zIndex: "1029",
-    color: grayColor[7],
+    color: "#555555",
     border: "0",
     borderRadius: "3px",
     padding: "10px 0",
@@ -30,7 +32,7 @@ const headerStyle = theme => ({
     display: "block"
   },
   container: {
-    ...container,
+    ...containerFluid,
     minHeight: "50px"
   },
   flex: {
@@ -43,38 +45,47 @@ const headerStyle = theme => ({
     borderRadius: "3px",
     textTransform: "none",
     color: "inherit",
-    margin: "0",
     "&:hover,&:focus": {
       background: "transparent"
     }
   },
-  appResponsive: {
-    top: "8px"
-  },
   primary: {
-    backgroundColor: primaryColor[0],
-    color: whiteColor,
+    backgroundColor: primaryColor,
+    color: "#FFFFFF",
     ...defaultBoxShadow
   },
   info: {
-    backgroundColor: infoColor[0],
-    color: whiteColor,
+    backgroundColor: infoColor,
+    color: "#FFFFFF",
     ...defaultBoxShadow
   },
   success: {
-    backgroundColor: successColor[0],
-    color: whiteColor,
+    backgroundColor: successColor,
+    color: "#FFFFFF",
     ...defaultBoxShadow
   },
   warning: {
-    backgroundColor: warningColor[0],
-    color: whiteColor,
+    backgroundColor: warningColor,
+    color: "#FFFFFF",
     ...defaultBoxShadow
   },
   danger: {
-    backgroundColor: dangerColor[0],
-    color: whiteColor,
+    backgroundColor: dangerColor,
+    color: "#FFFFFF",
     ...defaultBoxShadow
+  },
+  sidebarMinimize: {
+    float: "left",
+    padding: "0 0 0 15px",
+    display: "block",
+    color: "#555555"
+  },
+  sidebarMinimizeRTL: {
+    padding: "0 15px 0 0 !important"
+  },
+  sidebarMiniIcon: {
+    width: "20px",
+    height: "17px"
   }
 });
 
