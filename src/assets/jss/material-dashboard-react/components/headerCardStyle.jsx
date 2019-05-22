@@ -12,7 +12,7 @@ import {
   blueCardHeader,
   purpleCardHeader,
   roseCardHeader
-} from "assets/jss/material-dashboard-pro-react.jsx";
+} from "../../material-dashboard-react";
 
 const headerCardStyle = {
   card,
@@ -23,7 +23,7 @@ const headerCardStyle = {
   cardHeader: {
     ...cardHeader,
     ...defaultFont,
-    display: "inline-block",
+    display: "inline-block"
   },
   cardPlainHeader: {
     marginLeft: 0,
@@ -40,7 +40,7 @@ const headerCardStyle = {
     marginTop: "0",
     marginBottom: "3px",
     ...defaultFont,
-    fontSize: "1.3em",
+    fontSize: "1.3em"
   },
   cardSubtitle: {
     marginBottom: "0",

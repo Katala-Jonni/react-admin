@@ -1,68 +1,52 @@
-// ##############################
-// // // CustomInput styles
-// #############################
-
 import {
   primaryColor,
   dangerColor,
   successColor,
+  grayColor,
   defaultFont
-} from "assets/jss/material-dashboard-pro-react.jsx";
+} from "assets/jss/material-dashboard-react.jsx";
 
 const customInputStyle = {
   disabled: {
     "&:before": {
-      background: "transparent !important",
-      backgroundSize: "3px 1px !important",
-      backgroundImage:
-        "linear-gradient(to right, rgba(0, 0, 0, 0.23) 33%, transparent 0%) !important",
-      backgroundRepeat: "repeat-x !important",
-      backgroundPosition: "left top !important"
+      backgroundColor: "transparent !important"
     }
   },
   underline: {
-    "&:before": {
-      backgroundColor: "#D2D2D2",
-      height: "1px !important"
+    "&:hover:not($disabled):before,&:before": {
+      borderColor: grayColor[4] + " !important",
+      borderWidth: "1px !important"
     },
     "&:after": {
-      backgroundColor: primaryColor,
-      transition: "0.3s ease all"
+      borderColor: primaryColor[0]
     }
   },
   underlineError: {
     "&:after": {
-      backgroundColor: dangerColor,
-      transition: "0.3s ease all"
-    },
-    "&:before": {
-      backgroundColor: dangerColor + "!important",
-      height: "2px !important"
+      borderColor: dangerColor[0]
     }
   },
   underlineSuccess: {
     "&:after": {
-      backgroundColor: successColor,
-      transition: "0.3s ease all"
+      borderColor: successColor[0]
     }
   },
   labelRoot: {
     ...defaultFont,
-    color: "#AAAAAA",
+    color: grayColor[3] + " !important",
     fontWeight: "400",
     fontSize: "14px",
-    lineHeight: "1.42857",
-    transition: "0.3s ease all"
+    lineHeight: "1.42857"
   },
   labelRootError: {
-    color: dangerColor
+    color: dangerColor[0]
   },
   labelRootSuccess: {
-    color: successColor
+    color: successColor[0]
   },
   feedback: {
     position: "absolute",
-    top: "23px",
+    top: "18px",
     right: "0",
     zIndex: "2",
     display: "block",
@@ -71,38 +55,15 @@ const customInputStyle = {
     textAlign: "center",
     pointerEvents: "none"
   },
-  feedbackNoLabel: {
-    // top: "8px"
-  },
-  input: {
-    padding: "2px 0 0",
-    fontWeight: "400",
-    height: "36px",
-    fontSize: "14px",
-    lineHeight: "1.428571429",
-    color: "#555",
-    "&[rows]": {
-      height: "auto"
-    }
-  },
-  inputNoLabel: {
-    paddingTop: "18px"
-  },
-  inputRTL: {
-    textAlign: "right"
-  },
-  inputWithAdornment: {
-    paddingTop: "21px"
+  marginTop: {
+    marginTop: "16px"
   },
   formControl: {
     paddingBottom: "10px",
-    position: "relative"
-  },
-  labelWithAdornment: {
-    top: "3px"
-  },
-  feedbackAdorment: {
-    right: "22px"
+    margin: "0px 0 0 0",
+    // margin: "27px 0 0 0",
+    position: "relative",
+    verticalAlign: "unset"
   }
 };
 

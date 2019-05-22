@@ -1,38 +1,43 @@
-// ##############################
-// // // Tasks styles
-// #############################
-
 import {
   defaultFont,
   primaryColor,
   dangerColor,
-  tooltip
-} from "assets/jss/material-dashboard-pro-react.jsx";
-
+  grayColor
+} from "assets/jss/material-dashboard-react.jsx";
+import tooltipStyle from "assets/jss/material-dashboard-react/tooltipStyle.jsx";
+import checkboxAdnRadioStyle from "assets/jss/material-dashboard-react/checkboxAdnRadioStyle.jsx";
 const tasksStyle = {
+  ...tooltipStyle,
+  ...checkboxAdnRadioStyle,
   table: {
-    marginBottom: "0"
+    marginBottom: "0",
+    overflow: "visible"
   },
   tableRow: {
     position: "relative",
-    borderBottom: "1px solid #dddddd"
+    borderBottom: "1px solid " + grayColor[5]
   },
   tableActions: {
+    display: "flex",
     border: "none",
     padding: "12px 8px !important",
     verticalAlign: "middle"
   },
   tableCell: {
     ...defaultFont,
-    padding: "0",
+    padding: "8px",
     verticalAlign: "middle",
     border: "none",
     lineHeight: "1.42857143",
     fontSize: "14px"
   },
+  tableCellRTL: {
+    textAlign: "right"
+  },
   tableActionButton: {
     width: "27px",
-    height: "27px"
+    height: "27px",
+    padding: "0"
   },
   tableActionButtonIcon: {
     width: "17px",
@@ -40,30 +45,13 @@ const tasksStyle = {
   },
   edit: {
     backgroundColor: "transparent",
-    color: primaryColor,
+    color: primaryColor[0],
     boxShadow: "none"
   },
   close: {
     backgroundColor: "transparent",
-    color: dangerColor,
+    color: dangerColor[0],
     boxShadow: "none"
-  },
-  checked: {
-    color: primaryColor
-  },
-  checkedIcon: {
-    width: "20px",
-    height: "20px",
-    border: "1px solid rgba(0, 0, 0, .54)",
-    borderRadius: "3px"
-  },
-  uncheckedIcon: {
-    width: "0px",
-    height: "0px",
-    padding: "9px",
-    border: "1px solid rgba(0, 0, 0, .54)",
-    borderRadius: "3px"
-  },
-  tooltip
+  }
 };
 export default tasksStyle;

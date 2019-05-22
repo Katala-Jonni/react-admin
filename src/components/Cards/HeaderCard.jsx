@@ -3,13 +3,13 @@ import PropTypes from "prop-types";
 import cx from "classnames";
 
 // material-ui components
-import withStyles from "material-ui/styles/withStyles";
-import Card from "material-ui/Card";
-import CardContent from "material-ui/Card/CardContent";
-import CardHeader from "material-ui/Card/CardHeader";
-import CardActions from "material-ui/Card/CardActions";
-
-import headerCardStyle from "assets/jss/material-dashboard-pro-react/components/headerCardStyle.jsx";
+import withStyles from "@material-ui/core/styles/withStyles";
+import Card from "@material-ui/core/Card";
+import CardContent from "@material-ui/core/CardContent";
+import CardHeader from "@material-ui/core/CardHeader";
+import CardActions from "@material-ui/core/CardActions";
+//material-dashboard-pro-react/components/headerCardStyle.jsx
+import headerCardStyle from "../../assets/jss/material-dashboard-react/components/headerCardStyle";
 
 function HeaderCard({ ...props }) {
   const {

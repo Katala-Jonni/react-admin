@@ -4,19 +4,15 @@ import BigCalendar from "react-big-calendar";
 import moment from "moment/min/moment-with-locales";
 import classNames from "classnames";
 import { withStyles } from "@material-ui/core/styles";
-import Button from "@material-ui/core/Button";
 import withDragAndDrop from "react-big-calendar/lib/addons/dragAndDrop";
-import myEventsList from "../../modules/Calendar/events";
-import totalResource from "../../modules/Calendar/totalResource";
 import CalendarToolBar from "./CalendarToolBar";
 import WizardView from "../../views/Forms/Wizard";
 import SweetAlert from "react-bootstrap-sweetalert";
 
-import "./Calendar.css";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import "react-big-calendar/lib/addons/dragAndDrop/styles.css";
-import PersonAdd from "@material-ui/icons/PersonAdd";
 import defaultResource from "../../modules/Calendar/defaultResource";
+import "./Calendar.css";
 
 moment.locale("ru");
 
@@ -50,50 +46,6 @@ const styleTooltip = theme => ({
   }
 });
 
-// const ColoredDateCellWrapper = props => {
-//   // console.log(props);
-//   return React.cloneElement(Children.only(props.children), {
-//     style: {
-//       ...props.children.style,
-//       backgroundColor: props.value < moment().toDate() ? "lightgray" : "lightblue"
-//     }
-//   });
-// };
-//
-// const DayCalendarButton = props => {
-//   // if (props.date < moment()) {
-//   //   // return <Redirect to="/admin/calendar"/>
-//   // }
-//   console.log(props);
-//   return (
-//     <Fragment>
-//       <div>
-//         <Button variant="contained" className={props.classes.button}>
-//           Сегодня
-//         </Button>
-//       </div>
-//     </Fragment>
-//   );
-// };
-
-// const CustomTooBar = props => {
-//   const { classes } = props[0];
-//   return (
-//     <Fragment>
-//       <Button variant="contained" className={classes.button}>
-//         Link
-//       </Button>
-//       <Button variant="contained" className={classes.button}>
-//         Link
-//       </Button>
-//     </Fragment>
-//   );
-// };
-//
-// CustomTooBar.propTypes = {
-//   classes: PropTypes.object.isRequired
-// };
-
 class Calendar extends Component {
   constructor(props) {
     super(props);
@@ -112,7 +64,6 @@ class Calendar extends Component {
 
   componentDidMount() {
     this.props.loadResource();
-    // console.log(this.state, "props did mount");
   }
 
   titleAccessor = data => {
@@ -168,11 +119,6 @@ class Calendar extends Component {
     // запрос в базу и обовление базы
     editEvents(nextEvents);
 
-    // this.setState({
-    //   events: nextEvents
-    // });
-
-    // alert(`${event.title} was dropped onto ${updatedEvent.start}`)
   }
 
   resizeEvent = ({ event, start, end }) => {
@@ -384,89 +330,87 @@ class Calendar extends Component {
   };
 
   render() {
-    const { classes, resource, events, totalResource, isWizardView } = this.props;
+    const { classes, resource, events, totalResource } = this.props;
     const { change, day } = this.state;
     if (!totalResource) {
       return <h1>...Loading</h1>;
     }
+
     return (
       <Fragment>
         <div className="App" onDoubleClick={this.onDoubleClick}>
-          {isWizardView
-            ? <WizardView/>
-            : <DragAndDropCalendar
-              // resourceAccessor={this.resourceAccessor}
-              selectable
-              resizable={false}
-              startAccessor="start"
-              endAccessor="end"
-              // resources={totalResource[day] || defaultResource}
-              resources={resource}
-              resourceIdAccessor="resourceId"
-              resourceTitleAccessor="resourceTitle"
-              onView={this.onView}
-              views={["month", "day"]}
-              step={7.5}
-              localizer={localizer}
-              events={events}
-              style={{ height: "100vh" }}
-              defaultDate={moment().toDate()}
-              defaultView={BigCalendar.Views.MONTH}
-              min={moment("10:00", "h:mma").toDate()}
-              max={moment("20:00", "h:mma").toDate()}
-              onEventDrop={this.moveEvent}
-              onEventResize={this.resizeEvent}
-              onSelectSlot={this.newEvent}
-              onSelectEvent={this.onSelectEvent}
-              onNavigate={this.onNavigate}
-              onClick={this.onClick}
-              onChangeState={this.onChangeState}
-              components={{
-                // you have to pass your custom wrapper here
-                // so that it actually gets used
-                // dayWrapper: withStyles(styleTooltip)(DayCalendarButton),
-                // dateCellWrapper: ColoredDateCellWrapper,
-                // day: {
-                //   header:  withStyles(styleTooltip)(DayCalendarButton),
-                //   event:  withStyles(styleTooltip)(DayCalendarButton)
-                // },
-                toolbar: withStyles(styleTooltip)(CalendarToolBar)
-              }}
+          <DragAndDropCalendar
+            // resourceAccessor={this.resourceAccessor}
+            selectable
+            resizable={false}
+            startAccessor="start"
+            endAccessor="end"
+            // resources={totalResource[day] || defaultResource}
+            resources={resource}
+            resourceIdAccessor="resourceId"
+            resourceTitleAccessor="resourceTitle"
+            onView={this.onView}
+            views={["month", "day"]}
+            step={7.5}
+            localizer={localizer}
+            events={events}
+            style={{ height: "100vh" }}
+            defaultDate={moment().toDate()}
+            defaultView={BigCalendar.Views.MONTH}
+            min={moment("10:00", "h:mma").toDate()}
+            max={moment("20:00", "h:mma").toDate()}
+            onEventDrop={this.moveEvent}
+            onEventResize={this.resizeEvent}
+            onSelectSlot={this.newEvent}
+            onSelectEvent={this.onSelectEvent}
+            onNavigate={this.onNavigate}
+            onClick={this.onClick}
+            onChangeState={this.onChangeState}
+            components={{
+              // you have to pass your custom wrapper here
+              // so that it actually gets used
+              // dayWrapper: withStyles(styleTooltip)(DayCalendarButton),
+              // dateCellWrapper: ColoredDateCellWrapper,
+              // day: {
+              //   header:  withStyles(styleTooltip)(DayCalendarButton),
+              //   event:  withStyles(styleTooltip)(DayCalendarButton)
+              // },
+              toolbar: withStyles(styleTooltip)(CalendarToolBar)
+            }}
 
-              // popupOffset={{x: 30, y: 20}}
-              // popup
-              // onDoubleClickEvent={this.onDoubleClickEvent}
-              // onSelecting={this.onSelecting}
-              // showMultiDayTimes
-              // formats={formats} d
-              // dayPropGetter={this.dayPropGetter}
-              // titleAccessor={this.titleAccessor}
-              // tooltipAccessor={this.tooltipAccessor}
-              // startAccessor={this.startAccessor}
-              // endAccessor={this.endAccessor}
-              // resourceAccessor={this.resourceAccessor}
-              // resourceTitleAccessor={this.resourceTitleAccessor}
-              // selectable // выбор диапазаона времени без dnd
-              // toolbar={false} // тулбар
-              // getDrilldownView={(targetDate, currentViewName, configuredViewNames) => {
-              //   if (currentViewName === "day" && configuredViewNames.includes("month")) {
-              //     return "day";
-              //   }
-              //   return null;
-              // }} // отклюяит переход по ссылке
+            // popupOffset={{x: 30, y: 20}}
+            // popup
+            // onDoubleClickEvent={this.onDoubleClickEvent}
+            // onSelecting={this.onSelecting}
+            // showMultiDayTimes
+            // formats={formats} d
+            // dayPropGetter={this.dayPropGetter}
+            // titleAccessor={this.titleAccessor}
+            // tooltipAccessor={this.tooltipAccessor}
+            // startAccessor={this.startAccessor}
+            // endAccessor={this.endAccessor}
+            // resourceAccessor={this.resourceAccessor}
+            // resourceTitleAccessor={this.resourceTitleAccessor}
+            // selectable // выбор диапазаона времени без dnd
+            // toolbar={false} // тулбар
+            // getDrilldownView={(targetDate, currentViewName, configuredViewNames) => {
+            //   if (currentViewName === "day" && configuredViewNames.includes("month")) {
+            //     return "day";
+            //   }
+            //   return null;
+            // }} // отклюяит переход по ссылке
 
-              // views={{
-              //   month: true,
-              //   // week: false,
-              //   day: true
-              // }}
-              // selected={{
-              //   click: () => console.log('click')
-              // }}
-              // onRangeChange={this.onRangeChange}
-              // onDrillDown={this.onDrillDown}
-            />
-          }
+            // views={{
+            //   month: true,
+            //   // week: false,
+            //   day: true
+            // }}
+            // selected={{
+            //   click: () => console.log('click')
+            // }}
+            // onRangeChange={this.onRangeChange}
+            // onDrillDown={this.onDrillDown}
+          />
           {this.state.alert}
         </div>
       </Fragment>

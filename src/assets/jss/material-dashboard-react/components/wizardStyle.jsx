@@ -9,7 +9,8 @@ import {
   roseColor,
   infoColor,
   warningColor
-} from "assets/jss/material-dashboard-pro-react.jsx";
+// } from "../../assets/jss/material-dashboard-pro-react.jsx";
+} from "../../material-dashboard-react";
 
 const wizardStyle = {
   wizardContainer: {},
@@ -46,7 +47,7 @@ const wizardStyle = {
     backgroundColor: "rgba(200, 200, 200, 0.2)",
     "&:after,&:before": {
       display: "table",
-      content: '" "'
+      content: "\" \""
     },
     "&:after": {
       boxSizing: "border-box"
@@ -144,7 +145,7 @@ const wizardStyle = {
   clearfix: {
     "&:after,&:before": {
       display: "table",
-      content: '" "'
+      content: "\" \""
     },
     clear: "both"
   }

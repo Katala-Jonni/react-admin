@@ -82,17 +82,16 @@
 // export default withStyles(customInputStyle)(CustomInput);
 
 
-
 import React from "react";
 import PropTypes from "prop-types";
 import cx from "classnames";
 
 // material-ui components
-import withStyles from "material-ui/styles/withStyles";
-import FormControl from "material-ui/Form/FormControl";
-import FormHelperText from "material-ui/Form/FormHelperText";
-import Input from "material-ui/Input";
-import InputLabel from "material-ui/Input/InputLabel";
+import withStyles from "@material-ui/core/styles/withStyles";
+import FormControl from "@material-ui/core/FormControl";
+import FormHelperText from "@material-ui/core/FormHelperText";
+import Input from "@material-ui/core/Input";
+import InputLabel from "@material-ui/core/InputLabel";
 
 // @material-ui/icons
 import Clear from "@material-ui/icons/Clear";
@@ -111,8 +110,14 @@ function CustomInput({ ...props }) {
     error,
     success,
     helpText,
-    rtlActive
+    rtlActive,
+    fullWidth,
+    input,
+    ...rest
   } = props;
+
+  // console.log(props);
+
 
   var labelClasses = cx({
     [" " + classes.labelRootError]: error,
@@ -126,7 +131,7 @@ function CustomInput({ ...props }) {
   var underlineClasses = cx({
     [classes.underline]: true,
     [classes.underlineError]: error,
-    [classes.underlineSuccess]: success && !error,
+    [classes.underlineSuccess]: success && !error
   });
   if (inputProps !== undefined) {
     formControlClasses =
@@ -167,7 +172,7 @@ function CustomInput({ ...props }) {
       [classes.feedbackAdorment]:
       inputProps !== undefined && inputProps.endAdornment !== undefined
     });
-  const input =
+  const inputMain =
     classes.input +
     " " +
     cx({
@@ -191,17 +196,20 @@ function CustomInput({ ...props }) {
       ) : null}
       <Input
         classes={{
-          input: input,
+          input: inputMain,
           disabled: classes.disabled,
           underline: underlineClasses
         }}
         id={id}
         {...inputProps}
+        fullWidth={fullWidth}
+        {...input}
+        {...rest}
       />
       {error ? (
-        <Clear className={errorClasses} />
+        <Clear className={errorClasses}/>
       ) : success ? (
-        <Check className={successClasses} />
+        <Check className={successClasses}/>
       ) : null}
       {helpText !== undefined ? (
         <FormHelperText id={id + "-text"}>{helpText}</FormHelperText>
