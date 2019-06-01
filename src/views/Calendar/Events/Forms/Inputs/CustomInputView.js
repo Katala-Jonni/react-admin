@@ -278,15 +278,18 @@ class ValidationForms extends React.Component {
   }
 
   render() {
-    const { classes, label, id, input, type, placeholder, meta: { touched, error }, ...rest } = this.props;
-    // console.log(rest);
+    const { classes, label, id, input, type, placeholder, meta: { touched, error }, isHidden, ...rest } = this.props;
+    // console.log(this.props);
     return (
+      <Fragment>
         <CustomInput
           input={input}
           type={type}
           placeholder={placeholder}
-          success={this.state.registerEmailState === "success"}
-          error={this.state.registerEmailState === "error"}
+          success={!(error)}
+          // success={this.state.registerEmailState === "success"}
+          error={!!(touched && error)}
+          // error={this.state.registerEmailState === "error"}
           labelText={label}
           id={id}
           formControlProps={{
@@ -299,6 +302,9 @@ class ValidationForms extends React.Component {
           }}
           {...rest}
         />
+        {touched && error && <span>{error}</span>}
+      </Fragment>
+
     );
   }
 }

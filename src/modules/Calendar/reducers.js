@@ -11,7 +11,7 @@ import {
 } from "./actions";
 
 const initialState = {
-  resource: {},
+  resource: [],
   events: myEventsList || [],
   totalResource: null,
   masters: null,

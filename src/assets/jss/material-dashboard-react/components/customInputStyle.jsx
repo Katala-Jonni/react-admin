@@ -3,7 +3,8 @@ import {
   dangerColor,
   successColor,
   grayColor,
-  defaultFont
+  defaultFont,
+  blueCardHeader
 } from "assets/jss/material-dashboard-react.jsx";
 
 const customInputStyle = {
@@ -18,7 +19,7 @@ const customInputStyle = {
       borderWidth: "1px !important"
     },
     "&:after": {
-      borderColor: primaryColor[0]
+      borderColor: blueCardHeader[0]
     }
   },
   underlineError: {

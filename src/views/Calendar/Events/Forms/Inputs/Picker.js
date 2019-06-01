@@ -6,7 +6,8 @@ import "moment/locale/ru";
 
 class MaterialUIPickers extends React.Component {
   render() {
-    const { classes, isEnd, isTime, input, meta, onChange, ...rest } = this.props;
+    const { classes, isEnd, isTime, input, meta: { touched, error }, onChange, onOpen, onClose, ...rest } = this.props;
+    // console.log(touched, error);
     return (
       <Fragment>{
         isTime
@@ -22,6 +23,7 @@ class MaterialUIPickers extends React.Component {
             invalidLabel='Не указано'
             invalidDateMessage={`Укажите ${isEnd ? "конечное время" : "начальное время"}`}
             {...input}
+            // value={input.value || new Date()}
           />
           : <DatePicker
             // disabled
@@ -35,9 +37,12 @@ class MaterialUIPickers extends React.Component {
             cancelLabel="Отмена"
             showTodayButton
             todayLabel="Сегодня"
-            invalidLabel='Не указана'
+            invalidLabel={"Не указана"}
             invalidDateMessage={"Выберите дату"}
+            onOpen={onOpen}
+            onClose={onClose}
             {...input}
+            // value={input.value || new Date()}
           />
       }</Fragment>
     );
