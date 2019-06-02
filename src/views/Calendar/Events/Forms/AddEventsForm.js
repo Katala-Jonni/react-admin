@@ -1,36 +1,33 @@
 import React, { Component } from "react";
 import propTypes from "prop-types";
-
 import { Field, FieldArray, reduxForm } from "redux-form";
 import validate from "./validate";
 import CustomInputView from "./Inputs/CustomInputView";
-import Input from "@material-ui/core/Input";
 import Button from "@material-ui/core/Button";
 import { withStyles } from "@material-ui/core/styles";
 import customEventsStyle from "../../../../assets/jss/material-dashboard-react/components/customEventsStyle";
 import RenderMembers from "./RenderMembers";
 
-const renderField = ({ input, label, type, placeholder, meta: { touched, error }, ...rest }) => {
-  return (
-    <div>
-      <label>{label}</label>
-      <div>
-        <Input
-          {...input}
-          type={type}
-          placeholder={placeholder}
-          {...rest}
-        />
-        {touched && error && <span>{error}</span>}
-      </div>
-    </div>
-  );
-};
-
 class FieldArraysForm extends Component {
+  state = {
+    isMember: false
+  };
+
+  addField = () => {
+    this.setState({
+      isMember: true
+    });
+  };
+
+  removeField = () => {
+    this.setState({
+      isMember: false
+    });
+  };
 
   render() {
     const { handleSubmit, pristine, reset, submitting, classes, handleClickClose } = this.props;
+    // console.log(this.props);
     return (
       <form onSubmit={handleSubmit}>
         <Field
@@ -61,13 +58,15 @@ class FieldArraysForm extends Component {
           name="members"
           component={RenderMembers}
           classes={classes}
+          addField={this.addField}
+          isDisabledBtn={!this.props.valid && !submitting}
         />
         <div>
           <Button
             type="submit"
             color='primary'
             variant="contained"
-            disabled={!this.props.valid && !submitting}
+            disabled={!this.state.isMember || (!this.props.valid && !submitting)}
             className={classes.indent}
           >
             Записать
@@ -75,7 +74,10 @@ class FieldArraysForm extends Component {
           <Button
             type="button"
             disabled={pristine || submitting}
-            onClick={reset}
+            onClick={() => {
+              this.removeField();
+              return reset();
+            }}
             variant="contained"
             className={classes.indent}
           >

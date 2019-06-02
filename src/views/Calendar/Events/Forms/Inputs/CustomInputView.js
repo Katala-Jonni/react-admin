@@ -1,5 +1,5 @@
 import React, { Fragment } from "react";
-
+import cx from 'classnames';
 // material-ui components
 import { withStyles } from "@material-ui/core/styles";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
@@ -295,14 +295,14 @@ class ValidationForms extends React.Component {
           formControlProps={{
             fullWidth: true
           }}
-          inputProps={{
-            onChange: event =>
-              this.change(event, "registerEmail", "email"),
-            type: "email"
-          }}
+          // inputProps={{
+          //   onChange: event =>
+          //     this.change(event, "registerEmail", "email"),
+          //   type: "email"
+          // }}
           {...rest}
         />
-        {touched && error && <span>{error}</span>}
+        {touched && error && <span className={cx(classes.labelErrorCustom)}>{error}</span>}
       </Fragment>
 
     );

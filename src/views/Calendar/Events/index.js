@@ -1,5 +1,5 @@
 import { connect } from "react-redux";
-import AddMaster from "./AddEvents";
+import AddEvents from "./AddEvents";
 import {
   getResource,
   getEvents,
@@ -7,7 +7,8 @@ import {
   changeMasters,
   editMastersStart,
   getTotalMasters,
-  getIsDay
+  getIsDay,
+  editEvents
 } from "../../../modules/Calendar";
 
 const mapStateFromProps = state => ({
@@ -17,6 +18,6 @@ const mapStateFromProps = state => ({
   totalResource: getTotalResource(state)
 });
 
-const mapDispatchFromProps = { changeMasters, editMastersStart };
+const mapDispatchFromProps = { changeMasters, editMastersStart, editEvents };
 
-export default connect(mapStateFromProps, mapDispatchFromProps)(AddMaster);
+export default connect(mapStateFromProps, mapDispatchFromProps)(AddEvents);

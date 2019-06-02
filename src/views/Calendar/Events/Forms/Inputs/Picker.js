@@ -7,7 +7,7 @@ import "moment/locale/ru";
 class MaterialUIPickers extends React.Component {
   render() {
     const { classes, isEnd, isTime, input, meta: { touched, error }, onChange, onOpen, onClose, ...rest } = this.props;
-    // console.log(touched, error);
+    // console.log(input);
     return (
       <Fragment>{
         isTime

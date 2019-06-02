@@ -57,6 +57,16 @@ const customCheckboxRadioSwitch = {
     display: "inline-flex",
     transition: "0.3s ease all"
   },
+  labelErrorCustom: {
+    // cursor: "pointer",
+    paddingLeft: "0",
+    color: "#f44336",
+    fontSize: "0.75rem",
+    lineHeight: "1",
+    // fontWeight: "400",
+    display: "inline-flex",
+    transition: "0.3s ease all"
+  },
   labelHorizontal: {
     color: "rgba(0, 0, 0, 0.26)",
     cursor: "pointer",
@@ -70,8 +80,8 @@ const customCheckboxRadioSwitch = {
       float: "right"
     }
   },
-  labelHorizontalRadioCheckbox:{
-    paddingTop: "22px",
+  labelHorizontalRadioCheckbox: {
+    paddingTop: "22px"
   },
   labelLeftHorizontal: {
     color: "rgba(0, 0, 0, 0.26)",
@@ -173,7 +183,7 @@ const customCheckboxRadioSwitch = {
   switchUnchecked: {
     color: "#FFFFFF",
     transform: "translateX(-5px)"
-  },
+  }
 };
 
 export default customCheckboxRadioSwitch;

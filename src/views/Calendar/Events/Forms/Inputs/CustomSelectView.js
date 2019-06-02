@@ -19,30 +19,40 @@ class CustomSelectView extends Component {
     return this.props.input.onChange(data.value);
   };
 
-  componentWillUnmount(){
-    console.log('componentWillUnmount');
+  componentDidMount() {
+    console.log("didmount");
+    this.setState({
+      value: ""
+    });
+  }
+
+  componentWillUnmount() {
+    // console.log('componentWillUnmount');
   }
 
 
   render() {
     const { input, label, id, meta: { touched, error }, options, disabled, differenceDate, selectedDate, isFirst, switchDate } = this.props;
-    // console.log("render");
     return (
       <Fragment>
-        <Select
-          className={classNames("basic-single")}
-          name={input.name}
-          id={id}
-          options={options}
-          placeholder={`Выберите ${label}`}
-          // isMulti={!isNew}
-          // menuIsOpen
-          // isClearable
-          value={this.state.value}
-          isDisabled={disabled}
-          maxMenuHeight={150}
-          onChange={this.handleChange}
-        />
+        {switchDate
+          ? <Select
+            className={classNames("basic-single")}
+            name={input.name}
+            id={id}
+            options={options}
+            placeholder={`Выберите ${label}`}
+            // isMulti={!isNew}
+            // menuIsOpen
+            // isClearable
+            value={this.state.value}
+            isDisabled={disabled}
+            maxMenuHeight={150}
+            onChange={this.handleChange}
+          />
+          : null
+        }
+
       </Fragment>
     );
   }

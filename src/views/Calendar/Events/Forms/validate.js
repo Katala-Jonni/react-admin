@@ -77,7 +77,7 @@ const validate = (values, ...rest) => {
   //   errors.members = "Нет данных о записи";
   // }
 
-  if (members && !members.length) {
+  if (!members || !members.length) {
     errors.members = "Нет данных о записи";
   }
 

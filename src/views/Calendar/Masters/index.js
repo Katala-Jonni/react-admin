@@ -7,7 +7,8 @@ import {
   changeMasters,
   editMastersStart,
   getTotalMasters,
-  getIsDay
+  getIsDay,
+  editEvents
 } from "../../../modules/Calendar";
 
 const mapStateFromProps = state => ({

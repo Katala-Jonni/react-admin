@@ -63,6 +63,7 @@ export default (state = initialState, action) => {
         events: events
       };
     case editEvents.toString():
+      console.log(payload);
       return {
         ...state,
         events: payload

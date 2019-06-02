@@ -15,7 +15,7 @@ import AddMaster from "./Masters";
 import PersonAdd from "@material-ui/icons/PersonAdd";
 import { connect } from "react-redux";
 import { changeCalendar, closeWizard, getIsDay, getResource, openWizard } from "../../modules/Calendar";
-import AddEvents from "./Events/AddEvents";
+import AddEvents from "./Events/index";
 
 class CalendarToolBar extends Component {
   state = {

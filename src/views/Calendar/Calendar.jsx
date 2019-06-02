@@ -169,6 +169,8 @@ class Calendar extends Component {
 
     // this.addNewEventAlert(event);
 
+    console.log(event);
+
     let idList = this.props.events.map(a => a.id);
     console.log(event.resourceId);
     let newId = Math.max(...idList) + 1;
@@ -330,6 +332,10 @@ class Calendar extends Component {
   };
 
   render() {
+
+    // const convert = "2019-06-04";
+    // const d = moment(`${new Date(`${convert}`)}:T09:00:00.000Z`);
+    // console.log(d);
     const { classes, resource, events, totalResource } = this.props;
     const { change, day } = this.state;
     if (!totalResource) {
