@@ -13,6 +13,7 @@ import "react-big-calendar/lib/css/react-big-calendar.css";
 import "react-big-calendar/lib/addons/dragAndDrop/styles.css";
 import defaultResource from "../../modules/Calendar/defaultResource";
 import "./Calendar.css";
+import SelectEvent from "./Events/Forms/SelectEvent/index";
 
 moment.locale("ru");
 
@@ -55,7 +56,9 @@ class Calendar extends Component {
       view: "month",
       day: null,
       isDay: true,
-      alert: null
+      alert: null,
+      selectEvent: false,
+      selectEventValue: null
     };
 
     this.moveEvent = this.moveEvent.bind(this);
@@ -65,6 +68,12 @@ class Calendar extends Component {
   componentDidMount() {
     this.props.loadResource();
   }
+
+  handleClickCloseSelectEvent = () => {
+    this.setState({
+      selectEvent: false
+    });
+  };
 
   titleAccessor = data => {
     console.log(data);
@@ -169,10 +178,10 @@ class Calendar extends Component {
 
     // this.addNewEventAlert(event);
 
-    console.log(event);
+    // console.log(event);
 
     let idList = this.props.events.map(a => a.id);
-    console.log(event.resourceId);
+    // console.log(event.resourceId);
     let newId = Math.max(...idList) + 1;
     let hour = {
       id: newId,
@@ -255,8 +264,13 @@ class Calendar extends Component {
     // this.setState({
     //   events: [...this.state.events, current]
     // });
-    console.log(data, "onSelectEvent");
-    console.log(args, "onSelectEvent");
+    this.setState({
+      selectEvent: true,
+      selectEventValue: data
+    });
+    // console.log(this.state.view, "view");
+    // console.log(data, "onSelectEvent");
+    // console.log(args, "onSelectEvent");
   };
 
   onDoubleClickEvent = (data, ...args) => {
@@ -337,13 +351,21 @@ class Calendar extends Component {
     // const d = moment(`${new Date(`${convert}`)}:T09:00:00.000Z`);
     // console.log(d);
     const { classes, resource, events, totalResource } = this.props;
-    const { change, day } = this.state;
+    const { change, day, selectEvent, selectEventValue } = this.state;
     if (!totalResource) {
       return <h1>...Loading</h1>;
     }
-
+    console.log(selectEvent);
     return (
       <Fragment>
+        {this.state.selectEvent
+          ? <SelectEvent
+            open={selectEvent}
+            handleClickCloseSelectEvent={this.handleClickCloseSelectEvent}
+            selectEventValue={selectEventValue}
+          />
+          : null
+        }
         <div className="App" onDoubleClick={this.onDoubleClick}>
           <DragAndDropCalendar
             // resourceAccessor={this.resourceAccessor}

@@ -6,6 +6,14 @@ import { getEvents, getResource, getTotalMasters, getTotalResource } from "../..
 import { connect } from "react-redux";
 import CustomInputView from "./CustomInputView";
 import { Field } from "redux-form";
+import FormHelperText from "@material-ui/core/FormHelperText";
+import { withStyles } from "@material-ui/core/styles/index";
+
+const style = {
+  option: (provided, state) => ({
+    color: "red"
+  })
+};
 
 class CustomSelectView extends Component {
   state = {
@@ -24,6 +32,12 @@ class CustomSelectView extends Component {
     this.setState({
       value: ""
     });
+    // console.log(this.props);
+    if (this.props.selectEvent) {
+      this.props.input.onChange(this.props.defaultValue);
+    } else {
+      this.props.input.onChange("");
+    }
   }
 
   componentWillUnmount() {
@@ -32,27 +46,39 @@ class CustomSelectView extends Component {
 
 
   render() {
-    const { input, label, id, meta: { touched, error }, options, disabled, differenceDate, selectedDate, isFirst, switchDate } = this.props;
+    const { input, label, id, meta: { touched, error }, options, disabled, classes, differenceDate, selectedDate, isFirst, switchDate, defaultValue, selectEvent } = this.props;
+    // console.log(this.state.value);
+    console.log(this.props);
     return (
       <Fragment>
-        {switchDate
-          ? <Select
-            className={classNames("basic-single")}
-            name={input.name}
-            id={id}
-            options={options}
-            placeholder={`Выберите ${label}`}
-            // isMulti={!isNew}
-            // menuIsOpen
-            // isClearable
-            value={this.state.value}
-            isDisabled={disabled}
-            maxMenuHeight={150}
-            onChange={this.handleChange}
-          />
-          : null
-        }
-
+        <Select
+          // className={classNames(error ? classes.borderColor : null)}
+          name={input.name}
+          id={id}
+          options={options}
+          placeholder={`Выберите ${label}`}
+          theme={theme => ({
+            ...theme,
+            // borderRadius: 0,
+            colors: {
+              ...theme.colors,
+              // primary25: 'hotpink',
+              primary: error ? "red" : "#3f51b5"
+            }
+          })}
+          // label={`Выберите ${label}`}
+          // isMulti={!isNew}
+          // menuIsOpen
+          // isClearable
+          // value={this.state.value}
+          defaultValue={defaultValue}
+          isDisabled={disabled}
+          maxMenuHeight={150}
+          onChange={this.handleChange}
+        />
+        {error ? (
+          <FormHelperText className={classes.errorColor} id={id + "-text"}>{error}</FormHelperText>
+        ) : null}
       </Fragment>
     );
   }
@@ -67,7 +93,12 @@ const mapStateFromProps = state => ({
 
 // const mapDispatchFromProps = {};
 
+
 export default connect(mapStateFromProps, null)(CustomSelectView);
+// export default connect(mapStateFromProps, null)(CustomSelectView);
+
+
+// withStyles(styleTooltip, { withTheme: true })(CustomSelectView);
 
 
 // import React from "react";

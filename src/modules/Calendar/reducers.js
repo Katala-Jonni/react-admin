@@ -48,7 +48,7 @@ export default (state = initialState, action) => {
         }
       };
     case deleteMasters.toString():
-      console.log(payload);
+      // console.log(payload);
       return {
         ...state,
         resource: payload.resource,
@@ -63,7 +63,7 @@ export default (state = initialState, action) => {
         events: events
       };
     case editEvents.toString():
-      console.log(payload);
+      // console.log(payload);
       return {
         ...state,
         events: payload

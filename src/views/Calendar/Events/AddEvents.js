@@ -50,7 +50,7 @@ class AddEvents extends React.Component {
       const end = moment(item.date).set({ "hour": moment(item.end).hour(), "minute": moment(item.end).minute() });
       return {
         id: newId,
-        title: `${lastName} ${surname} - ${item.title}, Номер телефона: ${phoneNumber}`,
+        title: `${lastName} ${surname} - ${item.title}`,
         // allDay: values.slots.length == 1,
         // const d = moment(`${new Date(`${convert}`)}:T09:00:00.000Z`);
         start: start._d,
@@ -59,7 +59,12 @@ class AddEvents extends React.Component {
         // end: moment(item.end)._d,
         // start: moment(item.start).format("YYYY-MM-DDThh:mm:ss.000Z"),
         // end: moment(item.end).format("YYYY-MM-DDThh:mm:ss.000Z"),
-        resourceId: item.resourceId
+        date: moment(item.date).format(),
+        resourceId: item.resourceId,
+        lastName,
+        surname,
+        titleEvent: item.title,
+        phoneNumber
       };
     });
     // let newId = Math.max(...idList) + 1;
@@ -72,8 +77,10 @@ class AddEvents extends React.Component {
     //   resourceId: values.resourceId
     // };
 
-
-    // при множественном выборе записей, открывается окно удаляется селект
+    // валидация времени добавления записи, не может добавляться, если запись в прошлом
+    // валидация времени больше 20, запись невозможна, так как работа до 20
+    // валидация в сравнении, если end меньше start, то запись невозможна
+    // валидация времени записи меньше 10, запись невозможна
     console.log(hours);
     this.props.editEvents(this.props.events.concat([...hours]));
     this.handleClickClose();

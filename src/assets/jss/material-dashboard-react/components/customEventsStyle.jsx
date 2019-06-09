@@ -15,6 +15,12 @@ const customEventsStyle = theme => ({
   removeButton: {
     backgroundColor: "#ff3d00"
   },
+  errorColor: {
+    color: "#ff3d00"
+  },
+  borderColor: {
+    border: "1px solid #ff3d00"
+  },
   list: {
     listStyle: "none",
     paddingLeft: 0

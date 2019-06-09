@@ -1,5 +1,5 @@
 import React, { Fragment } from "react";
-import cx from 'classnames';
+import cx from "classnames";
 // material-ui components
 import { withStyles } from "@material-ui/core/styles";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
@@ -27,6 +27,7 @@ class ValidationForms extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      value: this.props.valD,
       // register form
       registerEmail: "",
       registerEmailState: "",
@@ -277,12 +278,20 @@ class ValidationForms extends React.Component {
     }
   }
 
+
+  ch = (event) => {
+    this.setState({
+      value: event.target.value
+    });
+  };
+
   render() {
-    const { classes, label, id, input, type, placeholder, meta: { touched, error }, isHidden, ...rest } = this.props;
+    const { classes, label, valD, id, input, type, placeholder, meta: { touched, error }, isHidden, ...rest } = this.props;
     // console.log(this.props);
     return (
       <Fragment>
         <CustomInput
+          value={valD ? this.state.value : input.value}
           input={input}
           type={type}
           placeholder={placeholder}
@@ -295,10 +304,13 @@ class ValidationForms extends React.Component {
           formControlProps={{
             fullWidth: true
           }}
+          inputProps={valD ? {
+            onChange: event =>
+              this.ch(event)
+          } : {}}
           // inputProps={{
           //   onChange: event =>
-          //     this.change(event, "registerEmail", "email"),
-          //   type: "email"
+          //     this.ch(event)
           // }}
           {...rest}
         />

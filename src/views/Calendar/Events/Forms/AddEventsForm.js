@@ -37,6 +37,9 @@ class FieldArraysForm extends Component {
           label="Имя*"
           id="lastName"
           placeholder='Наталья'
+          // disabled
+          // value={'Наталья'}
+          // readOnly
         />
         <Field
           name="surname"

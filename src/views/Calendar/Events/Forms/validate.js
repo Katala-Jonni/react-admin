@@ -1,5 +1,20 @@
 import moment from "moment";
 
+const getDifferenceTime = (date, start) => {
+  // console.log(moment(time).format('LLL'), "getDifferenceTime");
+  // console.log(moment().format("LLL"), "getDifferenceTime");
+  const time = moment(date).set({ "hour": moment(start).hour(), "minute": moment(start).minute() });
+  // console.log(moment(time).format("LLL"), "getDifferenceTime");
+  // console.log(moment().format("LLL"), "getDifferenceTime");
+  const a = moment(time);
+  const b = moment();
+  // console.log(a, b);
+  if (a.diff(b) < 0) {
+    return null;
+  }
+  return true;
+};
+
 const verifyNumber = value => {
   var numberRex = new RegExp("^[0-9]+$");
   if (numberRex.test(value)) {
@@ -84,7 +99,7 @@ const validate = (values, ...rest) => {
   if (members && members.length) {
     const membersArrayErrors = [];
     // console.log(members);
-
+    // console.log(members);
     members.forEach((member, memberIndex) => {
       const memberErrors = {};
       if (!member || !member.title) {
@@ -111,23 +126,41 @@ const validate = (values, ...rest) => {
       }
 
       if (member && member.start && moment(member.start).hour() > 20) {
-        memberErrors.start = "Запись ведется до 20:00";
+        memberErrors.start = "Запись до 20:00";
         membersArrayErrors[memberIndex] = memberErrors;
       }
-
-      if (member && member.end && moment(member.end).hour() >= 20 && moment(member.end).minute() >= 1) {
-        memberErrors.end = "Запись ведется до 20:00";
-        membersArrayErrors[memberIndex] = memberErrors;
-      }
-
+      // if (member && member.end) {
+      //   console.log(moment(member.end).hour() >= 20);
+      //   console.log(moment(member.end).minute() >= 1);
+      // }
       if (member && member.start && member.end && !(moment(member.end).isAfter(member.start, "minute"))) {
-        memberErrors.end = "Конечное время должно быть больше начального";
+        memberErrors.end = `Должно быть больше ${moment(member.start).format("LT")}`;
+        membersArrayErrors[memberIndex] = memberErrors;
+      }
+      //&& moment(member.end).minute() >= 0
+      if (member && member.end && (moment(member.end).hour() === 20 && moment(member.end).minute() > 0 || moment(member.end).hour() > 20)) {
+        console.log(moment(member.end).hour() >= 20);
+        // console.log(moment(member.end).minute() >= 1);
+        memberErrors.end = "Запись до 20:00";
+        membersArrayErrors[memberIndex] = memberErrors;
+      }
+      if (member && member.start && (moment(member.start).hour() < 10 || moment(member.start).hour() >= 20)) {
+        memberErrors.start = "Запись с 10:00 до 19:55";
+        membersArrayErrors[memberIndex] = memberErrors;
+      }
+      if (member && member.start && member.date && !getDifferenceTime(member.date, member.start)) {
+        memberErrors.start = `Время уже прошло!`;
+        // memberErrors.start = `Сейчас время ${moment().format("LTS")}, Вы пытаетесь записать в прошлое время ${moment(member.start).format("LTS")}. Запись в прошлое время невозможна!`;
         membersArrayErrors[memberIndex] = memberErrors;
       }
       if (!member || !member.resourceId) {
         memberErrors.resourceId = "Выберите имя мастера/Соялярий";
         membersArrayErrors[memberIndex] = memberErrors;
       }
+
+      // console.log(memberErrors);
+      // console.log(membersArrayErrors);
+      // console.log(errors);
 
       // if ( ) {
       //   // console.log(new Date(moment(member.date.format())));

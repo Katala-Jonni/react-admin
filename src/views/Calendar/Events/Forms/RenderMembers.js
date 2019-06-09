@@ -18,6 +18,7 @@ import { connect } from "react-redux";
 import { getEvents, getResource, getTotalMasters, getTotalResource } from "../../../../modules/Calendar";
 import CustomSelectView from "./Inputs/CustomSelectView";
 import defaultResource from "../../../../modules/Calendar/defaultResource";
+import Member from "./Member";
 
 class RenderMembers extends Component {
   state = {
@@ -66,96 +67,46 @@ class RenderMembers extends Component {
   };
 
   render() {
-    const { fields, meta: { error, touched, submitFailed }, classes, renderChange, addField, isDisabledBtn } = this.props;
+    const { fields, meta: { error, touched, submitFailed }, classes, renderChange, addField, isDisabledBtn, noButton } = this.props;
     const { selectedDate, differenceDate, switchDate } = this.state;
+    // console.log(fields);
     return (
       <ul className={classes.list}>
-        <li>
-          <Button
-            disabled={isDisabledBtn}
-            type="button"
-            color='primary'
-            variant="contained"
-            size={"small"}
-            onClick={() => {
-              addField();
-              return fields.push({});
-            }}
-            className={classes.addButton}
-          >
-            Добавить запись
-          </Button>
-        </li>
-        {fields.map((member, index) => (
-          <li key={index}>
-            /*
-            <div className={classes.flex}>
-              <h4 className={classes.itemHeader}>Запись #{index + 1}</h4>
-              <Fab
-                color='secondary'
-                variant="extended"
-                size={"small"}
-                onClick={() => fields.remove(index)}
-                className={classes.flexItem}
-              >
-                <Remove/>
-              </Fab>
-            </div>
-            <MuiPickersUtilsProvider utils={MomentUtils} libInstance={moment}>
-              <Grid container className={classes.grid} justify="space-between">
-                <Field
-                  name={`${member}.date`}
-                  component={Picker}
-                  id={`${member}.date`}
-                  type={"text"}
-                  onChange={this.handleDateChange}
-                  onOpen={this.onOpen}
-                  onClose={this.onClose}
-                />
-                <Field
-                  name={`${member}.start`}
-                  component={Picker}
-                  isTime
-                  id={`${member}.start`}
-                  type={"text"}
-                />
-                <Field
-                  name={`${member}.end`}
-                  component={Picker}
-                  isEnd
-                  isTime
-                  id={`${member}.end`}
-                  type={"text"}
-                />
-              </Grid>
-            </MuiPickersUtilsProvider>
-            <Field
-              name={`${member}.resourceId`}
-              type="text"
-              component={CustomSelectView}
-              options={this.getOptions()}
-              label="Имя мастера/Солярий"
-              id={`${member}.resourceId`}
-              disabled={!selectedDate}
-              selectedDate={selectedDate}
-              differenceDate={differenceDate}
-              switchDate={switchDate}
-              isFirst={switchDate}
-              // placeholder='Имя мастера/Солярий'
-            />
-            <Field
-              name={`${member}.title`}
-              component={CustomInputView}
-              label="Описание услуги"
-              id={`${member}.title`}
-              inputProps={{
-                multiline: true,
-                rows: 3
+        {noButton
+          ? null
+          : <li>
+            <Button
+              disabled={isDisabledBtn}
+              type="button"
+              color='primary'
+              variant="contained"
+              size={"small"}
+              onClick={() => {
+                addField();
+                return fields.push({});
               }}
-            />
-            */
+              className={classes.addButton}
+            >
+              Добавить запись
+            </Button>
           </li>
-        ))}
+        }
+
+        {fields.map((member, index) => {
+          // console.log(member);
+          // console.log(index);
+          return (
+            <li key={index}>
+              <Member
+                member={member}
+                index={index}
+                classes={classes}
+                fields={fields}
+                noButton={noButton}
+              />
+            </li>
+          )
+        })}
       </ul>
     );
   }

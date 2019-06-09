@@ -3,11 +3,25 @@ import React, { Fragment } from "react";
 import PropTypes from "prop-types";
 import { MuiPickersUtilsProvider, TimePicker, DatePicker } from "material-ui-pickers";
 import "moment/locale/ru";
+import cx from "classnames";
 
 class MaterialUIPickers extends React.Component {
+  onChange = (...rest) => {
+    // console.log(rest);
+    this.props.input.onChange(rest);
+  };
+
+  componentDidMount() {
+    if (this.props.valD) {
+      this.props.input.onChange(this.props.valD);
+    }
+  }
+
   render() {
-    const { classes, isEnd, isTime, input, meta: { touched, error }, onChange, onOpen, onClose, ...rest } = this.props;
-    // console.log(input);
+    const { classes, isEnd, isTime, input, id, meta: { touched, error, visited, valid }, onChange, onOpen, onClose, disabled, ...rest } = this.props;
+    // console.log(error);
+    // console.log(this.props.meta);
+    // console.log(this.props);
     return (
       <Fragment>{
         isTime
@@ -22,8 +36,15 @@ class MaterialUIPickers extends React.Component {
             cancelLabel="Отмена"
             invalidLabel='Не указано'
             invalidDateMessage={`Укажите ${isEnd ? "конечное время" : "начальное время"}`}
+            // className={cx(visited && error ? classes.borderColor : null)}
+            error={!valid && error ? true : false}
+            helperText={error}
+            disabled={disabled}
             {...input}
+            // value={""}
+            // onChange={this.onChange}
             // value={input.value || new Date()}
+
           />
           : <DatePicker
             // disabled
@@ -41,10 +62,13 @@ class MaterialUIPickers extends React.Component {
             invalidDateMessage={"Выберите дату"}
             onOpen={onOpen}
             onClose={onClose}
+            disabled={disabled}
             {...input}
             // value={input.value || new Date()}
           />
-      }</Fragment>
+      }
+
+      </Fragment>
     );
   }
 }
@@ -54,6 +78,8 @@ MaterialUIPickers.propTypes = {
 };
 
 export default MaterialUIPickers;
+
+// {visited && error && <span>{error}</span>}
 
 
 // import "date-fns";

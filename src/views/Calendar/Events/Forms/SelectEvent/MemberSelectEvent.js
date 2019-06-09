@@ -1,8 +1,8 @@
 import React, { Component, Fragment } from "react";
 import propTypes from "prop-types";
 import { Field, FieldArray, reduxForm } from "redux-form";
-import Picker from "./Inputs/Picker";
-import CustomInputView from "./Inputs/CustomInputView";
+import Picker from "../Inputs/Picker";
+import CustomInputView from "../Inputs/CustomInputView";
 import Button from "@material-ui/core/Button";
 import Fab from "@material-ui/core/Fab";
 import Remove from "@material-ui/icons/Remove";
@@ -15,11 +15,11 @@ import moment from "moment/moment";
 
 import "moment/locale/ru";
 import { connect } from "react-redux";
-import { getEvents, getResource, getTotalMasters, getTotalResource } from "../../../../modules/Calendar";
-import CustomSelectView from "./Inputs/CustomSelectView";
-import defaultResource from "../../../../modules/Calendar/defaultResource";
+import { getEvents, getResource, getTotalMasters, getTotalResource } from "../../../../../modules/Calendar";
+import CustomSelectView from "../Inputs/CustomSelectView";
+import defaultResource from "../../../../../modules/Calendar/defaultResource";
 
-class Member extends Component {
+class MemberSelectEvent extends Component {
   state = {
     selectedDate: "",
     differenceDate: false,
@@ -66,27 +66,13 @@ class Member extends Component {
   };
 
   render() {
-    const { member, index, classes, fields, noButton } = this.props;
+    const { member, index, classes, fields, noButton, switchButton } = this.props;
     const { selectedDate, differenceDate, switchDate } = this.state;
-    console.log(member);
+    // console.log(fields);
+    const { date, start, end, titleEvent, resourceId } = fields[index];
+    // console.log(new Date(date));
     return (
       <Fragment>
-        {noButton
-          ? null
-          :
-          <div className={classes.flex}>
-            <h4 className={classes.itemHeader}>Запись #{index + 1}</h4>
-            <Fab
-              color='secondary'
-              variant="extended"
-              size={"small"}
-              onClick={() => fields.remove(index)}
-              className={classes.flexItem}
-            >
-              <Remove/>
-            </Fab>
-          </div>
-        }
         <MuiPickersUtilsProvider utils={MomentUtils} libInstance={moment}>
           <Grid container className={classes.grid} justify="space-between">
             <Field
@@ -97,8 +83,10 @@ class Member extends Component {
               onChange={this.handleDateChange}
               onOpen={this.onOpen}
               onClose={this.onClose}
-              value={selectedDate}
+              valD={new Date(date)}
+              // value={selectedDate}
               classes={classes}
+              disabled={switchButton}
             />
             <Field
               name={`${member}.start`}
@@ -107,6 +95,8 @@ class Member extends Component {
               id={`${member}.start`}
               type={"text"}
               classes={classes}
+              valD={new Date(start)}
+              disabled={switchButton}
             />
             <Field
               name={`${member}.end`}
@@ -116,6 +106,8 @@ class Member extends Component {
               id={`${member}.end`}
               type={"text"}
               classes={classes}
+              valD={new Date(end)}
+              disabled={switchButton}
             />
           </Grid>
         </MuiPickersUtilsProvider>
@@ -126,14 +118,17 @@ class Member extends Component {
             component={CustomSelectView}
             options={this.getOptions()}
             label="Имя мастера/Солярий"
-            id={`${member}.resourceId`}
-            disabled={!selectedDate}
+            // id={`${member}.resourceId`}
+            disabled={!selectedDate || switchButton}
             selectedDate={selectedDate}
             differenceDate={differenceDate}
             switchDate={switchDate}
             isFirst={switchDate}
             // className={classes.margin}
+            selectEvent
             classes={classes}
+            defaultValue={this.getOptions().filter(item => item.value === resourceId)[0]}
+
             // placeholder='Имя мастера/Солярий'
           />
           : null
@@ -142,18 +137,20 @@ class Member extends Component {
           name={`${member}.title`}
           component={CustomInputView}
           label="Описание услуги"
-          id={`${member}.title`}
+          // id={`${member}.title`}
           inputProps={{
             multiline: true,
             rows: 3
           }}
+          disabled={switchButton}
+          valD={titleEvent}
         />
       </Fragment>
     );
   }
 }
 
-Member.propTypes = {
+MemberSelectEvent.propTypes = {
   classes: propTypes.object.isRequired
 };
 
@@ -175,4 +172,4 @@ const styleTooltip = theme => ({
   // }
 });
 
-export default connect(mapStateFromProps, null)(Member);
+export default connect(mapStateFromProps, null)(MemberSelectEvent);

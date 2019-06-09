@@ -82,7 +82,7 @@
 // export default withStyles(customInputStyle)(CustomInput);
 
 
-import React from "react";
+import React, { Component } from "react";
 import PropTypes from "prop-types";
 import cx from "classnames";
 
@@ -99,6 +99,137 @@ import Check from "@material-ui/icons/Check";
 //material-dashboard-pro-react/components/customInputStyle
 import customInputStyle from "../../assets/jss/material-dashboard-react/components/customInputStyle";
 
+class CustomInput extends Component {
+  state = {};
+
+
+  componentDidMount() {
+    if (this.props.input) {
+      this.props.input.onChange(this.props.value);
+    }
+  }
+
+  render() {
+    const {
+      classes,
+      formControlProps,
+      labelText,
+      id,
+      labelProps,
+      inputProps,
+      error,
+      success,
+      helpText,
+      rtlActive,
+      fullWidth,
+      input,
+      ...rest
+    } = this.props;
+
+    var labelClasses = cx({
+      [" " + classes.labelRootError]: error,
+      [" " + classes.labelRootSuccess]: success && !error
+    });
+
+    var formControlClasses = classes.formControl;
+    if (formControlProps !== undefined) {
+      formControlClasses += " " + formControlProps.className;
+    }
+    var underlineClasses = cx({
+      [classes.underline]: true,
+      [classes.underlineError]: error,
+      [classes.underlineSuccess]: success && !error
+    });
+    if (inputProps !== undefined) {
+      formControlClasses =
+        formControlClasses +
+        " " +
+        cx({
+          [classes.inputWithAdornment]:
+          (inputProps.startAdornment !== undefined ||
+            inputProps.endAdornment !== undefined) &&
+          labelText === undefined
+        });
+    }
+    if (inputProps !== undefined) {
+      labelClasses =
+        labelClasses +
+        " " +
+        cx({
+          [classes.labelWithAdornment]: inputProps.endAdornment !== undefined
+        });
+    }
+    const successClasses =
+      classes.feedback +
+      " " +
+      classes.labelRootSuccess +
+      " " +
+      cx({
+        [classes.feedbackNoLabel]: labelText === undefined,
+        [classes.feedbackAdorment]:
+        inputProps !== undefined && inputProps.endAdornment !== undefined
+      });
+    const errorClasses =
+      classes.feedback +
+      " " +
+      classes.labelRootError +
+      " " +
+      cx({
+        [classes.feedbackNoLabel]: labelText === undefined,
+        [classes.feedbackAdorment]:
+        inputProps !== undefined && inputProps.endAdornment !== undefined
+      });
+    const inputMain =
+      classes.input +
+      " " +
+      cx({
+        [classes.inputRTL]: rtlActive,
+        [classes.inputNoLabel]: labelText === undefined
+      });
+
+    console.log(this.props);
+
+    return (
+      <FormControl
+        {...formControlProps}
+        className={formControlClasses}
+        aria-describedby={id + "-text"}
+      >
+        {labelText !== undefined ? (
+          <InputLabel
+            className={classes.labelRoot + labelClasses}
+            htmlFor={id}
+            {...labelProps}
+          >
+            {labelText}
+          </InputLabel>
+        ) : null}
+        <Input
+          classes={{
+            input: inputMain,
+            disabled: classes.disabled,
+            underline: underlineClasses
+          }}
+          id={id}
+          {...input}
+          {...inputProps}
+          fullWidth={fullWidth}
+          {...rest}
+        />
+        {error ? (
+          <Clear className={errorClasses}/>
+        ) : success ? (
+          <Check className={successClasses}/>
+        ) : null}
+        {helpText !== undefined ? (
+          <FormHelperText id={id + "-text"}>{helpText}</FormHelperText>
+        ) : null}
+      </FormControl>
+    );
+  }
+}
+
+/*
 function CustomInput({ ...props }) {
   const {
     classes,
@@ -116,8 +247,8 @@ function CustomInput({ ...props }) {
     ...rest
   } = props;
 
-  // console.log(props);
-
+  // console.log(input);
+  console.log(props, "CustomInput");
 
   var labelClasses = cx({
     [" " + classes.labelRootError]: error,
@@ -201,9 +332,9 @@ function CustomInput({ ...props }) {
           underline: underlineClasses
         }}
         id={id}
+        {...input}
         {...inputProps}
         fullWidth={fullWidth}
-        {...input}
         {...rest}
       />
       {error ? (
@@ -217,6 +348,7 @@ function CustomInput({ ...props }) {
     </FormControl>
   );
 }
+*/
 
 CustomInput.propTypes = {
   classes: PropTypes.object.isRequired,

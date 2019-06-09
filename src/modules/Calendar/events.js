@@ -18,7 +18,7 @@ export default [
     title: "Board meetingBoard meetingBoard meetingBoard meeting",
     start: new Date(2019, 3, 11, 10, 0, 0),
     end: new Date(2019, 3, 11, 11, 0, 0),
-    resourceId: 'Анна'
+    resourceId: "Анна"
   },
   {
     id: 53,
@@ -174,55 +174,67 @@ export default [
     title: "Стрижка на длинные волосы",
     start: new Date(2019, 4, 1, 15, 0, 0),
     end: new Date(2019, 4, 1, 18, 0, 0),
-    resourceId: 'Максим'
+    resourceId: "Максим"
   },
   {
     id: 588,
     title: "ппп",
     start: new Date(2019, 4, 1, 11, 0, 0),
     end: new Date(2019, 4, 1, 12, 0, 0),
-    resourceId: 'Наталья'
+    resourceId: "Наталья"
   },
   {
     id: 5888,
     title: "Наталья стрижка",
     start: new Date(2019, 4, 3, 11, 0, 0),
     end: new Date(2019, 4, 3, 12, 0, 0),
-    resourceId: 'Наталья'
+    resourceId: "Наталья"
   },
   {
     id: 5788,
     title: "Анна стрижка",
     start: new Date(2019, 4, 3, 11, 0, 0),
     end: new Date(2019, 4, 3, 12, 0, 0),
-    resourceId: 'Анна'
+    resourceId: "Анна"
   },
   {
     id: 6789,
     title: "Анна стрижка",
     start: new Date(2019, 4, 6, 11, 0, 0),
     end: new Date(2019, 4, 6, 12, 0, 0),
-    resourceId: 'Анна'
+    resourceId: "Анна"
   },
   {
     id: 67689,
     title: "Наталья стрижка",
     start: new Date(2019, 4, 6, 11, 0, 0),
     end: new Date(2019, 4, 6, 12, 0, 0),
-    resourceId: 'Наталья'
+    resourceId: "Наталья"
   },
   {
     id: 34564,
     title: "Наталья стрижка",
     start: new Date(2019, 4, 7, 11, 0, 0),
     end: new Date(2019, 4, 7, 12, 0, 0),
-    resourceId: 'Наталья'
+    resourceId: "Наталья"
   },
   {
     id: 34534,
     title: "Анна стрижка",
     start: new Date(2019, 4, 7, 11, 0, 0),
     end: new Date(2019, 4, 7, 12, 0, 0),
-    resourceId: 'Анна'
+    resourceId: "Анна"
+  },
+  {
+    id: 67691,
+    date: "2019-06-09T18:30:00+03:00",
+    start: new Date(2019, 5, 9, 11, 0, 0),
+    end: new Date(2019, 5, 9, 12, 0, 0),
+    lastName: "Jonni",
+    phoneNumber: "111111",
+    resourceId: "Солярий",
+    surname: "Jonni",
+    title: "Jonni Jonni - uytrewq",
+    titleEvent: "uytrewq"
   }
 ];
