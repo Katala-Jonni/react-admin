@@ -32,6 +32,7 @@ class ValidationForms extends React.Component {
     };
   }
 
+
   ch = (event) => {
     this.setState({
       value: event.target.value
