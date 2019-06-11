@@ -15,7 +15,8 @@ const mapStateFromProps = state => ({
   resource: getResource(state),
   events: getEvents(state),
   masters: getTotalMasters(state),
-  totalResource: getTotalResource(state)
+  totalResource: getTotalResource(state),
+  formRedux: state.form.fieldArraysSelectEvents
 });
 
 const mapDispatchFromProps = { changeMasters, editMastersStart, editEvents };

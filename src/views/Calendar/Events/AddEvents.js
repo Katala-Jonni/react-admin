@@ -41,24 +41,13 @@ class AddEvents extends React.Component {
     let count = 1;
     const hours = values.members.map(item => {
       let newId = Math.max(...idList) + (++count);
-      const convert = moment(item.date).format("YYYY-MM-DD");
-      // console.log(convert);
-      // console.log(moment(item.date).hour(moment(item.start).hour()));
-      // console.log(moment(item.date).set({ "hour": moment(item.start).hour(), "minute": moment(item.start).minute() }));
-      // moment(item.date).set({'hour': moment(item.start).hour(), 'minute': moment(item.start).minute()});
       const start = moment(item.date).set({ "hour": moment(item.start).hour(), "minute": moment(item.start).minute() });
       const end = moment(item.date).set({ "hour": moment(item.end).hour(), "minute": moment(item.end).minute() });
       return {
         id: newId,
-        title: `${lastName} ${surname} - ${item.title}`,
-        // allDay: values.slots.length == 1,
-        // const d = moment(`${new Date(`${convert}`)}:T09:00:00.000Z`);
+        title: `${item.title} - ${lastName} ${surname}`,
         start: start._d,
-        // start: moment(item.start)._d,
         end: end._d,
-        // end: moment(item.end)._d,
-        // start: moment(item.start).format("YYYY-MM-DDThh:mm:ss.000Z"),
-        // end: moment(item.end).format("YYYY-MM-DDThh:mm:ss.000Z"),
         date: moment(item.date).format(),
         resourceId: item.resourceId,
         lastName,

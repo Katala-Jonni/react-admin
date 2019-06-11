@@ -91,7 +91,7 @@ const validate = (values, ...rest) => {
   // if (!members) {
   //   errors.members = "Нет данных о записи";
   // }
-
+  // console.log(members);
   if (!members || !members.length) {
     errors.members = "Нет данных о записи";
   }
@@ -99,7 +99,7 @@ const validate = (values, ...rest) => {
   if (members && members.length) {
     const membersArrayErrors = [];
     // console.log(members);
-    // console.log(members);
+
     members.forEach((member, memberIndex) => {
       const memberErrors = {};
       if (!member || !member.title) {

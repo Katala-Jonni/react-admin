@@ -9,6 +9,7 @@ import customEventsStyle from "../../../../../assets/jss/material-dashboard-reac
 import RenderMembers from "../RenderMembers";
 import Member from "../Member";
 import MemberSelectEvent from "./MemberSelectEvent";
+import moment from "moment";
 
 class SelectEventForm extends Component {
   state = {
@@ -43,18 +44,37 @@ class SelectEventForm extends Component {
   };
 
   handleClickChange = () => {
-    console.log("handleClickChange");
     this.setState({
       switchButton: false
     });
+    this.props.switchButton(false);
   };
 
   render() {
-    const { handleSubmit, pristine, reset, submitting, classes, handleClickClose, fields } = this.props;
+    const { handleSubmit, pristine, reset, submitting, classes, handleClickClose, fields, isButton, isIdentical, formReduxValues } = this.props;
     const { switchButton } = this.state;
-    // console.log(fields, "SelectEventForm");
-    const { lastName, surname, phoneNumber, ...rest } = fields;
-
+    const { lastName, surname, phoneNumber, titleEvent, ...rest } = fields;
+    let formValues;
+    let isEqualValues;
+    if (formReduxValues && formReduxValues.members) {
+      const { members, ...res } = formReduxValues;
+      formValues = { ...members[0], ...res };
+      const keys = Object.keys(formValues);
+      isEqualValues = keys.every(key => {
+        if (key === "date" || key === "start" || key === "end") {
+          return (moment(fields[key]).isSame(formValues[key]));
+        }
+        if (key === "title") {
+          return formValues[key].trim().toLowerCase() === fields["titleEvent"].trim().toLowerCase();
+        }
+        if (key === "resourceId") {
+          const resourceIdValue = formValues[key] && formValues[key].value ? formValues[key].value : formValues[key];
+          return resourceIdValue && resourceIdValue.trim().toLowerCase() === fields[key].trim().toLowerCase();
+        }
+        return formValues[key].trim().toLowerCase() === fields[key].trim().toLowerCase();
+      });
+      console.log(isEqualValues);
+    }
     return (
       <Fragment>
         <form onSubmit={handleSubmit}>
@@ -66,10 +86,14 @@ class SelectEventForm extends Component {
             id="lastName"
             placeholder='Наталья'
             disabled={switchButton}
+            initialSelectValue={lastName}
             // нужно решить проблему с value
-            valD={lastName}
-            // initialValues={lastName}
-            // defaultValue={lastName}
+            // valD={lastName}
+            // inputProps={{
+            //   defaultValue: lastName
+            //   // disabled: switchButton
+            // }}
+            // value={lastName}
             // normalize={this.getLastName}
             // disabled
             // value={'Наталья'}
@@ -82,8 +106,13 @@ class SelectEventForm extends Component {
             id="surname"
             label="Отчество*"
             placeholder='Михайловна'
-            valD={surname}
+            // valD={surname}
             disabled={switchButton}
+            initialSelectValue={surname}
+            // inputProps={{
+            //   defaultValue: surname
+            //   // disabled: switchButton
+            // }}
           />
           <Field
             name="phoneNumber"
@@ -92,38 +121,64 @@ class SelectEventForm extends Component {
             placeholder='89212287228'
             component={CustomInputView}
             id="phoneNumber"
-            valD={phoneNumber}
+            // valD={phoneNumber}
+            // valD
+            // inputProps={{
+            //   defaultValue: phoneNumber
+            //   // disabled: switchButton
+            // }}
             disabled={switchButton}
+            initialSelectValue={phoneNumber}
           />
           <MemberSelectEvent
-            member={"member[0]"}
+            member={"members[0]"}
             index={0}
             classes={classes}
             fields={[fields]}
             switchButton={switchButton}
             noButton
           />
-          <div>
-            <Button
-              type={switchButton ? "button" : "submit"}
-              color='primary'
-              variant="contained"
-              // disabled={!switchButton && (!this.state.isMember || (!this.props.valid && !submitting))}
-              className={classes.indent}
-              onClick={this.handleClickChange}
-            >
-              {switchButton ? "Изменить" : "Записать"}
 
-            </Button>
-            <Button
-              type="button"
-              color='primary'
-              onClick={this.handleClickDelete}
-              variant="contained"
-              className={classes.indent}
-            >
-              Удалить
-            </Button>
+          <div>
+            {!isButton && !isEqualValues
+              ? <Button
+                type="submit"
+                color='secondary'
+                variant="contained"
+                disabled={!this.props.valid}
+                // disabled={!switchButton && (!this.state.isMember || (!this.props.valid && !submitting))}
+                className={classes.indent}
+              >
+                Сохранить
+              </Button>
+              : null
+            }
+            {isButton
+              ? <Button
+                type="button"
+                color='primary'
+                variant="contained"
+                // disabled={!switchButton && (!this.state.isMember || (!this.props.valid && !submitting))}
+                className={classes.indent}
+                onClick={this.handleClickChange}
+              >
+                Изменить
+              </Button>
+              : null
+            }
+            {isButton
+              ? <Button
+                type="button"
+                color='primary'
+                onClick={this.handleClickDelete}
+                variant="contained"
+                className={classes.indent}
+              >
+                Удалить
+              </Button>
+              : null
+            }
+
             <Button
               type="button"
               color='primary'
@@ -146,7 +201,7 @@ SelectEventForm.defaultProps = {
 
 export default reduxForm({
   form: "fieldArraysSelectEvents", // a unique identifier for this form
-  // validate
+  validate
   // initialValues: { lastName: 'Наталья', max: '10' },
 })(withStyles(customEventsStyle)(SelectEventForm));
 
@@ -174,6 +229,22 @@ export default reduxForm({
             isDisabledBtn={!this.props.valid && !submitting}
             fields={[fields]}
             noButton
+          />
+
+
+          <Field
+            name="title"
+            component={CustomInputView}
+            label="Описание услуги"
+            // id={`${member}.title`}
+            inputProps={{
+              multiline: true,
+              rows: 3,
+              disabled: switchButton
+            }}
+            initialSelectValue={titleEvent}
+            // disabled={switchButton}
+            // valD={titleEvent}
           />
 
 

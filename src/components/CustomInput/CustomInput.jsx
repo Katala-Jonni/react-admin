@@ -104,10 +104,15 @@ class CustomInput extends Component {
 
 
   componentDidMount() {
-    if (this.props.input) {
-      this.props.input.onChange(this.props.value);
+    // console.log(this.props);
+    if (this.props.initialSelectValue) {
+      this.props.input.onChange(this.props.initialSelectValue);
     }
   }
+
+  // handleChange = (event) => {
+  //   console.log(event);
+  // };
 
   render() {
     const {
@@ -123,6 +128,7 @@ class CustomInput extends Component {
       rtlActive,
       fullWidth,
       input,
+      initialSelectValue,
       ...rest
     } = this.props;
 
@@ -187,7 +193,7 @@ class CustomInput extends Component {
         [classes.inputNoLabel]: labelText === undefined
       });
 
-    console.log(this.props);
+    // console.log(this.props.input, "CustomInput");
 
     return (
       <FormControl
@@ -210,6 +216,7 @@ class CustomInput extends Component {
             disabled: classes.disabled,
             underline: underlineClasses
           }}
+          // onChange={this.handleChange}
           id={id}
           {...input}
           {...inputProps}

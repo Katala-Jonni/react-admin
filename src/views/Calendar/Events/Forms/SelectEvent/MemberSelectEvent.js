@@ -23,8 +23,8 @@ class MemberSelectEvent extends Component {
   state = {
     selectedDate: "",
     differenceDate: false,
-    switchDate: false
-    // isFirst: true
+    switchDate: false,
+    isFirst: true
   };
 
   handleDateChange = date => {
@@ -54,23 +54,32 @@ class MemberSelectEvent extends Component {
   onOpen = (...rest) => {
     // console.log(rest);
     this.setState({
-      switchDate: false
+      switchDate: false,
+      isFirst: false
     });
   };
 
   onClose = (...rest) => {
     // console.log(rest);
     this.setState({
-      switchDate: true
+      switchDate: true,
+      isFirst: false
     });
+  };
+
+  getDefaultSelectOption = () => {
+    const { fields, index } = this.props;
+    const { resourceId } = fields[index];
+    return this.getOptions().find(item => item.value === resourceId);
+    // если прошлое значение было солярий, то невозможно переместить его мастером и наоборот
   };
 
   render() {
     const { member, index, classes, fields, noButton, switchButton } = this.props;
-    const { selectedDate, differenceDate, switchDate } = this.state;
-    // console.log(fields);
+    const { selectedDate, differenceDate, switchDate, isFirst } = this.state;
     const { date, start, end, titleEvent, resourceId } = fields[index];
-    // console.log(new Date(date));
+    // console.log(this.getDefaultSelectOption());
+    // console.log(isFirst, "isFirst");
     return (
       <Fragment>
         <MuiPickersUtilsProvider utils={MomentUtils} libInstance={moment}>
@@ -127,7 +136,7 @@ class MemberSelectEvent extends Component {
             // className={classes.margin}
             selectEvent
             classes={classes}
-            defaultValue={this.getOptions().filter(item => item.value === resourceId)[0]}
+            defaultValue={(this.getDefaultSelectOption() && isFirst) ? this.getDefaultSelectOption() : null}
 
             // placeholder='Имя мастера/Солярий'
           />
@@ -140,10 +149,12 @@ class MemberSelectEvent extends Component {
           // id={`${member}.title`}
           inputProps={{
             multiline: true,
-            rows: 3
+            rows: 3,
+            disabled: switchButton
           }}
-          disabled={switchButton}
-          valD={titleEvent}
+          initialSelectValue={titleEvent}
+          // disabled={switchButton}
+          // valD={titleEvent}
         />
       </Fragment>
     );
@@ -173,3 +184,20 @@ const styleTooltip = theme => ({
 });
 
 export default connect(mapStateFromProps, null)(MemberSelectEvent);
+
+
+//
+// <Field
+//   name={`${member}.title`}
+//   component={CustomInputView}
+//   label="Описание услуги"
+//   // id={`${member}.title`}
+//   inputProps={{
+//     multiline: true,
+//     rows: 3
+//   }}
+//   disabled={switchButton}
+//   valD={titleEvent}
+//   value={valD ? this.state.value : input.value}
+// />
+//

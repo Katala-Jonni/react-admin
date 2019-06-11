@@ -27,17 +27,27 @@ class ValidationForms extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      value: this.props.valD
+      // value: this.props.valD
       // register form
     };
   }
 
+  // componentDidMount() {
+  //   console.log("didmount");
+  //   // if (this.props.input && this.props.inputProps && this.props.inputProps.value) {
+  //   //   // console.log(this.props.inputProps.value);
+  //   //   this.props.input.onChange(this.props.inputProps.value);
+  //   // }
+  // }
 
-  ch = (event) => {
-    this.setState({
-      value: event.target.value
-    });
-  };
+  // ch = (event) => {
+  //   console.log(event);
+  //   // this.setState({
+  //   //   value: event.target.value
+  //   // });
+  //   console.log(event.target.value);
+  //   this.props.input.onChange(event.target.value);
+  // };
 
   render() {
     const { classes, label, valD, id, input, type, placeholder, meta: { touched, error }, isHidden, ...rest } = this.props;
@@ -45,7 +55,7 @@ class ValidationForms extends React.Component {
     return (
       <Fragment>
         <CustomInput
-          value={valD ? this.state.value : input.value}
+          // value={this.state.value || input.value}
           input={input}
           type={type}
           placeholder={placeholder}
@@ -58,10 +68,11 @@ class ValidationForms extends React.Component {
           formControlProps={{
             fullWidth: true
           }}
-          inputProps={valD ? {
-            onChange: event =>
-              this.ch(event)
-          } : {}}
+          // inputProps={{
+          //   onChange: event =>
+          //     this.ch(event)
+          // }}
+          // onChange={this.ch}
           // inputProps={{
           //   onChange: event =>
           //     this.ch(event)
@@ -76,147 +87,3 @@ class ValidationForms extends React.Component {
 }
 
 export default withStyles(validationFormsStyle)(ValidationForms);
-
-//
-// <GridContainer>
-//   <ItemGrid xs={12} sm={12} md={6}>
-//     <IconCard
-//       icon={MailOutline}
-//       iconColor="rose"
-//       title="Register Forms"
-//       content={
-//         <form>
-//           <CustomInput
-//             success={this.state.registerEmailState === "success"}
-//             error={this.state.registerEmailState === "error"}
-//             labelText="Email Address *"
-//             id="registeremail"
-//             formControlProps={{
-//               fullWidth: true
-//             }}
-//             inputProps={{
-//               onChange: event =>
-//                 this.change(event, "registerEmail", "email"),
-//               type: "email"
-//             }}
-//           />
-//           <CustomInput
-//             success={this.state.registerPasswordState === "success"}
-//             error={this.state.registerPasswordState === "error"}
-//             labelText="Password *"
-//             id="registerpassword"
-//             formControlProps={{
-//               fullWidth: true
-//             }}
-//             inputProps={{
-//               onChange: event =>
-//                 this.change(event, "registerPassword", "password"),
-//               type: "password"
-//             }}
-//           />
-//           <CustomInput
-//             success={
-//               this.state.registerConfirmPasswordState === "success"
-//             }
-//             error={this.state.registerConfirmPasswordState === "error"}
-//             labelText="Confirm Password *"
-//             id="registerconfirmpassword"
-//             formControlProps={{
-//               fullWidth: true
-//             }}
-//             inputProps={{
-//               onChange: event =>
-//                 this.change(
-//                   event,
-//                   "registerConfirmPassword",
-//                   "equalTo",
-//                   "registerPassword"
-//                 ),
-//               type: "password"
-//             }}
-//           />
-//           <div className={classes.formCategory}>
-//             <small>*</small>
-//             Required fields
-//           </div>
-//           <FormControlLabel
-//             control={
-//               <Checkbox
-//                 tabIndex={-1}
-//                 onClick={event =>
-//                   this.change(event, "registerCheckbox", "checkbox")
-//                 }
-//                 checkedIcon={<Check className={classes.checkedIcon}/>}
-//                 icon={<Check className={classes.uncheckedIcon}/>}
-//                 classes={{
-//                   checked: classes.checked
-//                 }}
-//               />
-//             }
-//             classes={{
-//               label:
-//               classes.label +
-//               (this.state.registerCheckboxState === "error"
-//                 ? " " + classes.labelError
-//                 : "")
-//             }}
-//             label="Subscribe to newsletter"
-//           />
-//           <Button color="rose" right onClick={this.registerClick}>
-//             Register
-//           </Button>
-//         </form>
-//       }
-//     />
-//   </ItemGrid>
-//   <ItemGrid xs={12} sm={12} md={6}>
-//     <IconCard
-//       icon={Contacts}
-//       iconColor="rose"
-//       title="Login Form"
-//       content={
-//         <form>
-//           <CustomInput
-//             success={this.state.loginEmailState === "success"}
-//             error={this.state.loginEmailState === "error"}
-//             labelText="Email Address *"
-//             id="loginemail"
-//             formControlProps={{
-//               fullWidth: true
-//             }}
-//             inputProps={{
-//               onChange: event =>
-//                 this.change(event, "loginEmail", "email"),
-//               type: "email"
-//             }}
-//           />
-//           <CustomInput
-//             success={this.state.loginPasswordState === "success"}
-//             error={this.state.loginPasswordState === "error"}
-//             labelText="Password *"
-//             id="loginpassword"
-//             formControlProps={{
-//               fullWidth: true
-//             }}
-//             inputProps={{
-//               onChange: event =>
-//                 this.change(event, "loginPassword", "password"),
-//               type: "password"
-//             }}
-//           />
-//           <div className={classes.formCategory}>
-//             <small>*</small>
-//             Required fields
-//           </div>
-//           <div className={classes.center}>
-//             <Button color="rose" onClick={this.loginClick}>
-//               Login
-//             </Button>
-//           </div>
-//         </form>
-//       }
-//     />
-//   </ItemGrid>
-// </GridContainer>;
-//
-//

@@ -28,7 +28,7 @@ class CustomSelectView extends Component {
   };
 
   componentDidMount() {
-    console.log("didmount");
+    // console.log("didmount");
     this.setState({
       value: ""
     });
@@ -48,7 +48,7 @@ class CustomSelectView extends Component {
   render() {
     const { input, label, id, meta: { touched, error }, options, disabled, classes, differenceDate, selectedDate, isFirst, switchDate, defaultValue, selectEvent } = this.props;
     // console.log(this.state.value);
-    console.log(this.props);
+    // console.log(this.props);
     return (
       <Fragment>
         <Select

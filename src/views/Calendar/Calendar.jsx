@@ -99,7 +99,8 @@ class Calendar extends Component {
   };
 
   moveEvent({ event, start, end, resourceId, isAllDay: droppedOnAllDaySlot }) {
-    if (!this.getDifferenceTime(start)) return;
+    if (!this.getDifferenceTime(start) || this.state.view === "month") return;
+    console.log(this.state.view);
 
     // не передвигать
     const notMoveResource = defaultResource[0].resourceTitle.toLowerCase();
@@ -175,25 +176,47 @@ class Calendar extends Component {
     if (!this.getDifferenceTime(event.start)) return;
     if (event.action === "click" || event.action === "doubleClick") return; // КАСТОМНО СДЕЛАЛ
     if (event.slots.length && !event.bounds) return; // КАСТОМНО СДЕЛАЛ
+    console.log(event);
+
+    let idList = this.props.events.map(a => a.id);
+    let newId = Math.max(...idList) + 1;
+
+    const data = {
+      id: newId,
+      date: event.start,
+      start: event.start,
+      end: event.end,
+      resourceId: event.resourceId,
+      lastName: "",
+      surname: "",
+      phoneNumber: "",
+      title: "",
+      titleEvent: ""
+    };
+
+    this.setState({
+      selectEvent: true,
+      selectEventValue: data
+    });
 
     // this.addNewEventAlert(event);
 
     // console.log(event);
 
-    let idList = this.props.events.map(a => a.id);
-    // console.log(event.resourceId);
-    let newId = Math.max(...idList) + 1;
-    let hour = {
-      id: newId,
-      title: "New Event",
-      allDay: event.slots.length == 1,
-      start: event.start,
-      end: event.end,
-      resourceId: event.resourceId
-    };
-
-
-    this.props.editEvents(this.props.events.concat([hour]));
+    // let idList = this.props.events.map(a => a.id);
+    // // console.log(event.resourceId);
+    // let newId = Math.max(...idList) + 1;
+    // let hour = {
+    //   id: newId,
+    //   title: "New Event",
+    //   allDay: event.slots.length == 1,
+    //   start: event.start,
+    //   end: event.end,
+    //   resourceId: event.resourceId
+    // };
+    //
+    //
+    // this.props.editEvents(this.props.events.concat([hour]));
 
     // this.setState({
     //   events: this.state.events.concat([hour])
@@ -254,6 +277,7 @@ class Calendar extends Component {
   };
 
   onSelectEvent = (data, ...args) => {
+    if (!this.getDifferenceTime(data.date)) return;
     const current = {
       id: 35,
       title: "Custom",
@@ -264,6 +288,7 @@ class Calendar extends Component {
     // this.setState({
     //   events: [...this.state.events, current]
     // });
+    console.log(data);
     this.setState({
       selectEvent: true,
       selectEventValue: data
@@ -355,7 +380,7 @@ class Calendar extends Component {
     if (!totalResource) {
       return <h1>...Loading</h1>;
     }
-    console.log(selectEvent);
+    // console.log(selectEvent);
     return (
       <Fragment>
         {this.state.selectEvent
