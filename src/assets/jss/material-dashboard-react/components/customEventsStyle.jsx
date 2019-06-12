@@ -7,6 +7,8 @@ import {
   roseColor
 } from "../../material-dashboard-react";
 
+import buttonStyle from "./buttonStyle.jsx";
+
 
 const customEventsStyle = theme => ({
   addButton: {
@@ -41,7 +43,23 @@ const customEventsStyle = theme => ({
   },
   grid: {
     width: "100%"
-  }
+  },
+  cardTitle: {
+    marginTop: "0",
+    marginBottom: "3px",
+    color: "#3C4858",
+    fontSize: "18px"
+  },
+  center: {
+    textAlign: "center"
+  },
+  right: {
+    textAlign: "right"
+  },
+  left: {
+    textAlign: "left"
+  },
+  ...buttonStyle
 });
 
 export default customEventsStyle;

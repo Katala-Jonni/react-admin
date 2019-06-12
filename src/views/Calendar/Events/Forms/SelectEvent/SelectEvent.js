@@ -5,6 +5,7 @@ import DialogContent from "@material-ui/core/DialogContent";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import SelectEventForm from "./SelectEventForm";
 import moment from "moment";
+import { deleteEvents } from "../../../../../modules/Calendar/actions";
 
 class SelectEvent extends Component {
   state = {
@@ -21,6 +22,15 @@ class SelectEvent extends Component {
   switchButton = bool => {
     this.setState({
       isButton: bool
+    });
+  };
+
+  deleteEvents = () => {
+    // console.log("Delete");
+    const { events, selectEventValue, deleteEvents, handleClickCloseSelectEvent } = this.props;
+    deleteEvents({
+      events,
+      selectEventValue
     });
   };
 
@@ -42,9 +52,9 @@ class SelectEvent extends Component {
     // console.log(values, "---onSubmit---");
     const { selectEventValue, handleClickCloseSelectEvent, events } = this.props;
     let idList = events.find(a => a.id === selectEventValue.id);
-    if (!idList) {
-      return handleClickCloseSelectEvent();
-    }
+    // if (!idList) {
+    //   return handleClickCloseSelectEvent();
+    // }
     // console.log(idList);
     const newEventsList = events.filter(a => a.id !== selectEventValue.id);
     const { lastName, surname, phoneNumber } = values;
@@ -52,7 +62,7 @@ class SelectEvent extends Component {
       const start = moment(item.date).set({ "hour": moment(item.start).hour(), "minute": moment(item.start).minute() });
       const end = moment(item.date).set({ "hour": moment(item.end).hour(), "minute": moment(item.end).minute() });
       return {
-        id: idList.id,
+        id: selectEventValue.id,
         title: `${item.title} - ${lastName} ${surname}`,
         start: start._d,
         end: end._d,
@@ -80,7 +90,7 @@ class SelectEvent extends Component {
   };
 
   render() {
-    const { description, open, handleClickCloseSelectEvent, selectEventValue, events, formRedux } = this.props;
+    const { description, open, handleClickCloseSelectEvent, selectEventValue, events, formRedux, isNewEvent, deleteEvents } = this.props;
     // console.log(selectEventValue);
     // console.log(this.state.values);
     // console.log(formRedux);
@@ -105,6 +115,8 @@ class SelectEvent extends Component {
               isButton={this.state.isButton}
               formReduxValues={formRedux && formRedux.values ? formRedux.values : {}}
               isIdentical={events.find(a => a.id === selectEventValue.id) === selectEventValue}
+              isNewEvent={isNewEvent}
+              deleteEvents={this.deleteEvents}
             />
           </DialogContent>
         </Dialog>

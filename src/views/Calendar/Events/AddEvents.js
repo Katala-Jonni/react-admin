@@ -84,7 +84,7 @@ class AddEvents extends React.Component {
           <Fab
             variant="extended"
             color="secondary"
-            className={classes.button}
+            // className={classes.button}
             onClick={this.handleClickOpen}
           >
             <AddIcon/>
@@ -123,4 +123,5 @@ AddEvents.propTypes = {
   description: PropTypes.string
 };
 
-export default withStyles(styles)(AddEvents);
+export default AddEvents;
+// export default withStyles(styles)(AddEvents);

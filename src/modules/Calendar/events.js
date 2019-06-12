@@ -226,13 +226,61 @@ export default [
     resourceId: "Анна"
   },
   {
-    id: 67691,
+    id: 676998,
     date: "2019-06-10T18:30:00+03:00",
     start: new Date(2019, 5, 10, 11, 0, 0),
     end: new Date(2019, 5, 10, 12, 0, 0),
     lastName: "Jonni",
     phoneNumber: "111111",
     resourceId: "Солярий",
+    surname: "Jonni",
+    title: "Jonni Jonni - uytrewq",
+    titleEvent: "uytrewq"
+  },
+  {
+    id: 67691,
+    date: "2019-06-15T18:30:00+03:00",
+    start: new Date(2019, 5, 15, 11, 0, 0),
+    end: new Date(2019, 5, 15, 12, 0, 0),
+    lastName: "Jonni",
+    phoneNumber: "111111",
+    resourceId: "Жанна",
+    surname: "Jonni",
+    title: "Jonni Jonni - uytrewq",
+    titleEvent: "uytrewq"
+  },
+  {
+    id: 67691,
+    date: "2019-06-15T18:30:00+03:00",
+    start: new Date(2019, 5, 15, 11, 0, 0),
+    end: new Date(2019, 5, 15, 12, 0, 0),
+    lastName: "Jonni",
+    phoneNumber: "111111",
+    resourceId: "Жанна",
+    surname: "Jonni",
+    title: "Jonni Jonni - uytrewq",
+    titleEvent: "uytrewq"
+  },
+  {
+    id: 67691,
+    date: "2019-06-15T18:30:00+03:00",
+    start: new Date(2019, 5, 15, 11, 0, 0),
+    end: new Date(2019, 5, 15, 12, 0, 0),
+    lastName: "Jonni",
+    phoneNumber: "111111",
+    resourceId: "Жанна",
+    surname: "Jonni",
+    title: "Jonni Jonni - uytrewq",
+    titleEvent: "uytrewq"
+  },
+  {
+    id: 67691,
+    date: "2019-06-15T18:30:00+03:00",
+    start: new Date(2019, 5, 15, 11, 0, 0),
+    end: new Date(2019, 5, 15, 12, 0, 0),
+    lastName: "Jonni",
+    phoneNumber: "111111",
+    resourceId: "Жанна",
     surname: "Jonni",
     title: "Jonni Jonni - uytrewq",
     titleEvent: "uytrewq"

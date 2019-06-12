@@ -10,6 +10,7 @@ import {
   getIsDay,
   editEvents
 } from "../../../../../modules/Calendar";
+import { deleteEvents } from "../../../../../modules/Calendar/actions";
 
 const mapStateFromProps = state => ({
   resource: getResource(state),
@@ -19,6 +20,6 @@ const mapStateFromProps = state => ({
   formRedux: state.form.fieldArraysSelectEvents
 });
 
-const mapDispatchFromProps = { changeMasters, editMastersStart, editEvents };
+const mapDispatchFromProps = { changeMasters, editMastersStart, editEvents, deleteEvents };
 
 export default connect(mapStateFromProps, mapDispatchFromProps)(SelectEvent);

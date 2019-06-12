@@ -94,15 +94,16 @@ class CalendarToolBar extends Component {
     return (
       <div className={classes.container}>
         <div>
-          {isAdd ? <AddEvents/> : null}
-          {isAdd ? <AddMaster date={date}/> : null}
-          {isAdd && resource.length >= 2 ? <AddMaster isNew date={date}/> : null}
+          {isAdd ? <AddEvents classes={classes}/> : null}
+          {isAdd ? <AddMaster date={date} classes={classes}/> : null}
+          {isAdd && resource.length >= 2 ? <AddMaster isNew date={date} classes={classes}/> : null}
           <Tooltip title={`Текущий ${mapView[view] || ""}`}>
             <Fab
               onClick={this.onClickCurrentMonth}
               color={"primary"}
               variant="extended"
               className={classes.button}
+              // className={isAdd ? classes.button : null}
             >
               <CurrentCalendar/>
             </Fab>
@@ -112,7 +113,7 @@ class CalendarToolBar extends Component {
               variant="extended"
               onClick={this.onClickBackMonth}
               color={this.isPrev() ? "default" : "primary"}
-              className={classNames(classes.button)}
+              // className={classNames(classes.button)}
             >
               <ArrowForwardIos
                 color={this.isPrev() ? "disabled" : "inherit"}
@@ -131,7 +132,7 @@ class CalendarToolBar extends Component {
             </Fab>
           </Tooltip>
         </div>
-        {isAdd ? <CircularIntegration isChange={isChange}/> : null}
+        {/*{isAdd ? <CircularIntegration isChange={isChange}/> : null}*/}
         <Typography
           align={"center"}
           variant={view === "day" ? "title" : "h6"}

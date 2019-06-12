@@ -44,6 +44,12 @@ const styleTooltip = theme => ({
   flexRight: {
     marginLeft: "auto",
     marginRight: "10px"
+  },
+  bottom: {
+    marginBottom: "200px"
+  },
+  mBottom: {
+    marginBottom: "30px"
   }
 });
 
@@ -58,7 +64,8 @@ class Calendar extends Component {
       isDay: true,
       alert: null,
       selectEvent: false,
-      selectEventValue: null
+      selectEventValue: null,
+      isNewEvent: false
     };
 
     this.moveEvent = this.moveEvent.bind(this);
@@ -71,37 +78,22 @@ class Calendar extends Component {
 
   handleClickCloseSelectEvent = () => {
     this.setState({
-      selectEvent: false
+      selectEvent: false,
+      isNewEvent: false
     });
   };
 
-  titleAccessor = data => {
-    console.log(data);
-    return data.title;
-  };
-  tooltipAccessor = data => data.title;
-  startAccessor = data => new Date();
-  endAccessor = data => new Date();
-  resourceAccessor = (data, ...args) => {
-    console.log(data);
-    return new Date();
-  };
-
   getDifferenceTime = time => {
-    // console.log(time);
     const a = moment(time);
     const b = moment();
-    // console.log(a, b);
     if (a.diff(b) < 0) {
       return null;
     }
     return true;
   };
 
-  moveEvent({ event, start, end, resourceId, isAllDay: droppedOnAllDaySlot }) {
+  moveEvent = ({ event, start, end, resourceId, isAllDay: droppedOnAllDaySlot }) => {
     if (!this.getDifferenceTime(start) || this.state.view === "month") return;
-    console.log(this.state.view);
-
     // не передвигать
     const notMoveResource = defaultResource[0].resourceTitle.toLowerCase();
     const currentResource = event.resourceId.toLowerCase();
@@ -129,7 +121,7 @@ class Calendar extends Component {
     // запрос в базу и обовление базы
     editEvents(nextEvents);
 
-  }
+  };
 
   resizeEvent = ({ event, start, end }) => {
     if (!this.getDifferenceTime(start)) return;
@@ -143,10 +135,6 @@ class Calendar extends Component {
     });
 
     editEvents(nextEvents);
-
-    // this.setState({
-    //   events: nextEvents
-    // });
   };
 
   addNewEventAlert(slotInfo) {
@@ -172,11 +160,10 @@ class Calendar extends Component {
     });
   }
 
-  newEvent(event, ...args) {
+  newEvent = (event, ...args) => {
     if (!this.getDifferenceTime(event.start)) return;
     if (event.action === "click" || event.action === "doubleClick") return; // КАСТОМНО СДЕЛАЛ
     if (event.slots.length && !event.bounds) return; // КАСТОМНО СДЕЛАЛ
-    console.log(event);
 
     let idList = this.props.events.map(a => a.id);
     let newId = Math.max(...idList) + 1;
@@ -196,7 +183,8 @@ class Calendar extends Component {
 
     this.setState({
       selectEvent: true,
-      selectEventValue: data
+      selectEventValue: data,
+      isNewEvent: true
     });
 
     // this.addNewEventAlert(event);
@@ -221,17 +209,11 @@ class Calendar extends Component {
     // this.setState({
     //   events: this.state.events.concat([hour])
     // });
-  }
-
-  resourceTitleAccessor = (data, ...args) => {
-    // console.log(data);
-    // console.log(args);
-    return new Date();
   };
 
   onChangeState = () => this.setState({ isDay: false });
 
-  onNavigate = (data, calendarInfo, actionInfo) => {
+  onNavigate = data => {
     const { selectDay, totalResource } = this.props;
     const { view, isDay } = this.state;
 
@@ -240,18 +222,8 @@ class Calendar extends Component {
         day: moment(data).format("DD.MM.YY"),
         isDay: true
       });
-      // return selectDay({ resource: null });
       return selectDay({ resource: totalResource[moment(data).format("DD.MM.YY")], data });
     }
-
-    // if(!this.state.day && this.state.view !== 'day'){
-    //   return selectDay({ resource: null, data });
-    // }
-    // console.log(data, 'NAVIGATE');
-
-    // console.log("Это день");
-    // при выборе дня подгружаем всю информацию по дню,
-    // всех мастеров, а также их записи
     selectDay({ resource: totalResource[moment(data).format("DD.MM.YY")], data });
 
     this.setState({
@@ -276,26 +248,12 @@ class Calendar extends Component {
     console.log(args, "onSelectSlot");
   };
 
-  onSelectEvent = (data, ...args) => {
+  onSelectEvent = data => {
     if (!this.getDifferenceTime(data.date)) return;
-    const current = {
-      id: 35,
-      title: "Custom",
-      start: new Date(2019, 3, 12, 14, 0, 0),
-      end: new Date(2019, 3, 12, 15, 0, 0),
-      resourceId: 2
-    };
-    // this.setState({
-    //   events: [...this.state.events, current]
-    // });
-    console.log(data);
     this.setState({
       selectEvent: true,
       selectEventValue: data
     });
-    // console.log(this.state.view, "view");
-    // console.log(data, "onSelectEvent");
-    // console.log(args, "onSelectEvent");
   };
 
   onDoubleClickEvent = (data, ...args) => {
@@ -346,7 +304,6 @@ class Calendar extends Component {
     let elem = null;
     if (data) {
       elem = data.find(el => {
-        // console.log(el.resourceId);
         return el.resourceId === evt.target.textContent;
       });
     }
@@ -366,21 +323,15 @@ class Calendar extends Component {
     console.log(this.state.resource);
     this.setState({
       resource: [...this.state.resource, ...data]
-      // change: true
     });
   };
 
   render() {
-
-    // const convert = "2019-06-04";
-    // const d = moment(`${new Date(`${convert}`)}:T09:00:00.000Z`);
-    // console.log(d);
     const { classes, resource, events, totalResource } = this.props;
-    const { change, day, selectEvent, selectEventValue } = this.state;
+    const { change, day, selectEvent, selectEventValue, isNewEvent } = this.state;
     if (!totalResource) {
       return <h1>...Loading</h1>;
     }
-    // console.log(selectEvent);
     return (
       <Fragment>
         {this.state.selectEvent
@@ -388,17 +339,17 @@ class Calendar extends Component {
             open={selectEvent}
             handleClickCloseSelectEvent={this.handleClickCloseSelectEvent}
             selectEventValue={selectEventValue}
+            isNewEvent={isNewEvent}
           />
           : null
         }
         <div className="App" onDoubleClick={this.onDoubleClick}>
           <DragAndDropCalendar
-            // resourceAccessor={this.resourceAccessor}
+            popup
             selectable
             resizable={false}
             startAccessor="start"
             endAccessor="end"
-            // resources={totalResource[day] || defaultResource}
             resources={resource}
             resourceIdAccessor="resourceId"
             resourceTitleAccessor="resourceTitle"
@@ -420,49 +371,8 @@ class Calendar extends Component {
             onClick={this.onClick}
             onChangeState={this.onChangeState}
             components={{
-              // you have to pass your custom wrapper here
-              // so that it actually gets used
-              // dayWrapper: withStyles(styleTooltip)(DayCalendarButton),
-              // dateCellWrapper: ColoredDateCellWrapper,
-              // day: {
-              //   header:  withStyles(styleTooltip)(DayCalendarButton),
-              //   event:  withStyles(styleTooltip)(DayCalendarButton)
-              // },
               toolbar: withStyles(styleTooltip)(CalendarToolBar)
             }}
-
-            // popupOffset={{x: 30, y: 20}}
-            // popup
-            // onDoubleClickEvent={this.onDoubleClickEvent}
-            // onSelecting={this.onSelecting}
-            // showMultiDayTimes
-            // formats={formats} d
-            // dayPropGetter={this.dayPropGetter}
-            // titleAccessor={this.titleAccessor}
-            // tooltipAccessor={this.tooltipAccessor}
-            // startAccessor={this.startAccessor}
-            // endAccessor={this.endAccessor}
-            // resourceAccessor={this.resourceAccessor}
-            // resourceTitleAccessor={this.resourceTitleAccessor}
-            // selectable // выбор диапазаона времени без dnd
-            // toolbar={false} // тулбар
-            // getDrilldownView={(targetDate, currentViewName, configuredViewNames) => {
-            //   if (currentViewName === "day" && configuredViewNames.includes("month")) {
-            //     return "day";
-            //   }
-            //   return null;
-            // }} // отклюяит переход по ссылке
-
-            // views={{
-            //   month: true,
-            //   // week: false,
-            //   day: true
-            // }}
-            // selected={{
-            //   click: () => console.log('click')
-            // }}
-            // onRangeChange={this.onRangeChange}
-            // onDrillDown={this.onDrillDown}
           />
           {this.state.alert}
         </div>

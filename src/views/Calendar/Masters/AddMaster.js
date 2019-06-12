@@ -214,4 +214,5 @@ AddMaster.propTypes = {
   isNew: PropTypes.bool
 };
 
-export default withStyles(styles)(AddMaster);
+export default AddMaster;
+// export default withStyles(styles)(AddMaster);

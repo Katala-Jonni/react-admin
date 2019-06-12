@@ -11,7 +11,9 @@ import {
   editEvents,
   defaultDay,
   loadResource,
-  endLoadResource
+  endLoadResource,
+  deleteEvents
+  // deleteEventsChangeStore
 } from "./actions";
 import totalResource from "./totalResource";
 import masters from "./mastersData";
@@ -104,6 +106,19 @@ function* editMastersDay(action) {
   });
 }
 
+function* deleteEventsDay(action, ...rest) {
+  const { payload: { events, selectEventValue } } = action;
+  // console.log(events);
+  // console.log(selectEventValue);
+  const data = events.filter(a => a.id !== selectEventValue.id);
+  return yield put(editEvents(data));
+  // console.log(payload);
+  // return yield put({
+  //   type: addMasters.toString(),
+  //   payload
+  // });
+}
+
 function* deleteMastersDay(action) {
   const { payload } = action;
   // console.log(payload);
@@ -118,6 +133,7 @@ function* calendarWatcher() {
   yield takeLatest(selectDay, showCurrentDay);
   yield takeLatest(changeMasters, addMastersDay);
   yield takeLatest(editMastersStart, editMastersDay);
+  yield takeLatest(deleteEvents, deleteEventsDay);
   // yield takeLatest(deleteMasters, deleteMastersDay);
 }
 

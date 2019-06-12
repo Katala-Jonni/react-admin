@@ -10,12 +10,18 @@ import RenderMembers from "../RenderMembers";
 import Member from "../Member";
 import MemberSelectEvent from "./MemberSelectEvent";
 import moment from "moment";
+import SweetAlert from "react-bootstrap-sweetalert";
+import { deleteEvents } from "../../../../../modules/Calendar/actions";
 
 class SelectEventForm extends Component {
   state = {
     isMember: false,
     deleteMessage: false,
-    switchButton: true
+    switchButton: !this.props.isNewEvent && true,
+    alert: null
+    // при открытие нового события при драге, убрать копку удалить, так как удалять то нечего
+    // решить проблему кнопок изменить и сохранить
+    // реализовать функционал удаления
   };
 
   addField = () => {
@@ -30,11 +36,87 @@ class SelectEventForm extends Component {
     });
   };
 
-  handleClickDelete = () => {
-    console.log("Delete");
+  successDelete = () => {
+
+    // this.setState({
+    //   deleteMessage: true
+    // });
+    this.props.deleteEvents();
     this.setState({
-      deleteMessage: true
+      alert: (
+        <SweetAlert
+          success
+          style={{ display: "block", marginTop: "-100px" }}
+          title="Запись удалена!"
+          onConfirm={() => this.hideAlert(true)}
+          onCancel={() => this.hideAlert()}
+          confirmBtnCssClass={
+            this.props.classes.button + " " + this.props.classes.success
+          }
+        >
+          Запись успешно удалена!
+          {/*Your imaginary file has been deleted.*/}
+        </SweetAlert>
+      )
     });
+  };
+
+  hideAlert = (bool) => {
+    bool && this.props.handleClickClose();
+    this.setState({
+      alert: null
+    });
+  };
+
+  cancelDetele = () => {
+    // this.props.handleClickClose();
+    this.hideAlert();
+    // this.setState({
+    //   alert: (
+    //     <SweetAlert
+    //       danger
+    //       style={{ display: "block", marginTop: "-100px" }}
+    //       title="Отмена"
+    //       onConfirm={() => this.hideAlert()}
+    //       onCancel={() => this.hideAlert()}
+    //       confirmBtnCssClass={
+    //         this.props.classes.button + " " + this.props.classes.success
+    //       }
+    //     >
+    //       Удаление отменено :)
+    //     </SweetAlert>
+    //   )
+    // });
+  };
+
+  handleClickDelete = () => {
+    // console.log(this.props.classes);
+    this.setState({
+      alert: (
+        <SweetAlert
+          warning
+          style={{ display: "block", marginTop: "-100px" }}
+          title="Вы уверены?"
+          onConfirm={() => this.successDelete()}
+          onCancel={() => this.cancelDetele()}
+          confirmBtnCssClass={
+            this.props.classes.button + " " + this.props.classes.success
+          }
+          cancelBtnCssClass={
+            this.props.classes.button + " " + this.props.classes.danger
+          }
+          confirmBtnText="Да, удалить запись!"
+          cancelBtnText="Отмена"
+          showCancel
+        >
+          Запись удалится полностью с календаря!
+        </SweetAlert>
+      )
+    });
+    // this.props.deleteEvents();
+    // this.setState({
+    //   deleteMessage: true
+    // });
   };
 
   getLastName = () => "Наталья";
@@ -51,7 +133,7 @@ class SelectEventForm extends Component {
   };
 
   render() {
-    const { handleSubmit, pristine, reset, submitting, classes, handleClickClose, fields, isButton, isIdentical, formReduxValues } = this.props;
+    const { handleSubmit, pristine, reset, submitting, classes, handleClickClose, fields, isButton, isIdentical, formReduxValues, isNewEvent } = this.props;
     const { switchButton } = this.state;
     const { lastName, surname, phoneNumber, titleEvent, ...rest } = fields;
     let formValues;
@@ -73,10 +155,11 @@ class SelectEventForm extends Component {
         }
         return formValues[key].trim().toLowerCase() === fields[key].trim().toLowerCase();
       });
-      console.log(isEqualValues);
+      // console.log(isEqualValues);
     }
     return (
       <Fragment>
+        {this.state.alert}
         <form onSubmit={handleSubmit}>
           <Field
             name="lastName"
@@ -140,7 +223,7 @@ class SelectEventForm extends Component {
           />
 
           <div>
-            {!isButton && !isEqualValues
+            {(!isButton || isNewEvent) && !isEqualValues
               ? <Button
                 type="submit"
                 color='secondary'
@@ -153,7 +236,7 @@ class SelectEventForm extends Component {
               </Button>
               : null
             }
-            {isButton
+            {isButton && !isNewEvent
               ? <Button
                 type="button"
                 color='primary'
@@ -166,7 +249,7 @@ class SelectEventForm extends Component {
               </Button>
               : null
             }
-            {isButton
+            {isButton && !isNewEvent
               ? <Button
                 type="button"
                 color='primary'
