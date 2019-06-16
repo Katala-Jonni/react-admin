@@ -25,7 +25,7 @@ import React from "react";
 // core components/views for RTL layout
 // import RTLPage from "views/RTLPage/RTLPage.jsx";
 
-import Picker from './views/Calendar/Events/Forms/Inputs/Picker'
+import Picker from "./views/Calendar/Events/Forms/Inputs/Picker";
 
 
 const newCal = () => <CalendarPage/>;
@@ -55,18 +55,10 @@ const dashboardRoutes = [
   },
   {
     path: "/shop",
-    name: "Прайс",
+    name: "Каталог",
     rtlName: "ملف تعريفي للمستخدم",
     icon: "shopping_cart",
     component: ShopPage,
-    layout: "/admin"
-  },
-  {
-    path: "/sun",
-    name: "Солярий",
-    rtlName: "ملف تعريفي للمستخدم",
-    icon: "wb_sunny",
-    component: Picker,
     layout: "/admin"
   },
   {
@@ -75,6 +67,14 @@ const dashboardRoutes = [
     rtlName: "ملف تعريفي للمستخدم",
     icon: "account_balance_wallet",
     component: TillPage,
+    layout: "/admin"
+  },
+  {
+    path: "/sun",
+    name: "Солярий",
+    rtlName: "ملف تعريفي للمستخدم",
+    icon: "wb_sunny",
+    component: Picker,
     layout: "/admin"
   },
   {

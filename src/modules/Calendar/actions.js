@@ -1,8 +1,6 @@
 import { createAction } from "redux-actions";
 
 export const selectDay = createAction("@@Calendar/SELECT_DAY");
-export const openWizard = createAction("@@Calendar/OPEN_WIZARD");
-export const closeWizard = createAction("@@Calendar/CLOSE_WIZARD");
 export const loadResource = createAction("@@Calendar/LOAD_RESOURCE");
 export const endLoadResource = createAction("@@Calendar/END_LOAD_RESOURCE");
 export const showDay = createAction("@@Calendar/SHOW_DAY");
@@ -14,5 +12,4 @@ export const editMastersEnd = createAction("@@Calendar/EDIT_MASTERS_END");
 export const editEvents = createAction("@@Calendar/EDIT_EVENTS");
 export const deleteMasters = createAction("@@Calendar/DELETE_MASTERS");
 export const deleteEvents = createAction("@@Calendar/DELETE_EVENTS");
-// export const deleteEventsChangeStore = createAction("@@Calendar/DELETE_EVENTS-CHANGE-STORE");
 export const changeCalendar = createAction("@@Calendar/CHANGE_CALENDAR");

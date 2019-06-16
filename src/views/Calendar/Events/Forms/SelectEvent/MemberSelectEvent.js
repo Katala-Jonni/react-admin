@@ -1,23 +1,19 @@
 import React, { Component, Fragment } from "react";
 import propTypes from "prop-types";
-import { Field, FieldArray, reduxForm } from "redux-form";
-import Picker from "../Inputs/Picker";
-import CustomInputView from "../Inputs/CustomInputView";
-import Button from "@material-ui/core/Button";
-import Fab from "@material-ui/core/Fab";
-import Remove from "@material-ui/icons/Remove";
-import "date-fns";
-import Grid from "@material-ui/core/Grid";
-import { withStyles } from "@material-ui/core/styles";
-import MomentUtils from "@date-io/moment";
-import { MuiPickersUtilsProvider, TimePicker, DatePicker } from "material-ui-pickers";
-import moment from "moment/moment";
-
-import "moment/locale/ru";
 import { connect } from "react-redux";
-import { getEvents, getResource, getTotalMasters, getTotalResource } from "../../../../../modules/Calendar";
-import CustomSelectView from "../Inputs/CustomSelectView";
+import "date-fns";
+import moment from "moment/moment";
+import "moment/locale/ru";
+import { Field } from "redux-form";
+import CustomInputView from "../Inputs/CustomInputView";
+import Grid from "@material-ui/core/Grid";
 import defaultResource from "../../../../../modules/Calendar/defaultResource";
+import { MuiPickersUtilsProvider } from "material-ui-pickers";
+import Picker from "../Inputs/Picker";
+import MomentUtils from "@date-io/moment";
+import CustomSelectView from "../Inputs/CustomSelectView";
+import { getTotalResource } from "../../../../../modules/Calendar";
+
 
 class MemberSelectEvent extends Component {
   state = {
@@ -29,38 +25,31 @@ class MemberSelectEvent extends Component {
 
   handleDateChange = date => {
     const isNewDate = moment(this.state.selectedDate).format("DD.MM.YY") === moment(date).format("DD.MM.YY");
-    // console.log(this.state.selectedDate);
-    // console.log(date);
     this.setState({
       selectedDate: date,
       differenceDate: !this.state.differenceDate,
       switchDate: !isNewDate
-      // isFirst: !isNewDate
     });
   };
 
   getOptions = () => {
     const { selectedDate } = this.state;
     const date = moment(selectedDate).format("DD.MM.YY");
-    // console.log(date);
     const resources = this.props.totalResource[date] ? this.props.totalResource[date] : defaultResource;
-    // console.log(resources, "resources");
     return [...resources].map(item => ({
       value: item.resourceTitle,
       label: item.resourceTitle
     }));
   };
 
-  onOpen = (...rest) => {
-    // console.log(rest);
+  onOpen = () => {
     this.setState({
       switchDate: false,
       isFirst: false
     });
   };
 
-  onClose = (...rest) => {
-    // console.log(rest);
+  onClose = () => {
     this.setState({
       switchDate: true,
       isFirst: false
@@ -71,90 +60,81 @@ class MemberSelectEvent extends Component {
     const { fields, index } = this.props;
     const { resourceId } = fields[index];
     return this.getOptions().find(item => item.value === resourceId);
-    // если прошлое значение было солярий, то невозможно переместить его мастером и наоборот
   };
 
   render() {
-    const { member, index, classes, fields, noButton, switchButton } = this.props;
+    const { member, index, classes, fields, switchButton } = this.props;
     const { selectedDate, differenceDate, switchDate, isFirst } = this.state;
-    const { date, start, end, titleEvent, resourceId } = fields[index];
-    // console.log(this.getDefaultSelectOption());
-    // console.log(isFirst, "isFirst");
+    const { date, start, end, titleEvent } = fields[index];
     return (
       <Fragment>
         <MuiPickersUtilsProvider utils={MomentUtils} libInstance={moment}>
           <Grid container className={classes.grid} justify="space-between">
             <Field
               name={`${member}.date`}
-              component={Picker}
               id={`${member}.date`}
-              type={"text"}
+              type="text"
+              valD={new Date(date)}
+              classes={classes}
+              disabled={switchButton}
               onChange={this.handleDateChange}
               onOpen={this.onOpen}
               onClose={this.onClose}
-              valD={new Date(date)}
-              // value={selectedDate}
-              classes={classes}
-              disabled={switchButton}
+              component={Picker}
             />
             <Field
+              isTime
               name={`${member}.start`}
-              component={Picker}
-              isTime
               id={`${member}.start`}
-              type={"text"}
-              classes={classes}
+              type="text"
               valD={new Date(start)}
+              classes={classes}
               disabled={switchButton}
+              component={Picker}
             />
             <Field
-              name={`${member}.end`}
-              component={Picker}
-              isEnd
               isTime
+              isEnd
+              name={`${member}.end`}
               id={`${member}.end`}
-              type={"text"}
-              classes={classes}
+              type="text"
               valD={new Date(end)}
+              classes={classes}
               disabled={switchButton}
+              component={Picker}
             />
           </Grid>
         </MuiPickersUtilsProvider>
         {switchDate
           ? <Field
+            selectEvent
             name={`${member}.resourceId`}
+            id={`${member}.resourceId`}
             type="text"
-            component={CustomSelectView}
-            options={this.getOptions()}
             label="Имя мастера/Солярий"
-            // id={`${member}.resourceId`}
+            classes={classes}
             disabled={!selectedDate || switchButton}
             selectedDate={selectedDate}
             differenceDate={differenceDate}
             switchDate={switchDate}
             isFirst={switchDate}
-            // className={classes.margin}
-            selectEvent
-            classes={classes}
+            options={this.getOptions()}
             defaultValue={(this.getDefaultSelectOption() && isFirst) ? this.getDefaultSelectOption() : null}
-
-            // placeholder='Имя мастера/Солярий'
+            component={CustomSelectView}
           />
           : null
         }
         <Field
           name={`${member}.title`}
-          component={CustomInputView}
+          id={`${member}.title`}
           label="Описание услуги"
-          // id={`${member}.title`}
+          initialSelectValue={titleEvent}
           inputProps={{
             multiline: true,
             rows: 3,
             disabled: switchButton
           }}
-          initialSelectValue={titleEvent}
-          // disabled={switchButton}
-          // valD={titleEvent}
+          component={CustomInputView}
         />
       </Fragment>
     );
@@ -162,42 +142,17 @@ class MemberSelectEvent extends Component {
 }
 
 MemberSelectEvent.propTypes = {
-  classes: propTypes.object.isRequired
+  classes: propTypes.object.isRequired,
+  noButton: propTypes.bool,
+  switchButton: propTypes.bool,
+  member: propTypes.string.isRequired,
+  index: propTypes.number.isRequired,
+  fields: propTypes.array.isRequired,
+  totalResource: propTypes.object.isRequired
 };
 
 const mapStateFromProps = state => ({
-  resource: getResource(state),
-  events: getEvents(state),
-  masters: getTotalMasters(state),
   totalResource: getTotalResource(state)
 });
 
-// const mapDispatchFromProps = {};
-
-const styleTooltip = theme => ({
-  margin: {
-    margin: theme.spacing.unit
-  }
-  // button: {
-  //   margin: theme.spacing.unit
-  // }
-});
-
 export default connect(mapStateFromProps, null)(MemberSelectEvent);
-
-
-//
-// <Field
-//   name={`${member}.title`}
-//   component={CustomInputView}
-//   label="Описание услуги"
-//   // id={`${member}.title`}
-//   inputProps={{
-//     multiline: true,
-//     rows: 3
-//   }}
-//   disabled={switchButton}
-//   valD={titleEvent}
-//   value={valD ? this.state.value : input.value}
-// />
-//

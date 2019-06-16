@@ -1,24 +1,18 @@
-import React, { Component, Fragment, Children } from "react";
+import React, { Component, Fragment } from "react";
 import PropTypes from "prop-types";
 import BigCalendar from "react-big-calendar";
 import moment from "moment/min/moment-with-locales";
-import classNames from "classnames";
 import { withStyles } from "@material-ui/core/styles";
 import withDragAndDrop from "react-big-calendar/lib/addons/dragAndDrop";
 import CalendarToolBar from "./CalendarToolBar";
-import WizardView from "../../views/Forms/Wizard";
-import SweetAlert from "react-bootstrap-sweetalert";
-
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import "react-big-calendar/lib/addons/dragAndDrop/styles.css";
-import defaultResource from "../../modules/Calendar/defaultResource";
 import "./Calendar.css";
 import SelectEvent from "./Events/Forms/SelectEvent/index";
+import defaultResource from "../../modules/Calendar/defaultResource";
 
 moment.locale("ru");
-
 const localizer = BigCalendar.momentLocalizer(moment);
-
 const DragAndDropCalendar = withDragAndDrop(BigCalendar);
 
 const styleTooltip = theme => ({
@@ -57,19 +51,13 @@ class Calendar extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      change: false,
       resize: false,
       view: "month",
-      day: null,
       isDay: true,
-      alert: null,
       selectEvent: false,
       selectEventValue: null,
       isNewEvent: false
     };
-
-    this.moveEvent = this.moveEvent.bind(this);
-    this.newEvent = this.newEvent.bind(this);
   }
 
   componentDidMount() {
@@ -127,40 +115,17 @@ class Calendar extends Component {
     if (!this.getDifferenceTime(start)) return;
     if (!this.state.resize) return; // КАСТОМНО СДЕЛАЛ
     const { events, editEvents } = this.props;
-    // при резайзе времени меняем на текущее значение времени
+    // при ресайзе времени меняем на текущее значение времени
     const nextEvents = events.map(existingEvent => {
       return existingEvent.id == event.id
         ? { ...existingEvent, start, end }
         : existingEvent;
     });
-
+    // запрос в базу и обовление базы
     editEvents(nextEvents);
   };
 
-  addNewEventAlert(slotInfo) {
-    this.setState({
-      alert: (
-        <SweetAlert
-          // input
-          showCancel
-          style={{ display: "block", marginTop: "-700px" }}
-          title="Input something"
-          onConfirm={e => this.addNewEvent(e, slotInfo)}
-          onCancel={() => this.hideAlert()}
-          confirmBtnCssClass={
-            this.props.classes.button + " " + this.props.classes.success
-          }
-          cancelBtnCssClass={
-            this.props.classes.button + " " + this.props.classes.danger
-          }
-        >
-          <WizardView/>
-        </SweetAlert>
-      )
-    });
-  }
-
-  newEvent = (event, ...args) => {
+  newEvent = event => {
     if (!this.getDifferenceTime(event.start)) return;
     if (event.action === "click" || event.action === "doubleClick") return; // КАСТОМНО СДЕЛАЛ
     if (event.slots.length && !event.bounds) return; // КАСТОМНО СДЕЛАЛ
@@ -186,29 +151,6 @@ class Calendar extends Component {
       selectEventValue: data,
       isNewEvent: true
     });
-
-    // this.addNewEventAlert(event);
-
-    // console.log(event);
-
-    // let idList = this.props.events.map(a => a.id);
-    // // console.log(event.resourceId);
-    // let newId = Math.max(...idList) + 1;
-    // let hour = {
-    //   id: newId,
-    //   title: "New Event",
-    //   allDay: event.slots.length == 1,
-    //   start: event.start,
-    //   end: event.end,
-    //   resourceId: event.resourceId
-    // };
-    //
-    //
-    // this.props.editEvents(this.props.events.concat([hour]));
-
-    // this.setState({
-    //   events: this.state.events.concat([hour])
-    // });
   };
 
   onChangeState = () => this.setState({ isDay: false });
@@ -232,63 +174,18 @@ class Calendar extends Component {
     });
   };
 
-  onDrillDown = (data, ...args) => {
-    console.log(data, "onDrillDown");
-    console.log(args, "onDrillDown");
-  };
-
-  onRangeChange = (data, ...args) => {
-    // возвращает диапазон дат календаря начало и конец
-    console.log(data, "onRangeChange");
-    console.log(args, "onRangeChange");
-  };
-
-  onSelectSlot = (data, ...args) => {
-    console.log(data, "onSelectSlot");
-    console.log(args, "onSelectSlot");
-  };
-
   onSelectEvent = data => {
-    if (!this.getDifferenceTime(data.date)) return;
+    const { endTimeTimeHour, endTimeTimeMinute } = this.props;
+    const date = moment(data.date).set({ "hour": endTimeTimeHour, "minute": endTimeTimeMinute });
+    if (!this.getDifferenceTime(date)) return;
     this.setState({
       selectEvent: true,
       selectEventValue: data
     });
   };
 
-  onDoubleClickEvent = (data, ...args) => {
-    console.log(data, "onDoubleClickEvent");
-    console.log(args, "onDoubleClickEvent");
-    const res = window.prompt("Вы точно хотите удалить запись?");
-    if (res) {
-      this.setState({
-        events: this.state.events.filter(item => item.id !== data.id)
-      });
-    }
-  };
-
-  onSelecting = (data, ...args) => {
-    console.log(data, "onSelecting");
-    console.log(args, "onSelecting");
-  };
-
-  selected = (data, ...args) => {
-    console.log(data, "selected");
-    console.log(args, "selected");
-  };
-
-  dayPropGetter = (data, ...args) => {
-    const className = {
-      backgroundColor: "red"
-    };
-    console.log(data, "dayPropGetter");
-    console.log(args, "dayPropGetter");
-    return className;
-  };
-
   onView = data => {
     // перетаскивание записи, если мы находимся в выбранном дне
-
     if (data === "day") {
       return this.setState({ resize: true, view: "day" });
     }
@@ -308,38 +205,41 @@ class Calendar extends Component {
       });
     }
     if (elem) return;
-    const { deleteMasters } = this.props;
+    const { deleteMasters, resource, totalResource } = this.props;
     deleteMasters({
       date: this.state.day,
       name: evt.target.textContent,
-      resource: this.props.resource.filter(item => item.resourceTitle !== evt.target.textContent),
-      resourceDay: { ...this.props.totalResource }
-    });
-  };
-
-  onChangeResource = data => {
-    // добавление мастера
-    console.log(data);
-    console.log(this.state.resource);
-    this.setState({
-      resource: [...this.state.resource, ...data]
+      resource: resource.filter(item => item.resourceTitle !== evt.target.textContent),
+      resourceDay: { ...totalResource }
     });
   };
 
   render() {
-    const { classes, resource, events, totalResource } = this.props;
-    const { change, day, selectEvent, selectEventValue, isNewEvent } = this.state;
+    const {
+      resource,
+      events,
+      totalResource,
+      startTimeHour,
+      startTimeMinute,
+      endTimeTimeHour,
+      endTimeTimeMinute,
+      step
+    } = this.props;
+
+    const { selectEvent, selectEventValue, isNewEvent } = this.state;
+
     if (!totalResource) {
       return <h1>...Loading</h1>;
     }
+
     return (
       <Fragment>
-        {this.state.selectEvent
+        {selectEvent
           ? <SelectEvent
             open={selectEvent}
-            handleClickCloseSelectEvent={this.handleClickCloseSelectEvent}
             selectEventValue={selectEventValue}
             isNewEvent={isNewEvent}
+            handleClickCloseSelectEvent={this.handleClickCloseSelectEvent}
           />
           : null
         }
@@ -347,42 +247,58 @@ class Calendar extends Component {
           <DragAndDropCalendar
             popup
             selectable
-            resizable={false}
             startAccessor="start"
             endAccessor="end"
-            resources={resource}
             resourceIdAccessor="resourceId"
             resourceTitleAccessor="resourceTitle"
-            onView={this.onView}
             views={["month", "day"]}
-            step={7.5}
-            localizer={localizer}
+            step={step}
+            resizable={false}
+            resources={resource}
             events={events}
+            localizer={localizer}
             style={{ height: "100vh" }}
             defaultDate={moment().toDate()}
             defaultView={BigCalendar.Views.MONTH}
-            min={moment("10:00", "h:mma").toDate()}
-            max={moment("20:00", "h:mma").toDate()}
+            min={moment(`${startTimeHour}:${startTimeMinute}`, "h:mma").toDate()}
+            max={moment(`${endTimeTimeHour}:${endTimeTimeMinute}`, "h:mma").toDate()}
+            onView={this.onView}
             onEventDrop={this.moveEvent}
             onEventResize={this.resizeEvent}
             onSelectSlot={this.newEvent}
             onSelectEvent={this.onSelectEvent}
             onNavigate={this.onNavigate}
-            onClick={this.onClick}
             onChangeState={this.onChangeState}
             components={{
               toolbar: withStyles(styleTooltip)(CalendarToolBar)
             }}
           />
-          {this.state.alert}
         </div>
       </Fragment>
     );
   }
 }
 
-Calendar.propTypes = {
-  classes: PropTypes.object.isRequired
+Calendar.defaultProps = {
+  startTimeHour: 10,
+  startTimeMinute: 0,
+  endTimeTimeHour: 20,
+  endTimeTimeMinute: 0,
+  step: 7.5
 };
 
-export default withStyles(styleTooltip, { withTheme: true })(Calendar);
+Calendar.propTypes = {
+  resource: PropTypes.array.isRequired,
+  events: PropTypes.array.isRequired,
+  totalResource: PropTypes.object.isRequired,
+  startTimeHour: PropTypes.number,
+  startTimeMinute: PropTypes.number,
+  endTimeTimeHour: PropTypes.number,
+  endTimeTimeMinute: PropTypes.number,
+  step: PropTypes.number,
+  deleteMasters: PropTypes.func.isRequired,
+  loadResource: PropTypes.func.isRequired,
+  selectDay: PropTypes.func.isRequired
+};
+
+export default Calendar;

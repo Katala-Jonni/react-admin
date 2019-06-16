@@ -7,7 +7,6 @@ import {
   changeMasters,
   editMastersStart,
   getTotalMasters,
-  getIsDay,
   editEvents
 } from "../../../modules/Calendar";
 

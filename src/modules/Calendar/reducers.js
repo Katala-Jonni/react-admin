@@ -1,5 +1,3 @@
-import defaultResource from "./defaultResource";
-import totalResource from "./totalResource";
 import myEventsList from "./events";
 import {
   showDay,
@@ -7,13 +5,13 @@ import {
   deleteMasters,
   editMastersEnd,
   editEvents,
-  endLoadResource, openWizard, closeWizard
+  endLoadResource
 } from "./actions";
 
 const initialState = {
   resource: [],
   events: myEventsList || [],
-  totalResource: null,
+  totalResource: {},
   masters: null,
   isDay: false,
   isWizardView: false
@@ -38,7 +36,7 @@ export default (state = initialState, action) => {
         } : { ...state.totalResource }
       };
     case addMasters.toString():
-      console.log(payload);
+      // console.log(payload);
       return {
         ...state,
         resource: payload.totalResource,
@@ -68,17 +66,17 @@ export default (state = initialState, action) => {
         ...state,
         events: payload
       };
-    case openWizard.toString():
-      console.log("ttt");
-      return {
-        ...state,
-        isWizardView: true
-      };
-    case closeWizard.toString():
-      return {
-        ...state,
-        isWizardView: false
-      };
+    // case openWizard.toString():
+    //   console.log("ttt");
+    //   return {
+    //     ...state,
+    //     isWizardView: true
+    //   };
+    // case closeWizard.toString():
+    //   return {
+    //     ...state,
+    //     isWizardView: false
+    //   };
     default: {
       return state;
     }

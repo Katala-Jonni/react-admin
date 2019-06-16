@@ -1,14 +1,9 @@
 import moment from "moment";
 
 const getDifferenceTime = (date, start) => {
-  // console.log(moment(time).format('LLL'), "getDifferenceTime");
-  // console.log(moment().format("LLL"), "getDifferenceTime");
   const time = moment(date).set({ "hour": moment(start).hour(), "minute": moment(start).minute() });
-  // console.log(moment(time).format("LLL"), "getDifferenceTime");
-  // console.log(moment().format("LLL"), "getDifferenceTime");
   const a = moment(time);
   const b = moment();
-  // console.log(a, b);
   if (a.diff(b) < 0) {
     return null;
   }
@@ -25,7 +20,6 @@ const verifyNumber = value => {
 
 const verifyLetter = value => {
   var numberRex = new RegExp("^[a-zA-Zа-яА-ЯЁё ]+$");
-  // console.log(numberRex.test(value), "test");
   if (numberRex.test(value)) {
     return true;
   }
@@ -40,7 +34,6 @@ const verifyNumberPhone = (value, lengthStart, lengthEnd) => {
 };
 
 const verifyLength = (value, lth) => {
-  // console.log(value);
   if (value.trim().length >= lth) {
     return true;
   }
@@ -48,10 +41,9 @@ const verifyLength = (value, lth) => {
 };
 
 
-const validate = (values, ...rest) => {
+const validate = values => {
   const errors = {};
   const { lastName, surname, phoneNumber, members } = values;
-  // console.log(values);
   if (!lastName) {
     errors.lastName = "Обязательное поле";
   }
@@ -87,19 +79,12 @@ const validate = (values, ...rest) => {
   if (phoneNumber && !verifyNumber(phoneNumber)) {
     errors.phoneNumber = "Номер телефона состоит только из цифр";
   }
-
-  // if (!members) {
-  //   errors.members = "Нет данных о записи";
-  // }
-  // console.log(members);
   if (!members || !members.length) {
     errors.members = "Нет данных о записи";
   }
 
   if (members && members.length) {
     const membersArrayErrors = [];
-    // console.log(members);
-
     members.forEach((member, memberIndex) => {
       const memberErrors = {};
       if (!member || !member.title) {
@@ -129,18 +114,12 @@ const validate = (values, ...rest) => {
         memberErrors.start = "Запись до 20:00";
         membersArrayErrors[memberIndex] = memberErrors;
       }
-      // if (member && member.end) {
-      //   console.log(moment(member.end).hour() >= 20);
-      //   console.log(moment(member.end).minute() >= 1);
-      // }
       if (member && member.start && member.end && !(moment(member.end).isAfter(member.start, "minute"))) {
         memberErrors.end = `Должно быть больше ${moment(member.start).format("LT")}`;
         membersArrayErrors[memberIndex] = memberErrors;
       }
-      //&& moment(member.end).minute() >= 0
       if (member && member.end && (moment(member.end).hour() === 20 && moment(member.end).minute() > 0 || moment(member.end).hour() > 20)) {
         console.log(moment(member.end).hour() >= 20);
-        // console.log(moment(member.end).minute() >= 1);
         memberErrors.end = "Запись до 20:00";
         membersArrayErrors[memberIndex] = memberErrors;
       }
@@ -150,117 +129,18 @@ const validate = (values, ...rest) => {
       }
       if (member && member.start && member.date && !getDifferenceTime(member.date, member.start)) {
         memberErrors.start = `Время уже прошло!`;
-        // memberErrors.start = `Сейчас время ${moment().format("LTS")}, Вы пытаетесь записать в прошлое время ${moment(member.start).format("LTS")}. Запись в прошлое время невозможна!`;
         membersArrayErrors[memberIndex] = memberErrors;
       }
       if (!member || !member.resourceId) {
         memberErrors.resourceId = "Выберите имя мастера/Соялярий";
         membersArrayErrors[memberIndex] = memberErrors;
       }
-
-      // console.log(memberErrors);
-      // console.log(membersArrayErrors);
-      // console.log(errors);
-
-      // if ( ) {
-      //   // console.log(new Date(moment(member.date.format())));
-      //   console.log(member.date.valueOf() instanceof Date);
-      //   console.log(new Date(member.date.valueOf()) instanceof Date);
-      //   const date = moment(member.date.format());
-      //   console.log(date instanceof Date);
-      // }
-
-      // if (!member || !member.lastName) {
-      //   memberErrors.lastName = "Required";
-      //   membersArrayErrors[memberIndex] = memberErrors;
-      // }
-      // if (member && member.hobbies && member.hobbies.length) {
-      //   const hobbyArrayErrors = [];
-      //   member.hobbies.forEach((hobby, hobbyIndex) => {
-      //     if (!hobby || !hobby.length) {
-      //       hobbyArrayErrors[hobbyIndex] = "Required";
-      //     }
-      //   });
-      //   if (hobbyArrayErrors.length) {
-      //     memberErrors.hobbies = hobbyArrayErrors;
-      //     membersArrayErrors[memberIndex] = memberErrors;
-      //   }
-      //   if (member.hobbies.length > 5) {
-      //     if (!memberErrors.hobbies) {
-      //       memberErrors.hobbies = [];
-      //     }
-      //     memberErrors.hobbies._error = "No more than five hobbies allowed";
-      //     membersArrayErrors[memberIndex] = memberErrors;
-      //   }
-      // }
     });
 
     if (membersArrayErrors.length) {
       errors.members = membersArrayErrors;
     }
   }
-
-
-  // console.log(members);
-
-  // if (!members) {
-  //   errors.members = "Нет данных о записи";
-  // }
-
-
-  // if (!members || !members.length) {
-  //   errors.members = "Нет данных о записи";
-  // }
-  //
-  // if (members) {
-  //   members.forEach(item => {
-  //     const { date, start, end, resourceId, title } = item;
-  //     if (!title) {
-  //       errors.title = "Заполните описание услуги";
-  //     }
-  //     if (title && !verifyLength(title, 3)) {
-  //       errors.title = "Поле должно быть не меньше 3 символов";
-  //     }
-  //   });
-  // }
-
-
-  // else {
-  //   const membersArrayErrors = [];
-  //   values.members.forEach((member, memberIndex) => {
-  //     const memberErrors = {};
-  //     if (!member || !member.firstName) {
-  //       memberErrors.firstName = "Required";
-  //       membersArrayErrors[memberIndex] = memberErrors;
-  //     }
-  //     if (!member || !member.lastName) {
-  //       memberErrors.lastName = "Required";
-  //       membersArrayErrors[memberIndex] = memberErrors;
-  //     }
-  //     if (member && member.hobbies && member.hobbies.length) {
-  //       const hobbyArrayErrors = [];
-  //       member.hobbies.forEach((hobby, hobbyIndex) => {
-  //         if (!hobby || !hobby.length) {
-  //           hobbyArrayErrors[hobbyIndex] = "Required";
-  //         }
-  //       });
-  //       if (hobbyArrayErrors.length) {
-  //         memberErrors.hobbies = hobbyArrayErrors;
-  //         membersArrayErrors[memberIndex] = memberErrors;
-  //       }
-  //       if (member.hobbies.length > 5) {
-  //         if (!memberErrors.hobbies) {
-  //           memberErrors.hobbies = [];
-  //         }
-  //         memberErrors.hobbies._error = "No more than five hobbies allowed";
-  //         membersArrayErrors[memberIndex] = memberErrors;
-  //       }
-  //     }
-  //   });
-  //   if (membersArrayErrors.length) {
-  //     errors.members = membersArrayErrors;
-  //   }
-  // }
   return errors;
 };
 

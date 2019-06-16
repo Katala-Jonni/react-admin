@@ -5,22 +5,19 @@ import {
   selectDay,
   showDay,
   changeMasters,
-  deleteMasters,
   editMastersStart,
   editMastersEnd,
   editEvents,
-  defaultDay,
   loadResource,
   endLoadResource,
   deleteEvents
-  // deleteEventsChangeStore
 } from "./actions";
 import totalResource from "./totalResource";
 import masters from "./mastersData";
 import moment from "moment";
 
 const fetchData = () =>
-  new Promise((resolve, reject) => {
+  new Promise(resolve => {
     setTimeout(() => resolve({
       totalResource,
       masters
@@ -59,7 +56,6 @@ function* showCurrentDay(action) {
 
 function* addMastersDay(action) {
   const { payload } = action;
-  console.log(payload);
   let isHasResource = false;
   let copyCurrentResource = null;
   const resourceCurrentDate = payload.totalResource[payload.date];
@@ -106,26 +102,10 @@ function* editMastersDay(action) {
   });
 }
 
-function* deleteEventsDay(action, ...rest) {
+function* deleteEventsDay(action) {
   const { payload: { events, selectEventValue } } = action;
-  // console.log(events);
-  // console.log(selectEventValue);
   const data = events.filter(a => a.id !== selectEventValue.id);
   return yield put(editEvents(data));
-  // console.log(payload);
-  // return yield put({
-  //   type: addMasters.toString(),
-  //   payload
-  // });
-}
-
-function* deleteMastersDay(action) {
-  const { payload } = action;
-  // console.log(payload);
-  // return yield put({
-  //   type: addMasters.toString(),
-  //   payload
-  // });
 }
 
 function* calendarWatcher() {
@@ -134,7 +114,6 @@ function* calendarWatcher() {
   yield takeLatest(changeMasters, addMastersDay);
   yield takeLatest(editMastersStart, editMastersDay);
   yield takeLatest(deleteEvents, deleteEventsDay);
-  // yield takeLatest(deleteMasters, deleteMastersDay);
 }
 
 export default function* () {

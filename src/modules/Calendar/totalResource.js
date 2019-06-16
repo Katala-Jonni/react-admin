@@ -1,12 +1,6 @@
 import moment from "moment/min/moment-with-locales";
 
 export default {
-  // [moment().format("DD.MM.YY")]: [
-  //   {
-  //     resourceId: 1,
-  //     resourceTitle: "Солярий"
-  //   }
-  // ],
   [moment()
     .set("date", 13)
     .format("DD.MM.YY")]: [

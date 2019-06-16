@@ -1,19 +1,15 @@
 import React, { Component, Fragment } from "react";
 import propTypes from "prop-types";
+import moment from "moment";
 import Dialog from "@material-ui/core/Dialog";
 import DialogContent from "@material-ui/core/DialogContent";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import SelectEventForm from "./SelectEventForm";
-import moment from "moment";
-import { deleteEvents } from "../../../../../modules/Calendar/actions";
 
 class SelectEvent extends Component {
   state = {
     open: false,
     isButton: true,
-    changeValues: {
-      ...this.props.selectEventValue
-    },
     initialValues: {
       ...this.props.selectEventValue
     }
@@ -26,8 +22,7 @@ class SelectEvent extends Component {
   };
 
   deleteEvents = () => {
-    // console.log("Delete");
-    const { events, selectEventValue, deleteEvents, handleClickCloseSelectEvent } = this.props;
+    const { events, selectEventValue, deleteEvents } = this.props;
     deleteEvents({
       events,
       selectEventValue
@@ -35,27 +30,8 @@ class SelectEvent extends Component {
   };
 
   handleSubmit = values => {
-    console.log(values);
-    // console.log(this.state.isButton);
-    // if (!this.state.isButton) {
-    //   return;
-    // }
-    // console.log(values);
-    const { member, ...rest } = values;
-    // const data = { ...member[0], ...rest };
-    // console.log(this.props.selectEventValue);
-    // console.log(values);
-
-    ////// копипаст с добавления записи
-
-
-    // console.log(values, "---onSubmit---");
+    // копипаст с добавления записи
     const { selectEventValue, handleClickCloseSelectEvent, events } = this.props;
-    let idList = events.find(a => a.id === selectEventValue.id);
-    // if (!idList) {
-    //   return handleClickCloseSelectEvent();
-    // }
-    // console.log(idList);
     const newEventsList = events.filter(a => a.id !== selectEventValue.id);
     const { lastName, surname, phoneNumber } = values;
     const hours = values.members.map(item => {
@@ -74,15 +50,10 @@ class SelectEvent extends Component {
         phoneNumber
       };
     });
-    console.log(hours);
+
     this.props.editEvents(newEventsList.concat([...hours]));
     this.switchButton(false);
-    // this.props.editEvents(this.props.events.concat([...hours]));
     return handleClickCloseSelectEvent();
-  };
-
-  handleClickOpen = () => {
-    this.setState({ open: true });
   };
 
   handleClickClose = () => {
@@ -90,33 +61,37 @@ class SelectEvent extends Component {
   };
 
   render() {
-    const { description, open, handleClickCloseSelectEvent, selectEventValue, events, formRedux, isNewEvent, deleteEvents } = this.props;
-    // console.log(selectEventValue);
-    // console.log(this.state.values);
-    // console.log(formRedux);
+    const {
+      description,
+      selectEventValue,
+      events,
+      formRedux,
+      isNewEvent,
+      open,
+      handleClickCloseSelectEvent
+    } = this.props;
     return (
       <Fragment>
         <Dialog
-          maxWidth={"sm"}
-          open={this.props.open}
-          onClose={this.handleClose}
+          maxWidth="sm"
           scroll="body"
           aria-labelledby="max-width-dialog-title"
+          open={open}
         >
           <DialogTitle id="max-width-dialog-title">
-            {`${description} - ФИО Клиента`}
+            {`${description}`}
           </DialogTitle>
           <DialogContent>
             <SelectEventForm
-              onSubmit={this.handleSubmit}
-              handleClickClose={handleClickCloseSelectEvent}
-              fields={selectEventValue}
-              switchButton={this.switchButton}
               isButton={this.state.isButton}
+              fields={selectEventValue}
+              isNewEvent={isNewEvent}
               formReduxValues={formRedux && formRedux.values ? formRedux.values : {}}
               isIdentical={events.find(a => a.id === selectEventValue.id) === selectEventValue}
-              isNewEvent={isNewEvent}
+              switchButton={this.switchButton}
               deleteEvents={this.deleteEvents}
+              onSubmit={this.handleSubmit}
+              handleClickClose={handleClickCloseSelectEvent}
             />
           </DialogContent>
         </Dialog>
@@ -126,7 +101,20 @@ class SelectEvent extends Component {
 }
 
 SelectEvent.defaultProps = {
-  description: "Карточка записи"
+  description: "Форма записи Клиента",
+  selectEventValue: {}
+};
+
+SelectEvent.propTypes = {
+  description: propTypes.string,
+  selectEventValue: propTypes.object,
+  events: propTypes.arrayOf(propTypes.object),
+  formRedux: propTypes.object,
+  isNewEvent: propTypes.bool,
+  open: propTypes.bool,
+  handleClickCloseSelectEvent: propTypes.func,
+  deleteEvents: propTypes.func.isRequired,
+  editEvents: propTypes.func.isRequired
 };
 
 export default SelectEvent;

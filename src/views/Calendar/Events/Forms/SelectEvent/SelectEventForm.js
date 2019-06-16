@@ -1,61 +1,37 @@
 import React, { Component, Fragment } from "react";
 import propTypes from "prop-types";
-import { Field, FieldArray, reduxForm } from "redux-form";
+import moment from "moment";
+import { Field, reduxForm } from "redux-form";
 import validate from "../validate";
 import CustomInputView from "../Inputs/CustomInputView";
 import Button from "@material-ui/core/Button";
+import MemberSelectEvent from "./MemberSelectEvent";
+import SweetAlert from "react-bootstrap-sweetalert";
 import { withStyles } from "@material-ui/core/styles";
 import customEventsStyle from "../../../../../assets/jss/material-dashboard-react/components/customEventsStyle";
-import RenderMembers from "../RenderMembers";
-import Member from "../Member";
-import MemberSelectEvent from "./MemberSelectEvent";
-import moment from "moment";
-import SweetAlert from "react-bootstrap-sweetalert";
-import { deleteEvents } from "../../../../../modules/Calendar/actions";
 
 class SelectEventForm extends Component {
   state = {
-    isMember: false,
-    deleteMessage: false,
     switchButton: !this.props.isNewEvent && true,
     alert: null
-    // при открытие нового события при драге, убрать копку удалить, так как удалять то нечего
-    // решить проблему кнопок изменить и сохранить
-    // реализовать функционал удаления
-  };
-
-  addField = () => {
-    this.setState({
-      isMember: true
-    });
-  };
-
-  removeField = () => {
-    this.setState({
-      isMember: false
-    });
   };
 
   successDelete = () => {
-
-    // this.setState({
-    //   deleteMessage: true
-    // });
     this.props.deleteEvents();
+
     this.setState({
       alert: (
         <SweetAlert
           success
           style={{ display: "block", marginTop: "-100px" }}
-          title="Запись удалена!"
+          title={this.props.successAlertTitle}
           onConfirm={() => this.hideAlert(true)}
           onCancel={() => this.hideAlert()}
           confirmBtnCssClass={
             this.props.classes.button + " " + this.props.classes.success
           }
         >
-          Запись успешно удалена!
-          {/*Your imaginary file has been deleted.*/}
+          {this.props.successAlertMessage}
         </SweetAlert>
       )
     });
@@ -68,61 +44,33 @@ class SelectEventForm extends Component {
     });
   };
 
-  cancelDetele = () => {
-    // this.props.handleClickClose();
+  cancelDelete = () => {
     this.hideAlert();
-    // this.setState({
-    //   alert: (
-    //     <SweetAlert
-    //       danger
-    //       style={{ display: "block", marginTop: "-100px" }}
-    //       title="Отмена"
-    //       onConfirm={() => this.hideAlert()}
-    //       onCancel={() => this.hideAlert()}
-    //       confirmBtnCssClass={
-    //         this.props.classes.button + " " + this.props.classes.success
-    //       }
-    //     >
-    //       Удаление отменено :)
-    //     </SweetAlert>
-    //   )
-    // });
   };
 
   handleClickDelete = () => {
-    // console.log(this.props.classes);
     this.setState({
       alert: (
         <SweetAlert
           warning
           style={{ display: "block", marginTop: "-100px" }}
-          title="Вы уверены?"
+          title={this.props.deleteAlertTitle}
           onConfirm={() => this.successDelete()}
-          onCancel={() => this.cancelDetele()}
+          onCancel={() => this.cancelDelete()}
           confirmBtnCssClass={
             this.props.classes.button + " " + this.props.classes.success
           }
           cancelBtnCssClass={
             this.props.classes.button + " " + this.props.classes.danger
           }
-          confirmBtnText="Да, удалить запись!"
-          cancelBtnText="Отмена"
+          confirmBtnText={this.props.confirmBtnText}
+          cancelBtnText={this.props.cancelBtnText}
           showCancel
         >
-          Запись удалится полностью с календаря!
+          {this.props.deleteAlertMessage}
         </SweetAlert>
       )
     });
-    // this.props.deleteEvents();
-    // this.setState({
-    //   deleteMessage: true
-    // });
-  };
-
-  getLastName = () => "Наталья";
-
-  onChange = value => {
-    console.log(value);
   };
 
   handleClickChange = () => {
@@ -132,17 +80,14 @@ class SelectEventForm extends Component {
     this.props.switchButton(false);
   };
 
-  render() {
-    const { handleSubmit, pristine, reset, submitting, classes, handleClickClose, fields, isButton, isIdentical, formReduxValues, isNewEvent } = this.props;
-    const { switchButton } = this.state;
-    const { lastName, surname, phoneNumber, titleEvent, ...rest } = fields;
+  getIsEqualValues = () => {
+    const { formReduxValues, fields } = this.props;
     let formValues;
-    let isEqualValues;
     if (formReduxValues && formReduxValues.members) {
       const { members, ...res } = formReduxValues;
       formValues = { ...members[0], ...res };
       const keys = Object.keys(formValues);
-      isEqualValues = keys.every(key => {
+      return keys.every(key => {
         if (key === "date" || key === "start" || key === "end") {
           return (moment(fields[key]).isSame(formValues[key]));
         }
@@ -155,8 +100,36 @@ class SelectEventForm extends Component {
         }
         return formValues[key].trim().toLowerCase() === fields[key].trim().toLowerCase();
       });
-      // console.log(isEqualValues);
     }
+    return null;
+  };
+
+  getDifferenceTime = time => {
+    const a = moment(time);
+    const b = moment();
+    if (a.diff(b) < 0) {
+      return null;
+    }
+    return true;
+  };
+
+  render() {
+    const {
+      handleSubmit,
+      classes,
+      handleClickClose,
+      fields,
+      isButton,
+      isNewEvent,
+      valid,
+      btnSaveText,
+      btnRemoveText,
+      btnEditText,
+      btnCanсeledText
+    } = this.props;
+
+    const { switchButton } = this.state;
+    const { lastName, surname, phoneNumber, start } = fields;
     return (
       <Fragment>
         {this.state.alert}
@@ -164,100 +137,76 @@ class SelectEventForm extends Component {
           <Field
             name="lastName"
             type="text"
-            component={CustomInputView}
             label="Имя*"
             id="lastName"
             placeholder='Наталья'
             disabled={switchButton}
             initialSelectValue={lastName}
-            // нужно решить проблему с value
-            // valD={lastName}
-            // inputProps={{
-            //   defaultValue: lastName
-            //   // disabled: switchButton
-            // }}
-            // value={lastName}
-            // normalize={this.getLastName}
-            // disabled
-            // value={'Наталья'}
-            // readOnly
+            component={CustomInputView}
           />
           <Field
             name="surname"
             type="text"
-            component={CustomInputView}
             id="surname"
             label="Отчество*"
             placeholder='Михайловна'
-            // valD={surname}
             disabled={switchButton}
             initialSelectValue={surname}
-            // inputProps={{
-            //   defaultValue: surname
-            //   // disabled: switchButton
-            // }}
+            component={CustomInputView}
           />
           <Field
             name="phoneNumber"
             type="text"
             labelText="Номер телефона*"
             placeholder='89212287228'
-            component={CustomInputView}
             id="phoneNumber"
-            // valD={phoneNumber}
-            // valD
-            // inputProps={{
-            //   defaultValue: phoneNumber
-            //   // disabled: switchButton
-            // }}
             disabled={switchButton}
             initialSelectValue={phoneNumber}
+            component={CustomInputView}
           />
           <MemberSelectEvent
+            noButton
             member={"members[0]"}
             index={0}
             classes={classes}
             fields={[fields]}
             switchButton={switchButton}
-            noButton
           />
 
           <div>
-            {(!isButton || isNewEvent) && !isEqualValues
+            {(!isButton || isNewEvent) && !this.getIsEqualValues()
               ? <Button
                 type="submit"
                 color='secondary'
                 variant="contained"
-                disabled={!this.props.valid}
-                // disabled={!switchButton && (!this.state.isMember || (!this.props.valid && !submitting))}
+                disabled={!valid}
                 className={classes.indent}
               >
-                Сохранить
+                {btnSaveText}
               </Button>
               : null
             }
-            {isButton && !isNewEvent
+            {isButton && !isNewEvent && this.getDifferenceTime(start)
               ? <Button
                 type="button"
                 color='primary'
                 variant="contained"
-                // disabled={!switchButton && (!this.state.isMember || (!this.props.valid && !submitting))}
                 className={classes.indent}
                 onClick={this.handleClickChange}
               >
-                Изменить
+                {btnEditText}
               </Button>
               : null
             }
-            {isButton && !isNewEvent
+            {isButton && !isNewEvent && this.getDifferenceTime(start)
               ? <Button
                 type="button"
                 color='primary'
-                onClick={this.handleClickDelete}
                 variant="contained"
                 className={classes.indent}
+                onClick={this.handleClickDelete}
               >
-                Удалить
+                {btnRemoveText}
               </Button>
               : null
             }
@@ -265,10 +214,10 @@ class SelectEventForm extends Component {
             <Button
               type="button"
               color='primary'
-              onClick={handleClickClose}
               variant="contained"
+              onClick={handleClickClose}
             >
-              Отмена
+              {btnCanсeledText}
             </Button>
           </div>
         </form>
@@ -277,58 +226,46 @@ class SelectEventForm extends Component {
   }
 }
 
-
 SelectEventForm.defaultProps = {
-  fields: []
+  fields: {},
+  btnRemoveText: "Удалить",
+  btnEditText: "Изменить",
+  btnSaveText: "Сохранить",
+  btnCanсeledText: "Отмена",
+  deleteAlertTitle: "Вы уверены?",
+  deleteAlertMessage: "Запись удалится полностью с календаря!",
+  successAlertTitle: "Запись удалена!",
+  successAlertMessage: "Запись успешно удалена!",
+  confirmBtnText: "Да, удалить запись!",
+  cancelBtnText: "Отмена"
+};
+
+SelectEventForm.propTypes = {
+  isButton: propTypes.bool,
+  isNewEvent: propTypes.bool,
+  isIdentical: propTypes.bool,
+  valid: propTypes.bool,
+  fields: propTypes.object,
+  formReduxValues: propTypes.object.isRequired,
+  classes: propTypes.object.isRequired,
+  onSubmit: propTypes.func.isRequired,
+  switchButton: propTypes.func.isRequired,
+  deleteEvents: propTypes.func.isRequired,
+  handleClickClose: propTypes.func.isRequired,
+  handleClickChange: propTypes.func,
+  btnRemoveText: propTypes.string,
+  btnEditText: propTypes.string,
+  btnSaveText: propTypes.string,
+  btnCanсeledText: propTypes.string,
+  deleteAlertTitle: propTypes.string,
+  deleteAlertMessage: propTypes.string,
+  successAlertTitle: propTypes.string,
+  successAlertMessage: propTypes.string,
+  confirmBtnText: propTypes.string,
+  cancelBtnText: propTypes.string
 };
 
 export default reduxForm({
-  form: "fieldArraysSelectEvents", // a unique identifier for this form
+  form: "fieldArraysSelectEvents",
   validate
-  // initialValues: { lastName: 'Наталья', max: '10' },
 })(withStyles(customEventsStyle)(SelectEventForm));
-
-
-/*
-
-   <Button
-              type="button"
-              disabled={pristine || submitting}
-              onClick={() => {
-                this.removeField();
-                return reset();
-              }}
-              variant="contained"
-              className={classes.indent}
-            >
-              Очистить
-            </Button>
-
-   <FieldArray
-            name="members"
-            component={RenderMembers}
-            classes={classes}
-            addField={this.addField}
-            isDisabledBtn={!this.props.valid && !submitting}
-            fields={[fields]}
-            noButton
-          />
-
-
-          <Field
-            name="title"
-            component={CustomInputView}
-            label="Описание услуги"
-            // id={`${member}.title`}
-            inputProps={{
-              multiline: true,
-              rows: 3,
-              disabled: switchButton
-            }}
-            initialSelectValue={titleEvent}
-            // disabled={switchButton}
-            // valD={titleEvent}
-          />
-
-
- */

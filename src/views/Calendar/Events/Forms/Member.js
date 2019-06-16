@@ -1,74 +1,52 @@
 import React, { Component, Fragment } from "react";
-import propTypes from "prop-types";
-import { Field, FieldArray, reduxForm } from "redux-form";
-import Picker from "./Inputs/Picker";
+import PropTypes from "prop-types";
+import { connect } from "react-redux";
+import { Field } from "redux-form";
+import "date-fns";
+import moment from "moment/moment";
+import "moment/locale/ru";
 import CustomInputView from "./Inputs/CustomInputView";
-import Button from "@material-ui/core/Button";
 import Fab from "@material-ui/core/Fab";
 import Remove from "@material-ui/icons/Remove";
-import "date-fns";
 import Grid from "@material-ui/core/Grid";
-import { withStyles } from "@material-ui/core/styles";
+import Picker from "./Inputs/Picker";
 import MomentUtils from "@date-io/moment";
-import { MuiPickersUtilsProvider, TimePicker, DatePicker } from "material-ui-pickers";
-import moment from "moment/moment";
-
-import "moment/locale/ru";
-import { connect } from "react-redux";
-import { getEvents, getResource, getTotalMasters, getTotalResource } from "../../../../modules/Calendar";
+import { MuiPickersUtilsProvider } from "material-ui-pickers";
+import { getTotalResource } from "../../../../modules/Calendar";
 import CustomSelectView from "./Inputs/CustomSelectView";
 import defaultResource from "../../../../modules/Calendar/defaultResource";
 
 class Member extends Component {
   state = {
     selectedDate: "",
-    differenceDate: false,
     switchDate: false
-    // isFirst: true
   };
 
   handleDateChange = date => {
     const isNewDate = moment(this.state.selectedDate).format("DD.MM.YY") === moment(date).format("DD.MM.YY");
-    // console.log(this.state.selectedDate);
-    // console.log(date);
     this.setState({
       selectedDate: date,
-      differenceDate: !this.state.differenceDate,
       switchDate: !isNewDate
-      // isFirst: !isNewDate
     });
   };
 
   getOptions = () => {
     const { selectedDate } = this.state;
     const date = moment(selectedDate).format("DD.MM.YY");
-    // console.log(date);
     const resources = this.props.totalResource[date] ? this.props.totalResource[date] : defaultResource;
-    // console.log(resources, "resources");
     return [...resources].map(item => ({
       value: item.resourceTitle,
       label: item.resourceTitle
     }));
   };
 
-  onOpen = (...rest) => {
-    // console.log(rest);
-    this.setState({
-      switchDate: false
-    });
-  };
+  onOpen = () => this.setState({ switchDate: false });
 
-  onClose = (...rest) => {
-    // console.log(rest);
-    this.setState({
-      switchDate: true
-    });
-  };
+  onClose = () => this.setState({ switchDate: true });
 
   render() {
     const { member, index, classes, fields, noButton } = this.props;
-    const { selectedDate, differenceDate, switchDate } = this.state;
-    console.log(member);
+    const { selectedDate, switchDate } = this.state;
     return (
       <Fragment>
         {noButton
@@ -79,9 +57,9 @@ class Member extends Component {
             <Fab
               color='secondary'
               variant="extended"
-              size={"small"}
-              onClick={() => fields.remove(index)}
+              size="small"
               className={classes.flexItem}
+              onClick={() => fields.remove(index)}
             >
               <Remove/>
             </Fab>
@@ -91,31 +69,31 @@ class Member extends Component {
           <Grid container className={classes.grid} justify="space-between">
             <Field
               name={`${member}.date`}
-              component={Picker}
               id={`${member}.date`}
-              type={"text"}
-              onChange={this.handleDateChange}
-              onOpen={this.onOpen}
-              onClose={this.onClose}
+              type="text"
               value={selectedDate}
               classes={classes}
+              onOpen={this.onOpen}
+              onClose={this.onClose}
+              onChange={this.handleDateChange}
+              component={Picker}
             />
             <Field
               name={`${member}.start`}
-              component={Picker}
-              isTime
               id={`${member}.start`}
-              type={"text"}
+              type="text"
               classes={classes}
+              isTime
+              component={Picker}
             />
             <Field
               name={`${member}.end`}
-              component={Picker}
+              type="text"
+              id={`${member}.end`}
+              classes={classes}
               isEnd
               isTime
-              id={`${member}.end`}
-              type={"text"}
-              classes={classes}
+              component={Picker}
             />
           </Grid>
         </MuiPickersUtilsProvider>
@@ -123,30 +101,24 @@ class Member extends Component {
           ? <Field
             name={`${member}.resourceId`}
             type="text"
-            component={CustomSelectView}
-            options={this.getOptions()}
-            label="Имя мастера/Солярий"
-            id={`${member}.resourceId`}
-            disabled={!selectedDate}
-            selectedDate={selectedDate}
-            differenceDate={differenceDate}
-            switchDate={switchDate}
-            isFirst={switchDate}
-            // className={classes.margin}
             classes={classes}
-            // placeholder='Имя мастера/Солярий'
+            id={`${member}.resourceId`}
+            label="Имя мастера/Солярий"
+            options={this.getOptions()}
+            disabled={!selectedDate}
+            component={CustomSelectView}
           />
           : null
         }
         <Field
           name={`${member}.title`}
-          component={CustomInputView}
           label="Описание услуги"
           id={`${member}.title`}
           inputProps={{
             multiline: true,
             rows: 3
           }}
+          component={CustomInputView}
         />
       </Fragment>
     );
@@ -154,25 +126,16 @@ class Member extends Component {
 }
 
 Member.propTypes = {
-  classes: propTypes.object.isRequired
+  classes: PropTypes.object.isRequired,
+  totalResource: PropTypes.object.isRequired,
+  fields: PropTypes.object.isRequired,
+  member: PropTypes.string.isRequired,
+  index: PropTypes.number.isRequired,
+  noButton: PropTypes.bool
 };
 
 const mapStateFromProps = state => ({
-  resource: getResource(state),
-  events: getEvents(state),
-  masters: getTotalMasters(state),
   totalResource: getTotalResource(state)
-});
-
-// const mapDispatchFromProps = {};
-
-const styleTooltip = theme => ({
-  margin: {
-    margin: theme.spacing.unit
-  }
-  // button: {
-  //   margin: theme.spacing.unit
-  // }
 });
 
 export default connect(mapStateFromProps, null)(Member);

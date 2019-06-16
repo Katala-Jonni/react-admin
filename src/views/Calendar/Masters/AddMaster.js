@@ -1,7 +1,7 @@
 import React, { Fragment } from "react";
 import PropTypes from "prop-types";
 import classNames from "classnames";
-import { withStyles } from "@material-ui/core/styles";
+import moment from "moment/moment";
 import Button from "@material-ui/core/Button";
 import Dialog from "@material-ui/core/Dialog";
 import DialogActions from "@material-ui/core/DialogActions";
@@ -12,52 +12,12 @@ import DialogTitle from "@material-ui/core/DialogTitle";
 import PersonAdd from "@material-ui/icons/PersonAdd";
 import Edit from "@material-ui/icons/Edit";
 import Select from "react-select";
-import mastersData from "../../../modules/Calendar/mastersData";
 import defaultResource from "../../../modules/Calendar/defaultResource";
 import EditItems from "./EditItems";
-import { editMastersStart } from "../../../modules/Calendar";
-import moment from "moment/moment";
-// const EditItems = ({ classes, startOptions, residueOptions, handleOnChangeSelect }) => {
-//   console.log(residueOptions);
-//   return (
-//     <Fragment>
-//       <Select
-//         className={classNames(classes.mBottom, "basic-single")}
-//         classNamePrefix="select"
-//         name="masters"
-//         options={startOptions}
-//         placeholder="Выберите что НЕ нужно ..."
-//         maxMenuHeight={200}
-//         onChange={handleOnChangeSelect}
-//       />
-//       <Select
-//         className={classNames(classes.bottom, "basic-single")}
-//         classNamePrefix="select"
-//         name="masters"
-//         options={residueOptions}
-//         placeholder="Выберите что нужно ..."
-//         maxMenuHeight={200}
-//         onChange={handleOnChangeSelect}
-//       />
-//     </Fragment>
-//
-//   );
-// };
-
-const styles = () => ({
-  bottom: {
-    marginBottom: "200px"
-  },
-  mBottom: {
-    marginBottom: "30px"
-  }
-});
 
 class AddMaster extends React.Component {
   state = {
     open: false,
-    fullWidth: true,
-    maxWidth: "sm",
     color: "primary",
     value: [],
     editValue: null
@@ -79,37 +39,16 @@ class AddMaster extends React.Component {
       value: this.state.value
     });
 
-    this.setState({
-      value: []
-    });
+    this.setState({ value: [] });
   };
 
-  editResource = data => {
-    if (!data) {
-      return null;
-    }
-    // this.state.value && this.props.changeMasters(this.state.value);
-  };
+  changeState = value => this.setState({ editValue: value });
 
-  changeState = value => {
-    console.log(value);
-    this.setState({
-      editValue: value
-    });
-  };
-
-  handleEdit = evt => {
-    // console.log(evt);
+  handleEdit = () => {
     this.handleClose();
-    // console.log(this.state.editValue);
     if (!this.state.editValue) {
       return null;
     }
-    // console.log(this.props);
-    // возможно нужно поставить лоадер,
-    // здесь идет загрузка и обновление данных
-    // console.log(this.props);
-    // console.log(this.state);
     this.props.editMastersStart({
       ...this.state.editValue,
       date: this.props.date,
@@ -117,9 +56,7 @@ class AddMaster extends React.Component {
       events: this.props.events
     });
 
-    this.setState({
-      editValue: null
-    });
+    this.setState({ editValue: null });
   };
 
   handleOnChangeSelect = data => {
@@ -147,10 +84,10 @@ class AddMaster extends React.Component {
     );
 
   render() {
-    const { classes, isNew } = this.props;
+    const { classes, isNew, title, isNewEdit, isNewAdd, btnText } = this.props;
     return (
       <Fragment>
-        <Tooltip title={isNew ? "Изменить мастера" : "Добавить мастера"}>
+        <Tooltip title={isNew ? isNewEdit : isNewAdd}>
           <Fab
             variant="extended"
             color="primary"
@@ -168,20 +105,17 @@ class AddMaster extends React.Component {
           aria-labelledby="max-width-dialog-title"
         >
           <DialogTitle id="max-width-dialog-title">
-            Выберите мастера
+            {title}
           </DialogTitle>
           <DialogContent>
             {isNew
               ? <EditItems
                 classes={classes}
                 startOptions={this.getStartOptions()}
-                resource={this.props.resource}
-                handleEdit={this.editResource}
                 changeState={this.changeState}
-                // date={date}
               />
               : <Select
-                className={classNames(classes.bottom, "basic-single")}
+                className={classNames(classes.bottom)}
                 classNamePrefix="select"
                 name="masters"
                 options={this.getOptions()}
@@ -199,7 +133,7 @@ class AddMaster extends React.Component {
               color={this.state.color}
               variant="contained"
             >
-              Выбрать
+              {btnText}
             </Button>
           </DialogActions>
         </Dialog>
@@ -208,11 +142,25 @@ class AddMaster extends React.Component {
   }
 }
 
+AddMaster.defaultProps = {
+  title: "Выберите мастера",
+  isNewEdit: "Изменить мастера",
+  isNewAdd: "Добавить мастера",
+  btnText: "Выбрать"
+};
+
 AddMaster.propTypes = {
   classes: PropTypes.object.isRequired,
   changeMasters: PropTypes.func.isRequired,
-  isNew: PropTypes.bool
+  isNew: PropTypes.bool,
+  isNewEdit: PropTypes.string,
+  isNewAdd: PropTypes.string,
+  title: PropTypes.string,
+  resource: PropTypes.arrayOf(PropTypes.object),
+  date: PropTypes.object,
+  totalResource: PropTypes.object.isRequired,
+  btnText: PropTypes.string,
+  masters: PropTypes.array
 };
 
 export default AddMaster;
-// export default withStyles(styles)(AddMaster);

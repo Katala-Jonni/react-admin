@@ -238,7 +238,7 @@ export default [
     titleEvent: "uytrewq"
   },
   {
-    id: 67691,
+    id: 67634591,
     date: "2019-06-15T18:30:00+03:00",
     start: new Date(2019, 5, 15, 11, 0, 0),
     end: new Date(2019, 5, 15, 12, 0, 0),
@@ -262,7 +262,7 @@ export default [
     titleEvent: "uytrewq"
   },
   {
-    id: 67691,
+    id: 67354691,
     date: "2019-06-15T18:30:00+03:00",
     start: new Date(2019, 5, 15, 11, 0, 0),
     end: new Date(2019, 5, 15, 12, 0, 0),
@@ -274,7 +274,7 @@ export default [
     titleEvent: "uytrewq"
   },
   {
-    id: 67691,
+    id: 67645391,
     date: "2019-06-15T18:30:00+03:00",
     start: new Date(2019, 5, 15, 11, 0, 0),
     end: new Date(2019, 5, 15, 12, 0, 0),
@@ -286,7 +286,7 @@ export default [
     titleEvent: "uytrewq"
   },
   {
-    id: 67691,
+    id: 6769153,
     date: "2019-06-15T18:30:00+03:00",
     start: new Date(2019, 5, 15, 11, 0, 0),
     end: new Date(2019, 5, 15, 12, 0, 0),
