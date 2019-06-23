@@ -25,9 +25,15 @@ class Search extends Component {
     return (
       <Paper className={classes.root}>
         <InputBase
+          autoFocus
           className={classes.input}
           placeholder={placeholder}
-          inputProps={{ "aria-label": { placeholder } }}
+          inputProps={
+            {
+              "aria-label": { placeholder },
+              type: "search",
+              name: "search"
+            }}
           onChange={handleChange}
         />
       </Paper>

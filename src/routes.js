@@ -11,7 +11,7 @@ import Language from "@material-ui/icons/Language";
 import DashboardPage from "views/Dashboard/Dashboard.jsx";
 import CalendarPage from "views/Calendar";
 import UserProfile from "views/UserProfile/UserProfile.jsx";
-import ShopPage from "views/Shop/Shop";
+import ShopPage from "views/Shop";
 import SunPage from "views/Sun/Sun";
 import TillPage from "views/Till/Till";
 import CertificatePage from "views/Certificate/Certificate";
@@ -29,6 +29,7 @@ import Picker from "./views/Calendar/Events/Forms/Inputs/Picker";
 
 
 const newCal = () => <CalendarPage/>;
+const newShop = () => <ShopPage/>;
 
 const CustomComponent = () => {
   return (
@@ -58,7 +59,7 @@ const dashboardRoutes = [
     name: "Каталог",
     rtlName: "ملف تعريفي للمستخدم",
     icon: "shopping_cart",
-    component: ShopPage,
+    component: newShop,
     layout: "/admin"
   },
   {

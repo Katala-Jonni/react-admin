@@ -2,10 +2,15 @@
 // // // ExtendedTables view styles
 // #############################
 
-import buttonGroupStyle from "assets/jss/material-dashboard-pro-react/buttonGroupStyle.jsx";
-import { primaryColor } from "assets/jss/material-dashboard-pro-react.jsx";
+import buttonGroupStyle from "../buttonGroupStyle.jsx";
+import { primaryColor } from "../../material-dashboard-react";
 
 const extendedTablesStyle = {
+  flex: {
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+  },
   right: {
     textAlign: "right"
   },
@@ -64,7 +69,7 @@ const extendedTablesStyle = {
     color: "#3C4858"
   },
   tdNameSmall: {
-    color: "#999999",
+    // color: "#999999",
     fontSize: "0.75em",
     fontWeight: "300"
   },
@@ -75,7 +80,8 @@ const extendedTablesStyle = {
     fontSize: "1.3em !important"
   },
   tdNumberSmall: {
-    marginRight: "3px"
+    marginRight: "3px",
+    marginLeft: "3px"
   },
   tdNumberAndButtonGroup: {
     lineHeight: "1 !important"
@@ -83,7 +89,7 @@ const extendedTablesStyle = {
   positionAbsolute: {
     position: "absolute",
     right: "0",
-    top: "0",
+    top: "0"
   },
   customFont: {
     fontSize: "16px !important"

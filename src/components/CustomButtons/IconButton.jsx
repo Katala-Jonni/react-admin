@@ -3,10 +3,10 @@ import PropTypes from "prop-types";
 import cx from "classnames";
 
 // material-ui components
-import withStyles from "material-ui/styles/withStyles";
-import IconButton from "material-ui/IconButton";
+import { withStyles } from "@material-ui/core/styles";
+import IconButton from "@material-ui/core/IconButton";
 
-import iconButtonStyle from "assets/jss/material-dashboard-pro-react/components/iconButtonStyle";
+import iconButtonStyle from "../../assets/jss/material-dashboard-react/components/iconButtonStyle";
 
 function IconCustomButton({ ...props }) {
   const { classes, color, children, customClass, noBg, ...rest } = props;

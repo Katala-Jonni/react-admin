@@ -61,7 +61,8 @@ class Calendar extends Component {
   }
 
   componentDidMount() {
-    this.props.loadResource();
+    // изначально стояло
+    // this.props.loadResource();
   }
 
   handleClickCloseSelectEvent = () => {
@@ -295,10 +296,10 @@ Calendar.propTypes = {
   startTimeMinute: PropTypes.number,
   endTimeTimeHour: PropTypes.number,
   endTimeTimeMinute: PropTypes.number,
-  step: PropTypes.number,
   deleteMasters: PropTypes.func.isRequired,
   loadResource: PropTypes.func.isRequired,
-  selectDay: PropTypes.func.isRequired
+  selectDay: PropTypes.func.isRequired,
+  step: PropTypes.number
 };
 
 export default Calendar;

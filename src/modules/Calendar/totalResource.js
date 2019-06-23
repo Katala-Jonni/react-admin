@@ -90,5 +90,25 @@ export default {
       resourceId: "Наталья",
       resourceTitle: "Наталья"
     }
+  ],
+  [moment()
+    .set("date", 23)
+    .format("DD.MM.YY")]: [
+    {
+      resourceId: "Солярий",
+      resourceTitle: "Солярий"
+    },
+    {
+      resourceId: "Надежда",
+      resourceTitle: "Надежда"
+    },
+    {
+      resourceId: "Жанна",
+      resourceTitle: "Жанна"
+    },
+    {
+      resourceId: "Наталья",
+      resourceTitle: "Наталья"
+    }
   ]
 };

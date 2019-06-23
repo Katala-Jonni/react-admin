@@ -19,6 +19,19 @@ import dashboardStyle from "assets/jss/material-dashboard-react/layouts/dashboar
 
 import image from "assets/img/sidebar-2.jpg";
 import logo from "assets/img/logo_solntseva.png";
+// import Calendar from "../views/Calendar/Calendar";
+// import { deleteMasters, editEvents, getEvents, getResource, loadResource, selectDay } from "../modules/Calendar";
+
+import { connect } from "react-redux";
+import {
+  getResource,
+  getEvents,
+  getTotalResource,
+  selectDay,
+  deleteMasters,
+  editEvents,
+  loadResource
+} from "../modules/Calendar";
 
 const switchRoutes = (
   <Switch>
@@ -79,6 +92,7 @@ class Dashboard extends React.Component {
     if (navigator.platform.indexOf("Win") > -1) {
       const ps = new PerfectScrollbar(this.refs.mainPanel);
     }
+    this.props.loadResource();
     window.addEventListener("resize", this.resizeFunction);
   }
 
@@ -141,4 +155,15 @@ Dashboard.propTypes = {
   classes: PropTypes.object.isRequired
 };
 
-export default withStyles(dashboardStyle)(Dashboard);
+const mapStateFromProps = state => ({
+  // resource: getResource(state),
+  // events: getEvents(state),
+  // totalResource: getTotalResource(state)
+});
+
+const mapDispatchFromProps = { loadResource };
+
+export default withStyles(dashboardStyle)(connect(null, mapDispatchFromProps)(Dashboard));
+;
+
+// export default withStyles(dashboardStyle)(Dashboard);
