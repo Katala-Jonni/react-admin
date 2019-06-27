@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Component } from "react";
 import PropTypes from "prop-types";
 // react plugin for creating charts
 // @material-ui/core
@@ -7,7 +7,7 @@ import withStyles from "@material-ui/core/styles/withStyles";
 // core components
 import GridContainer from "components/Grid/GridContainer.jsx";
 
-class Sun extends React.Component {
+class Sun extends Component {
   state = {
     value: 0
   };
@@ -23,7 +23,7 @@ class Sun extends React.Component {
 }
 
 Sun.propTypes = {
-  classes: PropTypes.object.isRequired
+  // classes: PropTypes.object.isRequired
 };
 
 export default Sun;

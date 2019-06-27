@@ -27,6 +27,7 @@ import DialogContent from "@material-ui/core/DialogContent";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import Button from "@material-ui/core/Button";
 import Tooltip from "@material-ui/core/Tooltip";
+import category from "../data/category";
 
 const useStyles = theme => ({
   actionRoot: {
@@ -64,12 +65,18 @@ const useStyles = theme => ({
   }
 });
 
-class RecipeReviewCard extends Component {
-  state = {
+const initialState = () => {
+  return {
     countCart: 1,
     selectValue: null,
     expanded: null,
     viewNumber: false
+  };
+};
+
+class RecipeReviewCard extends Component {
+  state = {
+    ...initialState()
   };
 
   handleChangeSelect = data => {
@@ -88,24 +95,26 @@ class RecipeReviewCard extends Component {
   handleClickAddCart = () => {
     const { product, changeViewCart, totalCart, addToCart } = this.props;
     const { countCart, selectValue } = this.state;
-
-    const value = selectValue ? selectValue : product.title;
+    // console.log(product.category);
+    const targetCategory = category.find(item => item.name.toLowerCase() === product.category.toLowerCase());
+    // console.log(targetCategory);
+    const value = selectValue ? selectValue : targetCategory.value;
     let goods = totalCart.find(a => a.name === value && a.title === product.title);
 
     if (goods) {
-      goods = { ...goods, count: countCart, total: countCart * goods.price };
+      goods = { ...goods, count: countCart };
     } else {
       const idList = totalCart.map(a => a.id);
       const maxId = Math.max(...idList, 0);
       goods = Object.assign({}, product, {
         count: countCart,
         name: value,
-        id: maxId + 1,
-        total: product.price * countCart
+        id: maxId + 1
       });
     }
     changeViewCart();
     addToCart(totalCart.filter(a => a.id !== goods.id).concat(goods));
+    this.setState(initialState());
   };
 
   handleChangeCountCart = value => {
@@ -144,6 +153,7 @@ class RecipeReviewCard extends Component {
     const { classes, product, typographyResourceError, typographyResourcePlaceholder } = this.props;
     const { countCart, viewNumber } = this.state;
     // console.log(this.props);
+    // console.log(countCart);
     return (
       <Card className={cx(classes.card)}>
         <CardActionArea>

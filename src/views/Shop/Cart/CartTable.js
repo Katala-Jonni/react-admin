@@ -21,6 +21,9 @@ import Tooltip from "@material-ui/core/Tooltip";
 import extendedTablesStyle from "../../../assets/jss/material-dashboard-react/views/extendedTablesStyle";
 
 class ExtendedTables extends React.Component {
+  state = {
+    tr: false
+  };
   handleClickAdd = item => {
     const { totalCart, addToCart } = this.props;
     const products = totalCart.filter(a => {
@@ -48,6 +51,20 @@ class ExtendedTables extends React.Component {
   handleClickClose = item => {
     const { totalCart, addToCart } = this.props;
     addToCart(totalCart.filter(a => a.id !== item.id));
+  };
+
+  getTotalPrice = () => {
+    const { totalCart } = this.props;
+    let count = 0;
+    totalCart.forEach(el => count += el.price * el.count);
+    return count;
+  };
+
+  handleClickSubmit = () => {
+    const { totalCart, totalDay, totalOrders, startSendCart, masters } = this.props;
+    startSendCart({ totalCart, totalDay, totalOrders, masters });
+    this.props.handleCloseView();
+    this.props.showNotification("tr");
   };
 
   getTotalCell = () => {
@@ -97,13 +114,6 @@ class ExtendedTables extends React.Component {
     });
   };
 
-  getTotalPrice = () => {
-    const { totalCart } = this.props;
-    let count = 0;
-    totalCart.forEach(el => count += el.price * el.count);
-    return count;
-  };
-
   render() {
     const { classes } = this.props;
     return (
@@ -137,7 +147,7 @@ class ExtendedTables extends React.Component {
                 col: {
                   colspan: 2,
                   text: (
-                    <Button color="danger" round>
+                    <Button color="danger" round onClick={this.handleClickSubmit}>
                       Оформить{" "}
                       <KeyboardArrowRight className={classes.icon}/>
                     </Button>

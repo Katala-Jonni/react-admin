@@ -40,7 +40,8 @@ function IconCard({ ...props }) {
           root: classes.cardHeader + " " + classes[iconColor + "CardHeader"],
           avatar: classes.cardAvatar
         }}
-        avatar={<props.icon className={classes.cardIcon} />}
+        avatar={<props.icon className={classes.cardIcon}
+        />}
       />
       <CardContent className={cardContentClasses}>
         <h4 className={classes.cardTitle}>
@@ -59,7 +60,7 @@ function IconCard({ ...props }) {
 }
 
 IconCard.defaultProps = {
-  iconColor: "purple",
+  iconColor: "purple"
 };
 
 IconCard.propTypes = {

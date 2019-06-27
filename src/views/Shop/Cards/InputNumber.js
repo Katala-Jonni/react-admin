@@ -45,13 +45,14 @@ NumberFormatCustom.propTypes = {
 
 class InputNumber extends Component {
   render() {
-    const { classes, value, onChange, ...rest } = this.props;
+    const { classes, value, onChange, label, name, ...rest } = this.props;
+    console.log(value);
     return (
       <div className={classes.container}>
         <TextField
           className={classes.formControl}
-          label="Введите число"
-          name={"numberCount"}
+          label={label}
+          name={name}
           value={value}
           onChange={onChange}
           InputProps={{
@@ -63,5 +64,18 @@ class InputNumber extends Component {
     );
   }
 }
+
+InputNumber.defaultValue = {
+  label: "Введите число",
+  name: `${Math.random()}numberCount${Math.random()}`
+};
+
+InputNumber.propTypes = {
+  classes: PropTypes.object.isRequired,
+  onChange: PropTypes.func.isRequired,
+  label: PropTypes.string,
+  name: PropTypes.string,
+  value: PropTypes.number
+};
 
 export default withStyles(useStyles)(InputNumber);

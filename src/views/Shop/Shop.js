@@ -20,6 +20,9 @@ import Badge from "@material-ui/core/Badge";
 import CartTable from "./Cart";
 import Tooltip from "@material-ui/core/Tooltip";
 import Typography from "@material-ui/core/Typography";
+import AddAlert from "@material-ui/icons/AddAlert";
+import Snackbar from "components/Snackbar/Snackbar.jsx";
+import ItemGrid from "components/Grid/GridItem.jsx";
 
 const styleShop = () => ({
   root: {
@@ -33,12 +36,19 @@ class Shop extends React.Component {
     searchValue: null,
     viewCart: false,
     openViewCart: false,
-    fullScreen: false
+    fullScreen: false,
+    tr: false
   };
+
+  componentWillUnmount() {
+    // чистим, чтобы не было утечеки памяти
+    clearInterval(this.timer);
+  }
 
   changeViewCart = () => {
     this.setState({
-      viewCart: true
+      viewCart: true,
+      openViewCart: false
     });
   };
 
@@ -100,14 +110,22 @@ class Shop extends React.Component {
     this.setState({
       openViewCart: true
     });
+    this.props.changeSubmitSwitch(false);
   };
 
   handleCloseViewCart = () => {
     const { totalCart } = this.props;
     this.setState({
       openViewCart: false,
-      fullScreen: false,
-      viewCart: !!totalCart.length
+      fullScreen: false
+      // viewCart: false
+    });
+    this.props.changeSubmitSwitch(true);
+  };
+
+  handleCloseView = () => {
+    this.setState({
+      viewCart: false
     });
   };
 
@@ -117,14 +135,30 @@ class Shop extends React.Component {
     });
   };
 
+  showNotification = place => {
+    if (!this.state[place]) {
+      this.setState({
+        tr: true
+      });
+      this.timer = setTimeout(
+        () => {
+          this.setState({
+            tr: false
+          });
+        },
+        5000
+      );
+    }
+  };
+
   render() {
-    const { classes, totalCart } = this.props;
+    const { classes, totalCart, isSubmit } = this.props;
     const { viewCart, openViewCart, fullScreen } = this.state;
     return (
       <div className={classes.root}>
         <Dialog
           maxWidth={"md"}
-          open={openViewCart}
+          open={openViewCart && !isSubmit}
           onClose={this.handleCloseViewCart}
           fullScreen={fullScreen}
           scroll="paper"
@@ -135,10 +169,11 @@ class Shop extends React.Component {
           </DialogTitle>
           <DialogContent>
             {totalCart.length
-              ? <CartTable/>
-              : <Typography variant="h3" color="textSecondary" component="h3">
-                Ваша козина пуста
-              </Typography>
+              ? <CartTable
+                handleCloseView={this.handleCloseView}
+                showNotification={this.showNotification}
+              />
+              : null
             }
 
           </DialogContent>
@@ -160,6 +195,17 @@ class Shop extends React.Component {
           </DialogActions>
         </Dialog>
         <GridContainer spacing={16}>
+          <ItemGrid xs={12} sm={12} md={3}>
+            <Snackbar
+              place="tr"
+              color="success"
+              icon={AddAlert}
+              message="Заказ оформлен"
+              open={this.state.tr}
+              closeNotification={() => this.setState({ tr: false })}
+              close
+            />
+          </ItemGrid>
           <Grid item xs={viewCart || totalCart.length ? 11 : 12}>
             <Search
               handleChange={this.handleChangeInputSearch}

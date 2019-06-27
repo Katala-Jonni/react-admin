@@ -92,7 +92,7 @@ export default {
     }
   ],
   [moment()
-    .set("date", 23)
+    .set("date", 27)
     .format("DD.MM.YY")]: [
     {
       resourceId: "Солярий",
@@ -109,6 +109,10 @@ export default {
     {
       resourceId: "Наталья",
       resourceTitle: "Наталья"
+    },
+    {
+      resourceId: "Ирина",
+      resourceTitle: "Ирина"
     }
   ]
 };

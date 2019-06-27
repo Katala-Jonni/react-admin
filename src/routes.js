@@ -13,7 +13,7 @@ import CalendarPage from "views/Calendar";
 import UserProfile from "views/UserProfile/UserProfile.jsx";
 import ShopPage from "views/Shop";
 import SunPage from "views/Sun/Sun";
-import TillPage from "views/Till/Till";
+import TillPage from "views/Till";
 import CertificatePage from "views/Certificate/Certificate";
 import TableList from "views/TableList/TableList.jsx";
 import Typography from "views/Typography/Typography.jsx";
@@ -30,6 +30,7 @@ import Picker from "./views/Calendar/Events/Forms/Inputs/Picker";
 
 const newCal = () => <CalendarPage/>;
 const newShop = () => <ShopPage/>;
+const newTill = () => <TillPage/>;
 
 const CustomComponent = () => {
   return (
@@ -67,7 +68,7 @@ const dashboardRoutes = [
     name: "Касса",
     rtlName: "ملف تعريفي للمستخدم",
     icon: "account_balance_wallet",
-    component: TillPage,
+    component: newTill,
     layout: "/admin"
   },
   {
@@ -75,7 +76,7 @@ const dashboardRoutes = [
     name: "Солярий",
     rtlName: "ملف تعريفي للمستخدم",
     icon: "wb_sunny",
-    component: Picker,
+    component: SunPage,
     layout: "/admin"
   },
   {

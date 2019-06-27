@@ -4,7 +4,7 @@ export default {
       id: 1,
       title: "Стрижка на короткие волосы",
       img: "https://nikolisel.ru/wp-content/uploads/2018/07/%D0%A45-4.jpg",
-      icon: 'https://c7.uihere.com/files/555/558/444/comb-hair-iron-hairdresser-beauty-parlour-clip-art-scissors.jpg',
+      icon: "https://c7.uihere.com/files/555/558/444/comb-hair-iron-hairdresser-beauty-parlour-clip-art-scissors.jpg",
       price: 350,
       category: "hair",
       isMaster: true
@@ -13,7 +13,7 @@ export default {
       id: 2,
       title: "Стрижка на среднии волосы",
       img: "http://static.jamadvice.com.ua/wp-content/uploads/2015/12/jamadvice_com_ua_pravilnyj_zimnij_uhod_za_volosami_01.jpg",
-      icon: 'https://c7.uihere.com/files/555/558/444/comb-hair-iron-hairdresser-beauty-parlour-clip-art-scissors.jpg',
+      icon: "https://c7.uihere.com/files/555/558/444/comb-hair-iron-hairdresser-beauty-parlour-clip-art-scissors.jpg",
       price: 400,
       category: "hair",
       isMaster: true
@@ -22,9 +22,10 @@ export default {
       id: 3,
       title: "Стрижка на длинные волосы",
       img: "https://dobrocom.info/wp-content/uploads/2017/07/thumb-2.jpg",
-      icon: 'https://c7.uihere.com/files/555/558/444/comb-hair-iron-hairdresser-beauty-parlour-clip-art-scissors.jpg',
+      icon: "https://c7.uihere.com/files/555/558/444/comb-hair-iron-hairdresser-beauty-parlour-clip-art-scissors.jpg",
       price: 500,
-      category: "hair"
+      category: "hair",
+      isMaster: true
     }
   ],
   brow: [
@@ -101,18 +102,36 @@ export default {
       id: 19,
       title: "Солярий",
       price: 16,
-      category: "solarium"
+      category: "solarium",
+      isMaster: false
     }
   ],
   makeUp: [],
-  certificate: [],
-  discount: [],
+  certificate: [
+    {
+      id: 22,
+      title: "Сертификат 1 000",
+      price: 1000,
+      category: "certificate",
+      isMaster: false
+    }
+  ],
+  discount: [
+    {
+      id: 20,
+      title: "Акция № 1",
+      price: 980,
+      category: "discount",
+      isMaster: true
+    }
+  ],
   shop: [
     {
       id: 18,
-      title: "Результат",
-      price: "price1",
-      category: "shop"
+      title: "Шампунь",
+      price: 1000,
+      category: "shop",
+      isMaster: false
     }
   ],
   ear: []

@@ -1,16 +1,70 @@
 export default [
-  { value: "Ирина", label: "Ирина" },
-  { value: "Солярий", label: "Солярий" },
-  { value: "Жанна", label: "Жанна" },
-  { value: "Мария", label: "Мария" },
-  { value: "Анна", label: "Анна" },
-  { value: "Наталья", label: "Наталья" },
-  { value: "Оксана", label: "Оксана" },
-  { value: "Надежда", label: "Надежда" },
-  { value: "Людмила", label: "Людмила" },
-  { value: "Александра", label: "Александра" },
-  { value: "123", label: "123" },
-  { value: "345", label: "345" },
-  { value: "678", label: "678" },
-  { value: "Приходящий мастер", label: "Приходящий мастер" }
+  {
+    value: "Ирина",
+    label: "Ирина",
+    workPercent: {
+      ["стрижка на средние волосы"]: 60,
+      ["стрижка на короткие волосы"]: 70,
+      ["стрижка на длинные волосы"]: 55
+    },
+    defaultPercent: 50
+  },
+  // { value: "Солярий", label: "Солярий" },
+  {
+    value: "Жанна",
+    label: "Жанна",
+    workPercent: {
+      ["стрижка на короткие волосы"]: 55,
+      ["стрижка на длинные волосы"]: 60
+    },
+    defaultPercent: 50
+  },
+  {
+    value: "Мария",
+    label: "Мария",
+    workPercent: {},
+    defaultPercent: 50
+  },
+  {
+    value: "Анна",
+    label: "Анна",
+    workPercent: {},
+    defaultPercent: 50
+  },
+  {
+    value: "Наталья",
+    label: "Наталья",
+    workPercent: {},
+    defaultPercent: 50
+  },
+  {
+    value: "Оксана",
+    label: "Оксана",
+    workPercent: {},
+    defaultPercent: 50
+  },
+  {
+    value: "Надежда",
+    label: "Надежда",
+    workPercent: {},
+    defaultPercent: 50
+  },
+  {
+    value: "Людмила",
+    label: "Людмила",
+    workPercent: {},
+    defaultPercent: 50
+  },
+  {
+    value: "Александра",
+    label: "Александра",
+    workPercent: {},
+    defaultPercent: 50
+  },
+  {
+    value: "Приходящий мастер",
+    label: "Приходящий мастер",
+    workPercent: {},
+    defaultPercent: 50
+  }
 ];

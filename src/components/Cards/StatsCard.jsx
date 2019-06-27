@@ -2,14 +2,15 @@ import React from "react";
 import PropTypes from "prop-types";
 
 // material-ui components
-import withStyles from "material-ui/styles/withStyles";
-import Card from "material-ui/Card";
-import CardContent from "material-ui/Card/CardContent";
-import CardHeader from "material-ui/Card/CardHeader";
-import CardActions from "material-ui/Card/CardActions";
-import Typography from "material-ui/Typography";
+import { withStyles } from "@material-ui/core/styles";
+import cx from "classnames";
+import Card from "@material-ui/core/Card";
+import CardContent from "@material-ui/core/CardContent";
+import CardHeader from "@material-ui/core/CardHeader";
+import CardActions from "@material-ui/core/CardActions";
+import Typography from "@material-ui/core/Typography";
 
-import statsCardStyle from "assets/jss/material-dashboard-pro-react/components/statsCardStyle";
+import statsCardStyle from "assets/jss/material-dashboard-react/components/statsCardStyle";
 
 function StatsCard({ ...props }) {
   const {
@@ -20,16 +21,17 @@ function StatsCard({ ...props }) {
     small,
     statText,
     statIconColor,
-    iconColor
+    iconColor,
+    className
   } = props;
   return (
-    <Card className={classes.card}>
+    <Card className={cx(classes.card, className)}>
       <CardHeader
         classes={{
           root: classes.cardHeader + " " + classes[iconColor + "CardHeader"],
           avatar: classes.cardAvatar
         }}
-        avatar={<props.icon className={classes.cardIcon} />}
+        avatar={<props.icon className={classes.cardIcon}/>}
       />
       <CardContent className={classes.cardContent}>
         <Typography component="p" className={classes.cardCategory}>
@@ -46,24 +48,24 @@ function StatsCard({ ...props }) {
           ) : null}
         </Typography>
       </CardContent>
-      <CardActions className={classes.cardActions}>
-        <div className={classes.cardStats}>
-          <props.statIcon
-            className={
-              classes.cardStatsIcon +
-              " " +
-              classes[statIconColor + "CardStatsIcon"]
-            }
-          />{" "}
-          {statLink !== undefined ? (
-            <a href={statLink.href} className={classes.cardStatsLink}>
-              {statLink.text}
-            </a>
-          ) : statText !== undefined ? (
-            statText
-          ) : null}
-        </div>
-      </CardActions>
+      {/*<CardActions className={classes.cardActions}>*/}
+      {/*<div className={classes.cardStats}>*/}
+      {/*<props.statIcon*/}
+      {/*className={*/}
+      {/*classes.cardStatsIcon +*/}
+      {/*" " +*/}
+      {/*classes[statIconColor + "CardStatsIcon"]*/}
+      {/*}*/}
+      {/*/>{" "}*/}
+      {/*{statLink !== undefined ? (*/}
+      {/*<a href={statLink.href} className={classes.cardStatsLink}>*/}
+      {/*{statLink.text}*/}
+      {/*</a>*/}
+      {/*) : statText !== undefined ? (*/}
+      {/*statText*/}
+      {/*) : null}*/}
+      {/*</div>*/}
+      {/*</CardActions>*/}
     </Card>
   );
 }

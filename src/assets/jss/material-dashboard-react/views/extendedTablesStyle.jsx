@@ -5,11 +5,11 @@
 import buttonGroupStyle from "../buttonGroupStyle.jsx";
 import { primaryColor } from "../../material-dashboard-react";
 
-const extendedTablesStyle = {
+const extendedTablesStyle = theme => ({
   flex: {
     display: "flex",
     justifyContent: "center",
-    alignItems: "center",
+    alignItems: "center"
   },
   right: {
     textAlign: "right"
@@ -98,7 +98,13 @@ const extendedTablesStyle = {
     width: "auto",
     height: "auto",
     minWidth: "auto"
+  },
+  point: {
+    cursor: "pointer"
+  },
+  indent: {
+    paddingTop: "50px"
   }
-};
+});
 
 export default extendedTablesStyle;

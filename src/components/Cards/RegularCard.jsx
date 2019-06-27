@@ -3,12 +3,12 @@ import PropTypes from "prop-types";
 import cx from "classnames";
 
 // material-ui components
-import withStyles from "material-ui/styles/withStyles";
-import Card from "material-ui/Card";
-import CardContent from "material-ui/Card/CardContent";
-import CardHeader from "material-ui/Card/CardHeader";
+import { withStyles } from "@material-ui/core/styles";
+import Card from "@material-ui/core/Card";
+import CardContent from "@material-ui/core/CardContent";
+import CardHeader from "@material-ui/core/CardHeader";
 
-import regularCardStyle from "assets/jss/material-dashboard-pro-react/components/regularCardStyle";
+import regularCardStyle from "../../assets/jss/material-dashboard-react/components/regularCardStyle";
 
 function RegularCard({ ...props }) {
   const {
