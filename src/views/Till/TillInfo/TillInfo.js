@@ -30,15 +30,17 @@ const useStyles = theme => ({
 
 class TillInfo extends Component {
   state = {
-    inTill: 0,
-    outTill: 0,
     inTillDialog: false,
     outTillDialog: false,
     fullScreen: false
   };
 
-  componentDidMount() {
 
+  componentDidMount() {
+    console.log("r");
+    // this.props.loadTill();
+    this.props.loadTill();
+    // console.log(this.props);
   }
 
   handleClick = data => {
@@ -76,9 +78,16 @@ class TillInfo extends Component {
       ];
   };
 
+  getAmount = value => {
+    let amount = 0;
+    this.props[value].forEach((a) => amount += a.count);
+    return amount;
+  };
+
   render() {
     const { classes } = this.props;
-    const { inTill, outTill, inTillDialog, outTillDialog, fullScreen } = this.state;
+    const { inTillDialog, outTillDialog, fullScreen } = this.state;
+    const { inTill, outTill } = this.props;
     return (
       <div className={classes.root}>
         <Dialog
@@ -87,7 +96,7 @@ class TillInfo extends Component {
           onClose={this.handleClickClose}
           fullScreen={true}
           scroll="paper"
-          // aria-labelledby="max-width-dialog-title"
+          aria-labelledby="max-width-dialog-title"
         >
           <DialogTitle id="max-width-dialog-title">
             Информация по {inTillDialog ? "приходу" : "расходу"} в кассе
@@ -96,7 +105,9 @@ class TillInfo extends Component {
             <DialogTable
               isInTill={inTillDialog}
               tableHead={this.getTableHead()}
-              col={inTillDialog ? "1" : "2"}
+              col={"1"}
+              // col={inTillDialog ? "0" : "1"}
+              getAmount={this.getAmount}
             />
           </DialogContent>
           <DialogActions>
@@ -116,24 +127,30 @@ class TillInfo extends Component {
             </Button>
           </DialogActions>
         </Dialog>
-        <Tooltip title="Добавить приход" placement="top">
-          <Chip
-            icon={<Add/>}
-            label={`Приход ${inTill} ₽`}
-            onClick={() => this.handleClick("inTillDialog")}
-            className={classes.chip}
-            color={"primary"}
-          />
-        </Tooltip>
-        <Tooltip title="Добавить расход" placement="top">
-          <Chip
-            icon={<Remove/>}
-            label={`Расход ${outTill} ₽`}
-            onClick={() => this.handleClick("outTillDialog")}
-            className={classes.chip}
-            color={"secondary"}
-          />
-        </Tooltip>
+        {inTill.length
+          ? <Tooltip title="Добавить приход" placement="top">
+            <Chip
+              icon={<Add/>}
+              label={`Приход ${this.getAmount("inTill")} ₽`}
+              onClick={() => this.handleClick("inTillDialog")}
+              className={classes.chip}
+              color={"primary"}
+            />
+          </Tooltip>
+          : null
+        }
+        {outTill.length
+          ? <Tooltip title="Добавить расход" placement="top">
+            <Chip
+              icon={<Remove/>}
+              label={`Расход ${this.getAmount("outTill")} ₽`}
+              onClick={() => this.handleClick("outTillDialog")}
+              className={classes.chip}
+              color={"secondary"}
+            />
+          </Tooltip>
+          : null
+        }
       </div>
     );
   }

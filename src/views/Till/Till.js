@@ -56,15 +56,14 @@ class Till extends React.Component {
 
   render() {
     const { classes, title } = this.props;
-    console.log("render");
     return (
       <div>
         <GridContainer justify="center">
           <ItemGrid xs={12} sm={12} md={12} container alignContent={"center"} alignItems={"baseline"}>
-            <ItemGrid xs={8} md={8} lg={9} xl={10} item>
+            <ItemGrid xs={8} sm={6} lg={8} xl={10} item>
               <TillHeader classes={classes} title={title}/>
             </ItemGrid>
-            <ItemGrid xs={4} md={4} lg={3} xl={2} item>
+            <ItemGrid xs={4} sm={6} lg={4} xl={2} item>
               <TillInfo/>
             </ItemGrid>
           </ItemGrid>

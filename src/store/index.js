@@ -8,6 +8,7 @@ import createSagaMiddleware from "redux-saga";
 import rootSaga from "../modules";
 import calendar from "../modules/Calendar";
 import shop from "../modules/Shop";
+import till from "../modules/Till";
 import { reducer as formReducer } from "redux-form";
 
 const sagaMiddleware = createSagaMiddleware();
@@ -15,6 +16,7 @@ const sagaMiddleware = createSagaMiddleware();
 const mainReducer = combineReducers({
   calendar,
   shop,
+  till,
   form: formReducer
 });
 

@@ -1,8 +1,6 @@
 import { createSelector } from "reselect";
 
-const getShopState = state => state.shop;
+const getTillState = state => state.till;
 
-export const getTotalCart = createSelector(getShopState, state => state.totalCart);
-export const getTotalDay = createSelector(getShopState, state => state.totalDay);
-export const getTotalOrders = createSelector(getShopState, state => state.totalOrders);
-export const getIsSubmit = createSelector(getShopState, state => state.isSubmit);
+export const getInTill = createSelector(getTillState, state => state.inTill);
+export const getOutTill = createSelector(getTillState, state => state.outTill);
