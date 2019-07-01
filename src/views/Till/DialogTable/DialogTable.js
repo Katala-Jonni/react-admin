@@ -3,37 +3,15 @@ import PropTypes from "prop-types";
 
 // material-ui components
 import { withStyles } from "@material-ui/core/styles";
-import Button from "../../../components/CustomButtons/Button";
-import InputNumber from "../../../components/InputNumber/InputNumber";
 
 // core components
 import GridContainer from "components/Grid/GridContainer.jsx";
 import ItemGrid from "components/Grid/GridItem.jsx";
 import Table from "components/Table/Table.jsx";
 import extendedTablesStyle from "assets/jss/material-dashboard-react/views/extendedTablesStyle.jsx";
-import { addInTill, loadTill } from "../../../modules/Till";
+import ActonTill from "../TillForm";
 
 class OrderTable extends Component {
-  state = {
-    countCart: null
-  };
-
-  getTableData = () => {
-    const { data } = this.props;
-    if (data) {
-      return data.map((item, idx) => {
-        const { title, count, price, totalCount } = item;
-        return [
-          idx + 1,
-          title,
-          price,
-          count,
-          totalCount
-        ];
-      });
-    }
-    return [];
-  };
 
   getAmount = value => {
     let amount = 0;
@@ -41,30 +19,23 @@ class OrderTable extends Component {
     return amount;
   };
 
-  handleChangeCountCart = value => {
-    this.setState({
-      countCart: !value ? null : value
-    });
+  isValidData = data => {
+    if (!data || typeof data !== "object") return false;
+    const keys = Object.keys(data);
+    return !!keys.length;
   };
 
-  handleClickAddInTill = () => {
-    const { addInTill } = this.props;
-    const { countCart } = this.state;
-    if (!countCart) return;
+  handleClickAddInTill = data => {
+    if (!this.isValidData(data)) return;
+    return this.props.addInTill(data);
+  };
+
+  handleClickAddOutTill = data => {
+    if (!this.isValidData(data)) return;
     this.setState({
       countCart: null
     });
-    return addInTill(countCart);
-  };
-
-  handleClickAddOutTill = () => {
-    const { addOutTill } = this.props;
-    const { countCart } = this.state;
-    if (!countCart) return;
-    this.setState({
-      countCart: null
-    });
-    return addOutTill(countCart);
+    return this.props.addOutTill(data);
   };
 
   getInTill = () => {
@@ -91,122 +62,99 @@ class OrderTable extends Component {
   };
 
   render() {
-    const { classes, tableHead, col, isInTill, inTill, outTill, getAmount } = this.props;
-    const { countCart } = this.state;
+    const { classes, tableHead, col, isInTill, inTill, outTill, getAmount, outTillCategory } = this.props;
+    console.log(this.isValidData(null));
     return (
       <div>
-        {isInTill && inTill.length
+        {isInTill
           ? <GridContainer>
             <ItemGrid xs={12} container>
-              <ItemGrid xs={2} item>
-                <InputNumber
-                  value={countCart}
-                  onChange={this.handleChangeCountCart}
-                  autoFocus
-                />
-              </ItemGrid>
-              <ItemGrid xs={2} item>
-                <Button
-                  variant="contained"
-                  color={!countCart && countCart < 1 ? "danger" : "success"}
-                  disabled={!countCart && countCart < 1}
-                  onClick={this.handleClickAddInTill}
-                >
-                  Внести
-                </Button>
-              </ItemGrid>
-            </ItemGrid>
-            <ItemGrid xs={12} item>
-              <Table
-                striped
-                tableHead={tableHead}
-                tableData={[
-                  ...this.getInTill(),
-                  {
-                    total: true,
-                    colspan: col,
-                    amount: `${getAmount("inTill")} ₽`
-                  }
-                ]}
-                customCellClasses={[
-                  classes.center,
-                  classes.center,
-                  classes.center,
-                  classes.center,
-                  classes.center
-                ]}
-                customClassesForCells={[0, 5, 6]}
-                customHeadCellClasses={[
-                  classes.center,
-                  classes.center,
-                  classes.center,
-                  classes.center,
-                  classes.center
-                ]}
-                customHeadClassesForCells={[0, 5, 6]}
+              <ActonTill
+                handleClickAdd={this.handleClickAddInTill}
+                options={outTillCategory}
               />
             </ItemGrid>
+            {inTill.length
+              ? <ItemGrid xs={12} item>
+                <Table
+                  striped
+                  tableHead={tableHead}
+                  tableData={[
+                    ...this.getInTill(),
+                    {
+                      total: true,
+                      colspan: col,
+                      amount: `${getAmount("inTill")} ₽`
+                    }
+                  ]}
+                  customCellClasses={[
+                    classes.center,
+                    classes.center,
+                    classes.center,
+                    classes.center,
+                    classes.center
+                  ]}
+                  customClassesForCells={[0, 5, 6]}
+                  customHeadCellClasses={[
+                    classes.center,
+                    classes.center,
+                    classes.center,
+                    classes.center,
+                    classes.center
+                  ]}
+                  customHeadClassesForCells={[0, 5, 6]}
+                />
+              </ItemGrid>
+              : null
+            }
           </GridContainer>
           : null
         }
-        {!isInTill && outTill.length
+        {!isInTill
           ? <GridContainer>
             <ItemGrid xs={12} container>
-              <ItemGrid xs={2} item>
-                <InputNumber
-                  value={countCart}
-                  onChange={this.handleChangeCountCart}
-                  label={"Введите число"}
-                  autoFocus
-                />
-              </ItemGrid>
-              {countCart && countCart >= 1
-                ? <ItemGrid xs={2} item>
-                  <Button
-                    variant="contained"
-                    color="success"
-                    onClick={this.handleClickAddOutTill}
-                  >
-                    Внести
-                  </Button>
-                </ItemGrid>
-                : null
-              }
-            </ItemGrid>
-            <ItemGrid xs={12} item>
-              <Table
-                striped
-                tableHead={tableHead}
-                tableData={[
-                  ...this.getOuTill(),
-                  {
-                    total: true,
-                    colspan: col,
-                    amount: `${this.getAmount("outTill")} ₽`
-                  }
-                ]}
-                customCellClasses={[
-                  classes.center,
-                  classes.center,
-                  classes.center,
-                  classes.center,
-                  classes.center
-                ]}
-                customClassesForCells={[0, 5, 6]}
-                customHeadCellClasses={[
-                  classes.center,
-                  classes.center,
-                  classes.center,
-                  classes.center,
-                  classes.center
-                ]}
-                customHeadClassesForCells={[0, 5, 6]}
+              <ActonTill
+                handleClickAdd={this.handleClickAddOutTill}
+                options={outTillCategory}
+                isOutTill
               />
             </ItemGrid>
+            {outTill.length
+              ? <ItemGrid xs={12} item>
+                <Table
+                  striped
+                  tableHead={tableHead}
+                  tableData={[
+                    ...this.getOuTill(),
+                    {
+                      total: true,
+                      colspan: col,
+                      amount: `${this.getAmount("outTill")} ₽`
+                    }
+                  ]}
+                  customCellClasses={[
+                    classes.center,
+                    classes.center,
+                    classes.center,
+                    classes.center,
+                    classes.center
+                  ]}
+                  customClassesForCells={[0, 5, 6]}
+                  customHeadCellClasses={[
+                    classes.center,
+                    classes.center,
+                    classes.center,
+                    classes.center,
+                    classes.center
+                  ]}
+                  customHeadClassesForCells={[0, 5, 6]}
+                />
+              </ItemGrid>
+              : null
+            }
           </GridContainer>
           : null
         }
-
       </div>
     );
   }

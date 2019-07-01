@@ -5,15 +5,15 @@ import { Field } from "redux-form";
 import "date-fns";
 import moment from "moment/moment";
 import "moment/locale/ru";
-import CustomInputView from "./Inputs/CustomInputView";
+import CustomInputView from "../../../../components/Inputs/CustomInputView";
 import Fab from "@material-ui/core/Fab";
 import Remove from "@material-ui/icons/Remove";
 import Grid from "@material-ui/core/Grid";
-import Picker from "./Inputs/Picker";
+import Picker from "../../../../components/Inputs/Picker";
 import MomentUtils from "@date-io/moment";
 import { MuiPickersUtilsProvider } from "material-ui-pickers";
 import { getTotalResource } from "../../../../modules/Calendar";
-import CustomSelectView from "./Inputs/CustomSelectView";
+import CustomSelectView from "../../../../components/Inputs/CustomSelectView";
 import defaultResource from "../../../../modules/Calendar/defaultResource";
 
 class Member extends Component {

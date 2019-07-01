@@ -22,13 +22,13 @@ class NumberFormatCustom extends Component {
   };
 
   render() {
-    const { inputRef, onChange, ...other } = this.props;
+    const { inputRef, onChange, ...rest } = this.props;
     return (
       <NumberFormat
         getInputRef={inputRef}
         onChange={this.handleChange}
         allowNegative={false}
-        {...other}
+        {...rest}
       />
     );
   }
@@ -67,7 +67,7 @@ InputNumber.defaultValue = {
 
 InputNumber.propTypes = {
   classes: PropTypes.object.isRequired,
-  onChange: PropTypes.func.isRequired,
+  // onChange: PropTypes.func.isRequired,
   label: PropTypes.string,
   name: PropTypes.string,
   value: PropTypes.number

@@ -3,7 +3,7 @@ import propTypes from "prop-types";
 import moment from "moment";
 import { Field, reduxForm } from "redux-form";
 import validate from "../validate";
-import CustomInputView from "../Inputs/CustomInputView";
+import CustomInputView from "../../../../../components/Inputs/CustomInputView";
 import Button from "@material-ui/core/Button";
 import MemberSelectEvent from "./MemberSelectEvent";
 import SweetAlert from "react-bootstrap-sweetalert";

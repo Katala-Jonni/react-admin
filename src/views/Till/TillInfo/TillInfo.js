@@ -20,7 +20,6 @@ import Remove from "@material-ui/icons/Remove";
 const useStyles = theme => ({
   root: {
     display: "flex",
-    // justifyContent: "center",
     flexWrap: "wrap"
   },
   chip: {
@@ -31,16 +30,12 @@ const useStyles = theme => ({
 class TillInfo extends Component {
   state = {
     inTillDialog: false,
-    outTillDialog: false,
-    fullScreen: false
+    outTillDialog: false
   };
 
 
   componentDidMount() {
-    console.log("r");
-    // this.props.loadTill();
     this.props.loadTill();
-    // console.log(this.props);
   }
 
   handleClick = data => {
@@ -56,12 +51,6 @@ class TillInfo extends Component {
       fullScreen: false
     });
   };
-
-  // handleClickFullScreen = () => {
-  //   this.setState({
-  //     fullScreen: !this.state.fullScreen
-  //   });
-  // };
 
   getTableHead = () => {
     return this.state.inTillDialog
@@ -85,9 +74,8 @@ class TillInfo extends Component {
   };
 
   render() {
-    const { classes } = this.props;
-    const { inTillDialog, outTillDialog, fullScreen } = this.state;
-    const { inTill, outTill } = this.props;
+    const { classes, inTill, outTill } = this.props;
+    const { inTillDialog, outTillDialog } = this.state;
     return (
       <div className={classes.root}>
         <Dialog
@@ -111,13 +99,6 @@ class TillInfo extends Component {
             />
           </DialogContent>
           <DialogActions>
-            {/*<Button*/}
-            {/*onClick={this.handleClickFullScreen}*/}
-            {/*color={"primary"}*/}
-            {/*variant="contained"*/}
-            {/*>*/}
-            {/*{fullScreen ? "Обычный экран" : "Во весь экран"}*/}
-            {/*</Button>*/}
             <Button
               onClick={this.handleClickClose}
               color={"primary"}
@@ -127,30 +108,24 @@ class TillInfo extends Component {
             </Button>
           </DialogActions>
         </Dialog>
-        {inTill.length
-          ? <Tooltip title="Добавить приход" placement="top">
-            <Chip
-              icon={<Add/>}
-              label={`Приход ${this.getAmount("inTill")} ₽`}
-              onClick={() => this.handleClick("inTillDialog")}
-              className={classes.chip}
-              color={"primary"}
-            />
-          </Tooltip>
-          : null
-        }
-        {outTill.length
-          ? <Tooltip title="Добавить расход" placement="top">
-            <Chip
-              icon={<Remove/>}
-              label={`Расход ${this.getAmount("outTill")} ₽`}
-              onClick={() => this.handleClick("outTillDialog")}
-              className={classes.chip}
-              color={"secondary"}
-            />
-          </Tooltip>
-          : null
-        }
+        <Tooltip title="Добавить приход" placement="top">
+          <Chip
+            icon={<Add/>}
+            label={`Приход ${this.getAmount("inTill")} ₽`}
+            onClick={() => this.handleClick("inTillDialog")}
+            className={classes.chip}
+            color={"primary"}
+          />
+        </Tooltip>
+        <Tooltip title="Добавить расход" placement="top">
+          <Chip
+            icon={<Remove/>}
+            label={`Расход ${this.getAmount("outTill")} ₽`}
+            onClick={() => this.handleClick("outTillDialog")}
+            className={classes.chip}
+            color={"secondary"}
+          />
+        </Tooltip>
       </div>
     );
   }

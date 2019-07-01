@@ -59,7 +59,7 @@ class Till extends React.Component {
     return (
       <div>
         <GridContainer justify="center">
-          <ItemGrid xs={12} sm={12} md={12} container alignContent={"center"} alignItems={"baseline"}>
+          <ItemGrid xs={12} container alignContent={"center"} alignItems={"baseline"}>
             <ItemGrid xs={8} sm={6} lg={8} xl={10} item>
               <TillHeader classes={classes} title={title}/>
             </ItemGrid>
@@ -67,7 +67,7 @@ class Till extends React.Component {
               <TillInfo/>
             </ItemGrid>
           </ItemGrid>
-          <ItemGrid xs={12} sm={12} md={12}>
+          <ItemGrid xs={12}>
             {this.getTotalTabs().length
               ? <NavPills
                 color="warning"

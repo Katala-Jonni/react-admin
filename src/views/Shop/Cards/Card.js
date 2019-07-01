@@ -20,7 +20,7 @@ import CardActionArea from "@material-ui/core/CardActionArea";
 import Select from "react-select";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import AddButton from "./AddButtonCard";
-import InputNumber from "../../../components/InputNumber/InputNumber";
+import InputNumber from "../../../components/Inputs/InputNumber";
 import Dialog from "@material-ui/core/Dialog";
 import DialogActions from "@material-ui/core/DialogActions";
 import DialogContent from "@material-ui/core/DialogContent";

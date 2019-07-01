@@ -9,7 +9,9 @@ class CustomSelectView extends Component {
     selectEvent ? onChange(defaultValue) : onChange("");
   }
 
-  handleChange = data => this.props.input.onChange(data.value);
+  handleChange = data => {
+    this.props.input.onChange(data.value);
+  };
 
   render() {
     const {
@@ -20,9 +22,9 @@ class CustomSelectView extends Component {
       options,
       disabled,
       classes,
-      defaultValue
+      defaultValue,
+      menuIsOpen
     } = this.props;
-
     return (
       <Fragment>
         <Select
@@ -34,6 +36,7 @@ class CustomSelectView extends Component {
           isDisabled={disabled}
           maxMenuHeight={150}
           onChange={this.handleChange}
+          menuIsOpen={menuIsOpen}
           theme={theme => ({
             ...theme,
             colors: {

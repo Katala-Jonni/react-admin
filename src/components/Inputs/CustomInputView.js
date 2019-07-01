@@ -4,7 +4,7 @@ import cx from "classnames";
 import { withStyles } from "@material-ui/core/styles";
 import CustomInput from "components/CustomInput/CustomInput.jsx";
 
-import validationFormsStyle from "../../../../../assets/jss/material-dashboard-react/views/validationFormsStyle";
+import validationFormsStyle from "../../assets/jss/material-dashboard-react/views/validationFormsStyle";
 
 class ValidationForms extends Component {
   render() {

@@ -1,8 +1,10 @@
 import { changeTill, changeInTill, changeOutTill } from "./actions";
+import outTillCategory from "./outTillCategory";
 
 const initialState = {
   inTill: [],
-  outTill: []
+  outTill: [],
+  outTillCategory
 };
 
 export default (state = initialState, action) => {

@@ -25,7 +25,7 @@ import React from "react";
 // core components/views for RTL layout
 // import RTLPage from "views/RTLPage/RTLPage.jsx";
 
-import Picker from "./views/Calendar/Events/Forms/Inputs/Picker";
+import Picker from "./components/Inputs/Picker";
 
 
 const newCal = () => <CalendarPage/>;

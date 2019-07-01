@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import propTypes from "prop-types";
 import { Field, FieldArray, reduxForm } from "redux-form";
 import validate from "./validate";
-import CustomInputView from "./Inputs/CustomInputView";
+import CustomInputView from "../../../../components/Inputs/CustomInputView";
 import Button from "@material-ui/core/Button";
 import RenderMembers from "./RenderMembers";
 import { withStyles } from "@material-ui/core/styles";

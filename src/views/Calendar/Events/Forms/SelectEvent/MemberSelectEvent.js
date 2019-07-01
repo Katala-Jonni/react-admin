@@ -5,13 +5,13 @@ import "date-fns";
 import moment from "moment/moment";
 import "moment/locale/ru";
 import { Field } from "redux-form";
-import CustomInputView from "../Inputs/CustomInputView";
+import CustomInputView from "../../../../../components/Inputs/CustomInputView";
 import Grid from "@material-ui/core/Grid";
 import defaultResource from "../../../../../modules/Calendar/defaultResource";
 import { MuiPickersUtilsProvider } from "material-ui-pickers";
-import Picker from "../Inputs/Picker";
+import Picker from "../../../../../components/Inputs/Picker";
 import MomentUtils from "@date-io/moment";
-import CustomSelectView from "../Inputs/CustomSelectView";
+import CustomSelectView from "../../../../../components/Inputs/CustomSelectView";
 import { getTotalResource } from "../../../../../modules/Calendar";
 
 
