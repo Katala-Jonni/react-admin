@@ -28,8 +28,12 @@ const styles = {
 };
 
 class Till extends React.Component {
-  state = {
-    time: moment().format("LTS")
+  // state = {
+  //   time: moment().format("LTS")
+  // };
+
+  getViewTillInfo = value => {
+    console.log(value);
   };
 
   getTotalTabs = () => {
@@ -41,21 +45,24 @@ class Till extends React.Component {
         return {
           tabButton: name,
           tabIcon: Permidentity,
-          tabContent: (<ResultTable data={totalDay} head={name}/>)
+          tabContent: (<ResultTable data={totalDay} head={name}/>),
+          dataName: name.toLowerCase(),
+          getViewTillInfo: this.getViewTillInfo
         };
       }
       return {
         tabButton: name,
         tabIcon: Permidentity,
-        tabContent: (<TillTables data={totalDay[name]} head={name}/>)
+        tabContent: (<TillTables data={totalDay[name]} head={name}/>),
+        dataName: name.toLowerCase()
       };
     });
-    return data.length > 1 ? data : [];
-    // return data;
+    // return data.length > 1 ? data : [];
+    return data;
   };
 
   render() {
-    const { classes, title } = this.props;
+    const { classes, title, changeTill, tillInfoView } = this.props;
     return (
       <div>
         <GridContainer justify="center">
@@ -64,7 +71,10 @@ class Till extends React.Component {
               <TillHeader classes={classes} title={title}/>
             </ItemGrid>
             <ItemGrid xs={4} sm={6} lg={4} xl={2} item>
-              <TillInfo/>
+              {tillInfoView
+                ? <TillInfo/>
+                : null
+              }
             </ItemGrid>
           </ItemGrid>
           <ItemGrid xs={12}>
@@ -73,6 +83,7 @@ class Till extends React.Component {
                 color="warning"
                 alignCenter
                 tabs={this.getTotalTabs()}
+                changeTill={changeTill}
               />
               : <EmptyView/>
             }

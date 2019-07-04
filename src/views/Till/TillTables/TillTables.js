@@ -1,36 +1,56 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
+
 // material-ui components
 import { withStyles } from "@material-ui/core/styles";
+import GridContainer from "components/Grid/GridContainer.jsx";
+import ItemGrid from "components/Grid/GridItem.jsx";
+import Table from "components/Table/Table.jsx";
+import OrderNumber from "../OrderNumber";
+
+// material-ui icons
+
+// core components
 import Dialog from "@material-ui/core/Dialog";
 import DialogActions from "@material-ui/core/DialogActions";
 import DialogContent from "@material-ui/core/DialogContent";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import Button from "@material-ui/core/Button";
+import Chip from "@material-ui/core/Chip";
 
-// material-ui icons
-
-// core components
-import GridContainer from "components/Grid/GridContainer.jsx";
-import ItemGrid from "components/Grid/GridItem.jsx";
-import Table from "components/Table/Table.jsx";
 import extendedTablesStyle from "assets/jss/material-dashboard-react/views/extendedTablesStyle.jsx";
 
 import Paper from "@material-ui/core/Paper";
 import OrderTable from "../OrderTable";
 
+const infoPay = {
+  ["cash"]: "Наличка",
+  ["card"]: "Безнал",
+  ["mixed"]: "Смешанная оплата"
+};
+
+const infoPayColor = {
+  ["cash"]: "primary",
+  ["card"]: "secondary",
+  ["mixed"]: "default"
+};
+
 class TillTable extends Component {
   state = {
     orderNumberView: false,
-    orders: null
+    orders: null,
+    type: "",
+    number: ""
   };
 
-  handleClickOrderNumber = evt => {
+  handleClickOrderNumber = number => {
     const { totalOrders } = this.props;
+    const { data, payment } = totalOrders[number];
     this.setState({
       orderNumberView: true,
-      orders: totalOrders[evt.target.dataset.value],
-      number: evt.target.dataset.value
+      orders: data,
+      type: payment,
+      number: number
     });
   };
 
@@ -42,6 +62,7 @@ class TillTable extends Component {
 
   getTableData = () => {
     const { data, classes } = this.props;
+    const { orderNumberView } = this.state;
     if (data) {
       return data.map((item, idx) => {
         const { title, orderNumber, count, price, totalCount } = item;
@@ -51,7 +72,12 @@ class TillTable extends Component {
           price,
           count,
           totalCount,
-          <a className={classes.point} onClick={this.handleClickOrderNumber} data-value={orderNumber}>#{orderNumber}</a>
+          <OrderNumber
+            orderNumber={orderNumber}
+            orderNumberView={orderNumberView}
+            classes={classes}
+            handleClickOrderNumber={this.handleClickOrderNumber}
+          />
         ];
       });
     }
@@ -65,17 +91,10 @@ class TillTable extends Component {
     return amount;
   };
 
-  getInMasterSum = () => {
-    const { head, totalDay } = this.props;
-    let amount = 0;
-    totalDay[head].forEach((a) => amount += a.inMaster);
-    return amount;
-  };
-
   render() {
-    const { classes, head, masters } = this.props;
-    const { orderNumberView, orders, number } = this.state;
-    const master = masters.find(a => a.value.toLowerCase() === head.toLowerCase());
+    const { classes } = this.props;
+    const { orderNumberView, orders, number, type } = this.state;
+    const typePayment = infoPay[type.toLowerCase()];
     return (
       <GridContainer>
         <Dialog
@@ -85,7 +104,17 @@ class TillTable extends Component {
           scroll="body"
         >
           <DialogTitle>
-            Заказ #{number}
+            <GridContainer justify={"space-between"}>
+              <ItemGrid xs={3} item>
+                Заказ #{number}
+              </ItemGrid>
+              <ItemGrid xs={3} item>
+                <Chip
+                  label={typePayment}
+                  color={infoPayColor[type]}
+                />
+              </ItemGrid>
+            </GridContainer>
           </DialogTitle>
           <DialogContent>
             <OrderTable data={orders}/>
@@ -139,12 +168,6 @@ class TillTable extends Component {
               ]}
               customHeadClassesForCells={[0, 5, 6]}
             />
-            {
-              master
-                ? <p>Мастер Заработа: {this.getInMasterSum()} ₽</p>
-                : null
-            }
-
           </Paper>
         </ItemGrid>
       </GridContainer>

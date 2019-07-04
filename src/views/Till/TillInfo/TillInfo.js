@@ -34,9 +34,10 @@ class TillInfo extends Component {
   };
 
 
-  componentDidMount() {
-    this.props.loadTill();
-  }
+  // componentDidMount() {
+  //   this.props.loadInfoTill();
+  //   // this.props.loadTill();
+  // }
 
   handleClick = data => {
     this.setState({
@@ -67,14 +68,8 @@ class TillInfo extends Component {
       ];
   };
 
-  getAmount = value => {
-    let amount = 0;
-    this.props[value].forEach((a) => amount += a.count);
-    return amount;
-  };
-
   render() {
-    const { classes, inTill, outTill } = this.props;
+    const { classes, inTillSum, outTillSum } = this.props;
     const { inTillDialog, outTillDialog } = this.state;
     return (
       <div className={classes.root}>
@@ -94,8 +89,6 @@ class TillInfo extends Component {
               isInTill={inTillDialog}
               tableHead={this.getTableHead()}
               col={"1"}
-              // col={inTillDialog ? "0" : "1"}
-              getAmount={this.getAmount}
             />
           </DialogContent>
           <DialogActions>
@@ -111,7 +104,7 @@ class TillInfo extends Component {
         <Tooltip title="Добавить приход" placement="top">
           <Chip
             icon={<Add/>}
-            label={`Приход ${this.getAmount("inTill")} ₽`}
+            label={`Приход ${inTillSum} ₽`}
             onClick={() => this.handleClick("inTillDialog")}
             className={classes.chip}
             color={"primary"}
@@ -120,7 +113,7 @@ class TillInfo extends Component {
         <Tooltip title="Добавить расход" placement="top">
           <Chip
             icon={<Remove/>}
-            label={`Расход ${this.getAmount("outTill")} ₽`}
+            label={`Расход ${outTillSum} ₽`}
             onClick={() => this.handleClick("outTillDialog")}
             className={classes.chip}
             color={"secondary"}

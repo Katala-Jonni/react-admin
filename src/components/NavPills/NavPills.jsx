@@ -13,6 +13,7 @@ import GridContainer from "components/Grid/GridContainer.jsx";
 import ItemGrid from "components/Grid/GridItem.jsx";
 
 import navPillsStyle from "../../assets/jss/material-dashboard-react/components/navPillsStyle.jsx";
+import { changeTill } from "../../modules/Till/actions";
 
 class NavPills extends React.Component {
   constructor(props) {
@@ -22,8 +23,23 @@ class NavPills extends React.Component {
     };
   }
 
+  componentDidMount() {
+    const { changeTill, tabs } = this.props;
+    if (tabs.length < 2) {
+      changeTill({ tillInfoView: true });
+    } else {
+      changeTill({ tillInfoView: false });
+    }
+  }
+
   handleChange = (event, active) => {
     this.setState({ active });
+    const { changeTill } = this.props;
+    if (event.currentTarget.dataset.name === "касса") {
+      changeTill({ tillInfoView: true });
+    } else {
+      changeTill({ tillInfoView: false });
+    }
   };
   handleChangeIndex = index => {
     this.setState({ active: index });
@@ -83,6 +99,7 @@ class NavPills extends React.Component {
                 selected: classes[color]
                 // textColorInheritSelected: classes[color]
               }}
+              data-name={prop.dataName}
             />
           );
         })}
@@ -148,7 +165,8 @@ NavPills.propTypes = {
     tabsGrid: PropTypes.object,
     contentGrid: PropTypes.object
   }),
-  alignCenter: PropTypes.bool
+  alignCenter: PropTypes.bool,
+  changeTill: PropTypes.func.isRequired
 };
 
 export default withStyles(navPillsStyle)(NavPills);

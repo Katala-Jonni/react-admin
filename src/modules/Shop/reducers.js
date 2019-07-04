@@ -22,7 +22,7 @@ export default (state = initialState, action) => {
       return {
         ...state,
         totalDay: payload.totalDay,
-        totalOrders: {...state.totalOrders, ...payload.totalOrders},
+        totalOrders: { ...state.totalOrders, ...payload.totalOrders },
         totalCart: [],
         isSubmit: true
       };

@@ -1,26 +1,29 @@
-import React from "react";
+import React, { Component, Fragment } from "react";
 
 // material-ui components
 import { withStyles } from "@material-ui/core/styles";
+
 
 // material-ui icons
 import Close from "@material-ui/icons/Close";
 import Remove from "@material-ui/icons/Remove";
 import Add from "@material-ui/icons/Add";
+import AttachMoney from "@material-ui/icons/AttachMoney";
+import CreditCard from "@material-ui/icons/CreditCard";
 import KeyboardArrowRight from "@material-ui/icons/KeyboardArrowRight";
 
 // core components
 import GridContainer from "components/Grid/GridContainer.jsx";
 import ItemGrid from "components/Grid/GridItem.jsx";
 import Table from "components/Table/Table.jsx";
-import Button from "components/CustomButtons/Button.jsx";
 import IconButton from "@material-ui/core/IconButton";
 import Typography from "@material-ui/core/Typography";
 import Tooltip from "@material-ui/core/Tooltip";
+import Fab from "@material-ui/core/Fab";
 
 import extendedTablesStyle from "../../../assets/jss/material-dashboard-react/views/extendedTablesStyle";
 
-class ExtendedTables extends React.Component {
+class ExtendedTables extends Component {
   state = {
     tr: false
   };
@@ -60,9 +63,10 @@ class ExtendedTables extends React.Component {
     return count;
   };
 
-  handleClickSubmit = () => {
+  handleClickSubmit = evt => {
+    const { value, dataSetType } = evt.currentTarget;
     const { totalCart, totalDay, totalOrders, startSendCart, masters } = this.props;
-    startSendCart({ totalCart, totalDay, totalOrders, masters });
+    startSendCart({ totalCart, totalDay, totalOrders, masters, payment: evt.currentTarget.dataset.type });
     this.props.handleCloseView();
     this.props.showNotification("tr");
   };
@@ -140,20 +144,17 @@ class ExtendedTables extends React.Component {
                     <small className={classes.tdNumberSmall}>₽</small>
                   </div>
                 )
-              },
-              {
-                purchase: true,
-                colspan: "5",
-                col: {
-                  colspan: 2,
-                  text: (
-                    <Button color="danger" round onClick={this.handleClickSubmit}>
-                      Оформить{" "}
-                      <KeyboardArrowRight className={classes.icon}/>
-                    </Button>
-                  )
-                }
               }
+              // {
+              //   purchase: true,
+              //   colspan: "0",
+              //   col: {
+              //     colspan: 6,
+              //     text: (
+              //       null
+              //     )
+              //   }
+              // }
             ]}
             tableShopping
             customHeadCellClasses={[
@@ -175,9 +176,102 @@ class ExtendedTables extends React.Component {
             customClassesForCells={[1, 2, 3, 4, 5]}
           />
         </ItemGrid>
+        <div className={classes.buttonGroup}>
+          {/*<Fab*/}
+            {/*variant="extended"*/}
+            {/*aria-label="mixed"*/}
+            {/*data-type={"mixed"}*/}
+            {/*size={"large"}*/}
+            {/*className={classes.margin}*/}
+            {/*onClick={this.handleClickSubmit}*/}
+          {/*>*/}
+            {/*<CreditCard className={classes.extendedIcon}/>*/}
+            {/*Смешанная оплата{" "}*/}
+            {/*<KeyboardArrowRight className={classes.icon}/>*/}
+          {/*</Fab>*/}
+          <Fab
+            variant="extended"
+            color="primary"
+            aria-label="cash"
+            data-type={"cash"}
+            size={"large"}
+            className={classes.margin}
+            onClick={this.handleClickSubmit}
+          >
+            <AttachMoney className={classes.extendedIcon}/>
+            Наличкой{" "}
+            <KeyboardArrowRight className={classes.icon}/>
+          </Fab>
+          <Fab
+            variant="extended"
+            color="secondary"
+            aria-label="card"
+            data-type={"card"}
+            size={"large"}
+            className={classes.margin}
+            onClick={this.handleClickSubmit}
+          >
+            <CreditCard className={classes.extendedIcon}/>
+            Картой{" "}
+            <KeyboardArrowRight className={classes.icon}/>
+          </Fab>
+        </div>
       </GridContainer>
     );
   }
 }
 
 export default withStyles(extendedTablesStyle)(ExtendedTables);
+
+
+/*
+<Fragment>
+  <GridContainer justify={"space-between"} direction={"row"} spacing={8}>
+    <ItemGrid xs={3} item>
+      <Fab
+        variant="extended"
+        aria-label="mixed"
+        data-type={"mixed"}
+        size={"large"}
+        // className={classes.margin}
+        onClick={this.handleClickSubmit}
+      >
+        <CreditCard className={classes.extendedIcon}/>
+        Смешанная оплата{" "}
+        <KeyboardArrowRight className={classes.icon}/>
+      </Fab>
+    </ItemGrid>
+    <ItemGrid xs={3} item>
+      <Fab
+        variant="extended"
+        color="secondary"
+        aria-label="card"
+        data-type={"card"}
+        size={"large"}
+        // className={classes.margin}
+        onClick={this.handleClickSubmit}
+      >
+        <CreditCard className={classes.extendedIcon}/>
+        Картой{" "}
+        <KeyboardArrowRight className={classes.icon}/>
+      </Fab>
+    </ItemGrid>
+    <ItemGrid xs={3} item>
+      <Fab
+        variant="extended"
+        color="primary"
+        aria-label="cash"
+        data-type={"cash"}
+        size={"large"}
+        // className={classes.margin}
+        onClick={this.handleClickSubmit}
+      >
+        <AttachMoney className={classes.extendedIcon}/>
+        Наличкой{" "}
+        <KeyboardArrowRight className={classes.icon}/>
+      </Fab>
+    </ItemGrid>
+  </GridContainer>
+</Fragment>
+*/
+

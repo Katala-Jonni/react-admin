@@ -57,7 +57,6 @@ class ActonTill extends Component {
       options
     } = this.props;
     const { selectValue, countCart } = this.state;
-    console.log(countCart);
     return (
       <div style={{ width: "100%" }}>
         <GridContainer spacing={16} direction="row" alignItems={"baseline"}>

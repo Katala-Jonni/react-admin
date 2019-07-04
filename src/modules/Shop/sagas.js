@@ -15,7 +15,7 @@ const getSumMaster = ({ masters, name, title, price, count }) => {
 };
 
 function* sendCart(action) {
-  const { payload: { totalCart, totalDay, totalOrders, masters } } = action;
+  const { payload: { totalCart, totalDay, totalOrders, masters, payment } } = action;
   let data = {};
   const keys = Object.keys(totalOrders);
   let id = Math.max(...keys, 0);
@@ -35,7 +35,8 @@ function* sendCart(action) {
       totalCount: price * count,
       orderNumber: id,
       inMaster: isMaster ? sumMaster : 0,
-      outMaster: isMaster ? price * count - sumMaster : price * count
+      outMaster: isMaster ? price * count - sumMaster : price * count,
+      payment
     });
   });
   const totalDayKeys = Object.keys(totalDay);
@@ -64,8 +65,13 @@ function* sendCart(action) {
   }, []);
 
   const orders = {
-    [id]: filterOrders
+
+    [id]: {
+      payment: payment,
+      data: filterOrders
+    }
   };
+
   yield put(endSendCart({
     totalDay: data,
     totalOrders: orders

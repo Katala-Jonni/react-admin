@@ -104,6 +104,17 @@ const extendedTablesStyle = theme => ({
   },
   indent: {
     paddingTop: "50px"
+  },
+  margin: {
+    margin: theme.spacing.unit * 1
+  },
+  extendedIcon: {
+    marginRight: theme.spacing.unit * 1
+  },
+  buttonGroup: {
+    display: "flex",
+    justifyContent: "flex-end",
+    width: "100%"
   }
 });
 

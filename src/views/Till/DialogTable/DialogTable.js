@@ -9,7 +9,7 @@ import GridContainer from "components/Grid/GridContainer.jsx";
 import ItemGrid from "components/Grid/GridItem.jsx";
 import Table from "components/Table/Table.jsx";
 import extendedTablesStyle from "assets/jss/material-dashboard-react/views/extendedTablesStyle.jsx";
-import ActonTill from "../TillForm";
+import ActonTill from "../ActonTill";
 
 class OrderTable extends Component {
 
@@ -62,8 +62,7 @@ class OrderTable extends Component {
   };
 
   render() {
-    const { classes, tableHead, col, isInTill, inTill, outTill, getAmount, outTillCategory } = this.props;
-    console.log(this.isValidData(null));
+    const { classes, tableHead, col, isInTill, inTill, outTill, outTillCategory, inTillSum, outTillSum } = this.props;
     return (
       <div>
         {isInTill
@@ -84,7 +83,8 @@ class OrderTable extends Component {
                     {
                       total: true,
                       colspan: col,
-                      amount: `${getAmount("inTill")} ₽`
+                      amount: `${inTillSum} ₽`
+                      // amount: `${getAmount("inTill")} ₽`
                     }
                   ]}
                   customCellClasses={[
@@ -129,7 +129,8 @@ class OrderTable extends Component {
                     {
                       total: true,
                       colspan: col,
-                      amount: `${this.getAmount("outTill")} ₽`
+                      amount: `${outTillSum} ₽`
+                      // amount: `${this.getAmount("outTill")} ₽`
                     }
                   ]}
                   customCellClasses={[

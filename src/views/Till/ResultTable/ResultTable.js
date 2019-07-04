@@ -19,31 +19,24 @@ import ItemGrid from "components/Grid/GridItem.jsx";
 import Table from "components/Table/Table.jsx";
 import StatsCard from "components/Cards/StatsCard.jsx";
 import extendedTablesStyle from "assets/jss/material-dashboard-react/views/extendedTablesStyle.jsx";
+import { loadInfoTill } from "../../../modules/Till";
 
 class TillTable extends Component {
-  state = {};
+
+  componentDidMount() {
+    const { loadInfoTill, totalDay } = this.props;
+    loadInfoTill({ totalDay });
+  }
 
   getTableData = () => {
-    let { data } = this.props;
-    // const adminInfo = {
-    //   ["Администратор"]:
-    //     [
-    //       {
-    //         totalCount: 1000,
-    //         inMaster: 1000,
-    //         outMaster: 0
-    //       }
-    //     ]
-    // };
-    // data = { ...data, ...adminInfo };
-
-    const keys = Object.keys(data);
+    let { totalDay } = this.props;
+    const keys = Object.keys(totalDay);
     if (keys) {
       return keys.map((name, idx) => {
         let totalCount = 0;
         let inMaster = 0;
         let outMaster = 0;
-        data[name].forEach(item => {
+        totalDay[name].forEach(item => {
           totalCount += item.totalCount;
           inMaster += item.inMaster;
           outMaster += item.outMaster;
@@ -60,83 +53,55 @@ class TillTable extends Component {
     return [];
   };
 
-  getRevenue = () => {
-    let { data } = this.props;
-    // const adminInfo = {
-    //   ["Администратор"]:
-    //     [
-    //       {
-    //         totalCount: 1000,
-    //         inMaster: 1000,
-    //         outMaster: 0
-    //       }
-    //     ]
-    // };
-    // data = { ...data, ...adminInfo };
-
-    const keys = Object.keys(data);
-    let infoDay = {
-      revenue: 0,
-      result: 0
-    };
-    if (keys) {
-      keys.forEach((name) => {
-        data[name].forEach(item => {
-          infoDay.revenue += item.totalCount;
-          infoDay.result += item.outMaster;
-        });
-      });
-    }
-    return infoDay;
-  };
-
   render() {
-    const { classes } = this.props;
-    const infoDay = this.getRevenue();
+    const { classes, inTillSum, outTillSum, paymentByCard, revenue, income } = this.props;
+    const cash = revenue + inTillSum - (revenue - income) - outTillSum - paymentByCard;
     return (
       <GridContainer spacing={16}>
-        <ItemGrid xs={12} item>
-          <Paper>
-            <Table
-              striped
-              tableHead={[
-                "#",
-                "Наименование",
-                "Общая сумма",
-                "Мастеру",
-                "Салону"
-              ]}
-              tableData={[
-                ...this.getTableData()
-              ]}
-              customCellClasses={[
-                classes.center,
-                classes.center,
-                classes.center,
-                classes.center,
-                classes.center,
-                classes.center
-              ]}
-              customClassesForCells={[0, 5, 6]}
-              customHeadCellClasses={[
-                classes.center,
-                classes.center,
-                classes.center,
-                classes.center,
-                classes.center,
-                classes.center
-              ]}
-              customHeadClassesForCells={[0, 5, 6]}
-            />
-          </Paper>
-        </ItemGrid>
+        {this.getTableData().length
+          ? <ItemGrid xs={12} item>
+            <Paper>
+              <Table
+                striped
+                tableHead={[
+                  "#",
+                  "Наименование",
+                  "Общая сумма",
+                  "Мастеру",
+                  "Салону"
+                ]}
+                tableData={[
+                  ...this.getTableData()
+                ]}
+                customCellClasses={[
+                  classes.center,
+                  classes.center,
+                  classes.center,
+                  classes.center,
+                  classes.center,
+                  classes.center
+                ]}
+                customClassesForCells={[0, 5, 6]}
+                customHeadCellClasses={[
+                  classes.center,
+                  classes.center,
+                  classes.center,
+                  classes.center,
+                  classes.center,
+                  classes.center
+                ]}
+                customHeadClassesForCells={[0, 5, 6]}
+              />
+            </Paper>
+          </ItemGrid>
+          : null}
         <ItemGrid xs={12} sm={6} md={3} item>
           <StatsCard
             className={classes.indent}
             icon={ShoppingCart}
             iconColor="red"
             title="Выручка"
-            description={infoDay.revenue}
+            description={revenue}
             small="₽"
             statIcon={ShoppingCart}
           />
@@ -147,7 +112,7 @@ class TillTable extends Component {
             icon={AccountBalanceWallet}
             iconColor="green"
             title="Остаток"
-            description={infoDay.result}
+            description={income}
             small="₽"
             statIcon={AccountBalanceWallet}
           />
@@ -158,7 +123,7 @@ class TillTable extends Component {
             icon={CreditCard}
             iconColor="purple"
             title="Безнал"
-            description={0}
+            description={paymentByCard}
             small="₽"
             statIcon={CreditCard}
           />
@@ -169,7 +134,7 @@ class TillTable extends Component {
             icon={Money}
             iconColor="blue"
             title="Наличка"
-            description={0}
+            description={cash}
             small="₽"
             statIcon={Money}
           />

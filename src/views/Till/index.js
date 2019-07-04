@@ -1,11 +1,15 @@
 import { connect } from "react-redux";
 import Till from "./Till";
 import { getTotalDay, getTotalOrders } from "../../modules/Shop";
-import { getTotalMasters } from "../../modules/Calendar";
+import { getTillInfoView } from "../../modules/Till";
+import { changeTill } from "../../modules/Till/actions";
 
 const mapStateFromProps = state => ({
   totalDay: getTotalDay(state),
-  totalOrders: getTotalOrders(state)
+  totalOrders: getTotalOrders(state),
+  tillInfoView: getTillInfoView(state)
 });
 
-export default connect(mapStateFromProps, null)(Till);
+const mapDispatchFromProps = { changeTill };
+
+export default connect(mapStateFromProps, mapDispatchFromProps)(Till);

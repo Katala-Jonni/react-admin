@@ -1,10 +1,17 @@
-import { changeTill, changeInTill, changeOutTill } from "./actions";
+import { changeTill, changeInTill, changeOutTill, endLoadInfoTill, changeTillInfo } from "./actions";
 import outTillCategory from "./outTillCategory";
 
 const initialState = {
   inTill: [],
   outTill: [],
-  outTillCategory
+  inTillSum: 0,
+  outTillSum: 0,
+  cash: 0,
+  paymentByCard: 0,
+  revenue: 0,
+  income: 0,
+  outTillCategory,
+  tillInfoView: false
 };
 
 export default (state = initialState, action) => {
@@ -18,12 +25,23 @@ export default (state = initialState, action) => {
     case changeInTill.toString():
       return {
         ...state,
-        inTill: [...state.inTill, payload]
+        inTill: [...payload]
       };
     case changeOutTill.toString():
       return {
         ...state,
-        outTill: [...state.outTill, payload]
+        outTill: [...payload]
+      };
+    case endLoadInfoTill.toString():
+      // console.log(payload);
+      return {
+        ...state,
+        ...payload
+      };
+    case changeTillInfo.toString():
+      return {
+        ...state,
+        ...payload
       };
     default: {
       return state;
