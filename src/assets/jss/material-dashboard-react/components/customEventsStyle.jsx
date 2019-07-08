@@ -11,6 +11,13 @@ import buttonStyle from "./buttonStyle.jsx";
 
 
 const customEventsStyle = theme => ({
+  root: {
+    display: "flex",
+    flexWrap: "wrap"
+  },
+  chip: {
+    margin: theme.spacing.unit * 1
+  },
   addButton: {
     backgroundColor: "#2196f3"
   },

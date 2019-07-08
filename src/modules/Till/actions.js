@@ -9,3 +9,7 @@ export const changeOutTill = createAction("@@Till/CHANGE_OUT_TILL");
 export const loadTill = createAction("@@Till/LOAD_TILL");
 export const changeTill = createAction("@@Till/CHANGE_TILL");
 export const changeTillInfo = createAction("@@Till/CHANGE_TILL_INFO");
+export const lockOpen = createAction("@@Till/LOCK_OPEN");
+export const lockClose = createAction("@@Till/LOCK_CLOSE");
+export const endLockOpen = createAction("@@Till/END_LOCK_OPEN");
+export const clearTillInfo = createAction("@@Till/CLEAR_TILL_INFO");

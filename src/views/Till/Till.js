@@ -67,10 +67,10 @@ class Till extends React.Component {
       <div>
         <GridContainer justify="center">
           <ItemGrid xs={12} container alignContent={"center"} alignItems={"baseline"}>
-            <ItemGrid xs={8} sm={6} lg={8} xl={10} item>
+            <ItemGrid xs={7} sm={6} lg={8} xl={10} item>
               <TillHeader classes={classes} title={title}/>
             </ItemGrid>
-            <ItemGrid xs={4} sm={6} lg={4} xl={2} item>
+            <ItemGrid xs={3} sm={6} lg={4} xl={2} item>
               {tillInfoView
                 ? <TillInfo/>
                 : null

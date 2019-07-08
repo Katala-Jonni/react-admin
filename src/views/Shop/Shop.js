@@ -23,6 +23,7 @@ import Typography from "@material-ui/core/Typography";
 import AddAlert from "@material-ui/icons/AddAlert";
 import Snackbar from "components/Snackbar/Snackbar.jsx";
 import ItemGrid from "components/Grid/GridItem.jsx";
+import { loadTotalDay } from "../../modules/Shop";
 
 const styleShop = () => ({
   root: {
@@ -39,6 +40,10 @@ class Shop extends React.Component {
     fullScreen: false,
     tr: false
   };
+
+  componentDidMount() {
+    // this.props.loadTotalDay();
+  }
 
   componentWillUnmount() {
     // чистим, чтобы не было утечеки памяти

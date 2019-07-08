@@ -6,21 +6,22 @@ import {
   changeInTill,
   changeOutTill,
   loadInfoTill,
-  endLoadInfoTill
+  endLoadInfoTill, lockOpen, lockClose, clearTillInfo
 } from "./actions";
 import moment from "moment/min/moment-with-locales";
 import { addOutTill } from "./index";
 
 moment.locale("ru");
 
-const inTill = [];
-const outTill = [];
+let inTill = [];
+let outTill = [];
 let inTillSum = 1000;
 let outTillSum = 100;
 let cash = 0;
 let paymentByCard = 0;
 let revenue = 0;
 let income = 0;
+let lock = true;
 
 const fetchData = () =>
   new Promise(resolve => {
@@ -33,19 +34,37 @@ const fetchData = () =>
       cash,
       paymentByCard,
       revenue,
-      income
+      income,
+      lock
     }), 1000);
   })
     .then(res => res);
 
-const fetchLoadData = () =>
-  new Promise(resolve => {
+const fetchLock = (bool) => {
+  lock = bool;
+  return new Promise(resolve => {
     setTimeout(() => resolve({
-      inTillSum,
-      outTillSum
+      lock
     }), 1000);
   })
     .then(res => res);
+};
+
+const fetchInitialTillInfo = () => {
+  return new Promise(resolve => {
+    inTill = [];
+    outTill = [];
+    setTimeout(() => {
+      resolve({
+        inTill,
+        outTill,
+        inTillSum: 0,
+        outTillSum: 0
+      });
+    }, 1000);
+  })
+    .then(res => res);
+};
 
 const addInTillFetch = data =>
   new Promise(resolve => {
@@ -144,11 +163,29 @@ function* loadTillDataInfo({ payload }) {
   // yield put(endLoadInfoTill(data));
 }
 
+function* lockOpenApp({ payload }) {
+  const lock = yield call(fetchLock, payload);
+  yield put(endLoadInfoTill(lock));
+}
+
+function* removeTillInfo() {
+  const data = yield call(fetchInitialTillInfo);
+  yield put(endLoadInfoTill(data));
+  // разобраться с totalOrders
+  // можно подумать о структуре масив массивов
+  // чтобы номера заказов можно было легко найти
+  // можно сделать массив totalOrders, а в самих ордерах
+  // указывать номер массива где лежит и там внутри номер заказа
+}
+
 function* tillWatcher() {
   yield takeLatest(loadTill, loadTillData);
   yield takeLatest(loadInfoTill, loadTillDataInfo);
   yield takeLatest(addInTill, addInTillData);
   yield takeLatest(addOutTill, addInOutTillData);
+  yield takeLatest(clearTillInfo, removeTillInfo);
+  yield takeLatest(lockOpen, lockOpenApp);
+  // yield takeLatest(lockClose, lockCloseApp);
   // yield takeLatest(loadInfoTill, loadInfoTillData);
 }
 

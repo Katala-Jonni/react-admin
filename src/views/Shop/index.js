@@ -1,5 +1,5 @@
 import { connect } from "react-redux";
-import { changeSubmitSwitch, getIsSubmit, getTotalCart } from "../../modules/Shop";
+import { changeSubmitSwitch, getIsSubmit, getTotalCart, loadTotalDay } from "../../modules/Shop";
 import Shop from "./Shop";
 
 const mapStateFromProps = state => ({
@@ -7,6 +7,6 @@ const mapStateFromProps = state => ({
   isSubmit: getIsSubmit(state)
 });
 
-const mapDispatchFromProps = { changeSubmitSwitch };
+const mapDispatchFromProps = { changeSubmitSwitch, loadTotalDay };
 
 export default connect(mapStateFromProps, mapDispatchFromProps)(Shop);

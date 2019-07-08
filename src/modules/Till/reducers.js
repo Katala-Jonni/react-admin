@@ -1,4 +1,4 @@
-import { changeTill, changeInTill, changeOutTill, endLoadInfoTill, changeTillInfo } from "./actions";
+import { changeTill, changeInTill, changeOutTill, endLoadInfoTill, changeTillInfo, endLockOpen } from "./actions";
 import outTillCategory from "./outTillCategory";
 
 const initialState = {
@@ -11,7 +11,8 @@ const initialState = {
   revenue: 0,
   income: 0,
   outTillCategory,
-  tillInfoView: false
+  tillInfoView: false,
+  lock: true
 };
 
 export default (state = initialState, action) => {
@@ -33,7 +34,7 @@ export default (state = initialState, action) => {
         outTill: [...payload]
       };
     case endLoadInfoTill.toString():
-      // console.log(payload);
+      console.log(payload);
       return {
         ...state,
         ...payload
@@ -42,6 +43,11 @@ export default (state = initialState, action) => {
       return {
         ...state,
         ...payload
+      };
+    case endLockOpen.toString():
+      return {
+        ...state,
+        lock: payload
       };
     default: {
       return state;

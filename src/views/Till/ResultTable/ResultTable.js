@@ -19,7 +19,6 @@ import ItemGrid from "components/Grid/GridItem.jsx";
 import Table from "components/Table/Table.jsx";
 import StatsCard from "components/Cards/StatsCard.jsx";
 import extendedTablesStyle from "assets/jss/material-dashboard-react/views/extendedTablesStyle.jsx";
-import { loadInfoTill } from "../../../modules/Till";
 
 class TillTable extends Component {
 
