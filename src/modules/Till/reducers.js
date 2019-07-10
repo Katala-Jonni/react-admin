@@ -34,7 +34,7 @@ export default (state = initialState, action) => {
         outTill: [...payload]
       };
     case endLoadInfoTill.toString():
-      console.log(payload);
+      // console.log(payload);
       return {
         ...state,
         ...payload

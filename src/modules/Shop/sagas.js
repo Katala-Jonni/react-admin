@@ -1,7 +1,16 @@
 import { fork, takeLatest, put, call } from "redux-saga/effects";
-import { startSendCart, endSendCart, loadTotalDay, endTotalDay, startRemoveDay } from "./actions";
+import {
+  startSendCart,
+  endSendCart,
+  loadTotalDay,
+  endTotalDay,
+  startRemoveDay,
+  endTotalOrders,
+  endRemoveDay
+} from "./actions";
 import moment from "moment/min/moment-with-locales";
 import currentTill from "./currentTill";
+import orders from "./orders";
 import days from "./totalDay";
 import { loadApp } from "../Admin";
 import { endLockOpen } from "../Till/actions";
@@ -47,14 +56,14 @@ const fetchDataDay = info => {
     } else {
       day.paymentByCard = [paymentByCard];
     }
-    // totalOrders
-    if (day.totalOrders) {
-      const keys = Object.keys(totalOrders);
-      const orders = keys.map(key => totalOrders[key]);
-      day.totalOrders = [...day.totalOrders, ...orders];
-    } else {
-      day.totalOrders = [totalOrders];
-    }
+    // // totalOrders
+    // if (day.totalOrders) {
+    //   const keys = Object.keys(totalOrders);
+    //   const orders = keys.map(key => totalOrders[key]);
+    //   day.totalOrders = [...day.totalOrders, ...orders];
+    // } else {
+    //   day.totalOrders = [totalOrders];
+    // }
     // totalDay
     if (day.members) {
       const keys = Object.keys(totalDay);
@@ -67,6 +76,12 @@ const fetchDataDay = info => {
       });
     } else {
       day.members = totalDay || {};
+    }
+    // totalOrders
+    if (day.totalOrders) {
+      day.totalOrders = [...day.totalOrders, totalOrders];
+    } else {
+      day.totalOrders = [totalOrders] || {};
     }
     // inTill
     if (day.inTill) {
@@ -92,7 +107,7 @@ const fetchDataDay = info => {
     days[date] = {
       inTill,
       outTill,
-      totalOrders: orders,
+      totalOrders: [totalOrders],
       paymentByCard: [paymentByCard],
       revenue: [revenue],
       income: [income],
@@ -121,6 +136,25 @@ const fetchCurrentTill = (df = currentTill) => {
   });
 };
 
+const fetchOrders = (df = orders) => {
+  const totalOrders = {
+    ...df
+  };
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve(totalOrders);
+    }, 1000);
+  });
+};
+
+const fetchDays = date => {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve(days[date]);
+    }, 1000);
+  });
+};
+
 const getSumMaster = ({ masters, name, title, price, count }) => {
   const master = masters.find(a => a.value.toLowerCase() === name.toLowerCase());
   if (master) {
@@ -140,6 +174,11 @@ function* sendCart(action) {
   const keys = Object.keys(totalOrders);
   let id = Math.max(...keys, 0);
   id += 1;
+  let dayInfo = yield call(fetchDays, moment().format("DD.MM.YY"));
+  let groupOrderId = 0;
+  if (dayInfo && dayInfo.totalOrders) {
+    groupOrderId = dayInfo.totalOrders.length;
+  }
   totalCart.forEach(item => {
     const { name, price, title, count, category, isMaster } = item;
     const sumMaster = getSumMaster({ masters, name, title, price, count });
@@ -154,6 +193,8 @@ function* sendCart(action) {
       isMaster,
       totalCount: price * count,
       orderNumber: id,
+      groupOrderId: groupOrderId,
+      // реализовать заказы в виде групп
       inMaster: isMaster ? sumMaster : 0,
       outMaster: isMaster ? price * count - sumMaster : price * count,
       payment
@@ -171,14 +212,6 @@ function* sendCart(action) {
       }
     });
   }
-
-  // const i = {
-  //   date: moment().format("DD.MM.YY"),
-  //   totalDay: data
-  // };
-  // const fetchTotalDay = yield call(fetchDataDay, i);
-
-  const currentTillFetch = yield call(fetchCurrentTill, data);
 
   const filterOrders = totalCart.reduce((start, cur) => {
     const { name, price, title, count, category, isMaster } = cur;
@@ -201,17 +234,20 @@ function* sendCart(action) {
     }
   };
 
+  const currentTillFetch = yield call(fetchCurrentTill, data);
+  const fetchTotalOrders = yield call(fetchOrders, orders);
 
   yield put(endSendCart({
     totalDay: currentTillFetch,
-    totalOrders: orders
+    totalOrders: fetchTotalOrders
   }));
 }
 
 function* loadCurrentDay() {
   const data = yield call(fetchCurrentTill);
-  // console.log(data);
+  const orders = yield call(fetchOrders);
   yield put(endTotalDay(data));
+  yield put(endTotalOrders(orders));
   yield put(loadApp(true));
 };
 
@@ -219,11 +255,9 @@ function* startRemoveTotalDay({ payload }) {
   const data = yield call(fetchDataDay, payload);
   console.log(data);
   if (data) {
-    const currentTillFetch = yield call(fetchCurrentTill, {});
-    yield put(endSendCart({
-      totalDay: currentTillFetch
-      // totalOrders: orders
-    }));
+    yield call(fetchCurrentTill, {});
+    yield call(fetchOrders, {});
+    yield put(endRemoveDay());
     yield put(clearTillInfo());
     yield put(lockOpen(true));
     console.log("Смена закрыта");

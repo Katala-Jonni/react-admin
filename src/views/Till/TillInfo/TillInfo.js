@@ -64,8 +64,8 @@ class TillInfo extends Component {
           success
           style={{ display: "block", marginTop: "-100px" }}
           title={this.props.successAlertTitle}
-          onConfirm={() => this.hideAlert(true)}
-          onCancel={() => this.hideAlert()}
+          onConfirm={() => {}}
+          onCancel={() => {}}
           confirmBtnCssClass={
             this.props.classes.button + " " + this.props.classes.success
           }
@@ -198,19 +198,6 @@ class TillInfo extends Component {
             color={"secondary"}
           />
         </Tooltip>
-        {/*{this.getInfoTotalDay()*/}
-        {/*? <Tooltip title="Закрыть смену" placement="top">*/}
-        {/*<CustomButton*/}
-        {/*round*/}
-        {/*size={"sm"}*/}
-        {/*color={"warning"}*/}
-        {/*onClick={this.handleClickLock}*/}
-        {/*>*/}
-        {/*<LockOpen/>*/}
-        {/*</CustomButton>*/}
-        {/*</Tooltip>*/}
-        {/*: null*/}
-        {/*}*/}
         <Tooltip title="Закрыть смену" placement="top">
           <CustomButton
             round

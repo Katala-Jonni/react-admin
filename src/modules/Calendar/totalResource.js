@@ -92,7 +92,7 @@ export default {
     }
   ],
   [moment()
-    .set("date", 8)
+    .set("date", 10)
     .format("DD.MM.YY")]: [
     {
       resourceId: "Солярий",

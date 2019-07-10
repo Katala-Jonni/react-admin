@@ -1,4 +1,4 @@
-import { addToCart, endSendCart, changeSubmitSwitch, endTotalDay, endRemoveDay } from "./actions";
+import { addToCart, endSendCart, changeSubmitSwitch, endTotalDay, endRemoveDay, endTotalOrders } from "./actions";
 
 const initialData = () => {
   return {
@@ -24,7 +24,7 @@ export default (state = initialState, action) => {
         isSubmit: false
       };
     case endSendCart.toString():
-      // console.log(payload);
+      console.log(payload);
       return {
         ...state,
         totalDay: payload.totalDay,
@@ -43,6 +43,12 @@ export default (state = initialState, action) => {
       return {
         ...state,
         totalDay: { ...state.totalDay, ...payload }
+      };
+    case endTotalOrders.toString():
+      console.log(payload, "endTotalOrders");
+      return {
+        ...state,
+        totalOrders: { ...state.totalOrders, ...payload }
       };
     case endRemoveDay.toString():
       console.log(payload, "endRemoveDay");
