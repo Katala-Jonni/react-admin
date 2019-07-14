@@ -22,6 +22,7 @@ import Remove from "@material-ui/icons/Remove";
 import Lock from "@material-ui/icons/Lock";
 import LockOpen from "@material-ui/icons/LockOpen";
 import { startRemoveDay } from "../../../modules/Shop";
+// import { loadTill } from "../../../modules/Till";
 
 //
 // const useStyles = theme => ({
@@ -64,8 +65,10 @@ class TillInfo extends Component {
           success
           style={{ display: "block", marginTop: "-100px" }}
           title={this.props.successAlertTitle}
-          onConfirm={() => {}}
-          onCancel={() => {}}
+          onConfirm={() => {
+          }}
+          onCancel={() => {
+          }}
           confirmBtnCssClass={
             this.props.classes.button + " " + this.props.classes.success
           }
@@ -98,7 +101,10 @@ class TillInfo extends Component {
           style={{ display: "block", marginTop: "-100px" }}
           title={"Закрыть кассовую смену?"}
           onConfirm={() => this.successDelete()}
-          onCancel={() => this.cancelDelete()}
+          onCancel={(evt) => {
+            // console.log(evt);
+            evt && this.cancelDelete();
+          }}
           confirmBtnCssClass={
             this.props.classes.button + " " + this.props.classes.success
           }

@@ -6,10 +6,11 @@ import {
   changeInTill,
   changeOutTill,
   loadInfoTill,
-  endLoadInfoTill, lockOpen, lockClose, clearTillInfo
+  endLoadInfoTill, lockOpen, lockClose, clearTillInfo, loadStateTill
 } from "./actions";
 import moment from "moment/min/moment-with-locales";
-import { addOutTill } from "./index";
+import { addOutTill, openTill } from "./index";
+import days from "../Shop/totalDay";
 
 moment.locale("ru");
 
@@ -88,7 +89,8 @@ const getAmount = array => {
 // решить пробему с загрузкой
 // нужно отправлять данные моковые типо на сервер и получать их оттуда
 function* loadTillData() {
-  let loadData = yield call(fetchData);
+  console.log("Отправка прихода");
+  // let loadData = yield call(fetchData);
   // const keys = Object.keys(loadData);
   // const counts = keys.reduce((start, item) => {
   //   start[`${item}Sum`] = getAmount(loadData[item]);
@@ -97,7 +99,7 @@ function* loadTillData() {
   // const { inTillSum, outTillSum } = counts;
   // const cash = inTillSum - outTillSum;
   // loadData = { ...loadData, ...counts, cash };
-  yield put(changeTill(loadData));
+  // yield put(changeTill(loadData));
 }
 
 function* addInTillData({ payload }) {
@@ -105,6 +107,8 @@ function* addInTillData({ payload }) {
     count: payload.count,
     time: moment().format("DD.MM.YY, LTS")
   };
+  // console.log(newInTill);
+  // console.log(payload);
   const loadData = yield call(addInTillFetch, newInTill);
   yield put(changeInTill(loadData));
   const inTillSum = getAmount(loadData);
@@ -115,30 +119,12 @@ function* addInOutTillData({ payload }) {
   const newOutTill = {
     title: payload.title,
     count: payload.count,
-    time: moment().format("LTS")
+    time: moment().format("DD.MM.YY, LTS")
   };
   const loadData = yield call(addOutTillFetch, newOutTill);
   yield put(changeOutTill(loadData));
   const outTillSum = getAmount(loadData);
   yield put(endLoadInfoTill({ outTillSum }));
-}
-
-function* loadInfoTillData({ payload }) {
-  console.log(payload);
-  const keys = Object.keys(payload);
-  let infoDay = {
-    revenue: 0,
-    income: 0
-  };
-  if (keys) {
-    keys.forEach((name) => {
-      payload[name].forEach(item => {
-        infoDay.revenue += item.totalCount;
-        infoDay.income += item.outMaster;
-      });
-    });
-  }
-  yield put(endLoadInfoTill(infoDay));
 }
 
 function* loadTillDataInfo({ payload }) {
@@ -179,6 +165,54 @@ function* removeTillInfo() {
   // реализовать функционал прихода и добавление имени администратора смены
 }
 
+
+const fetchCurrentDay = date => {
+  return new Promise(resolve => {
+    setTimeout(() => {
+      resolve(days[date]);
+    }, 1000);
+  })
+    .then(res => res);
+};
+
+const fetchEdit = ({ date, open, admins }) => {
+  return new Promise(resolve => {
+    days[date] = { ...days[date], open, admins };
+    setTimeout(() => {
+      resolve(days);
+    }, 1000);
+  })
+    .then(res => res);
+};
+
+function* getDay(date) {
+  return yield call(fetchCurrentDay, date);
+}
+
+function* loadTillCurrentTill(info) {
+  const date = moment().format("DD.MM.YY");
+  const time = moment().format("LTS");
+  const targetDay = yield call(getDay, date);
+  // console.log(info);
+  const open = targetDay && targetDay.open ? [...targetDay.open, time] : [time];
+  const admins = targetDay && targetDay.admins ? [...targetDay.admins, info.payload.title] : [info.payload.title];
+  const data = yield call(fetchEdit, { date, open, admins });
+  yield call(addInTillData, info);
+  yield put(lockOpen(false));
+  yield put(openTill(true));
+  // console.log(data);
+  console.log("Внести приход");
+}
+
+function* loadStateCurrentTill() {
+  const data = yield call(getDay, moment().format("DD.MM.YY"));
+  if (!data || !data.open || !data.open.length || data.open.length !== data.close.length) {
+    return yield put(openTill(false));
+  } else {
+    return yield put(openTill(true));
+  }
+}
+
 function* tillWatcher() {
   yield takeLatest(loadTill, loadTillData);
   yield takeLatest(loadInfoTill, loadTillDataInfo);
@@ -186,11 +220,13 @@ function* tillWatcher() {
   yield takeLatest(addOutTill, addInOutTillData);
   yield takeLatest(clearTillInfo, removeTillInfo);
   yield takeLatest(lockOpen, lockOpenApp);
+  yield takeLatest(loadTill, loadTillCurrentTill);
+  yield takeLatest(loadStateTill, loadStateCurrentTill);
   // yield takeLatest(lockClose, lockCloseApp);
   // yield takeLatest(loadInfoTill, loadInfoTillData);
 }
 
 export default function* () {
   yield fork(tillWatcher);
-  console.log("Till saga run");
+  // console.log("Till saga run");
 }

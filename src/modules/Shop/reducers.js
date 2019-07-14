@@ -39,19 +39,19 @@ export default (state = initialState, action) => {
         isSubmit: payload
       };
     case endTotalDay.toString():
-      console.log(payload, "endTotalDay");
+      // console.log(payload, "endTotalDay");
       return {
         ...state,
         totalDay: { ...state.totalDay, ...payload }
       };
     case endTotalOrders.toString():
-      console.log(payload, "endTotalOrders");
+      // console.log(payload, "endTotalOrders");
       return {
         ...state,
         totalOrders: { ...state.totalOrders, ...payload }
       };
     case endRemoveDay.toString():
-      console.log(payload, "endRemoveDay");
+      // console.log(payload, "endRemoveDay");
       return {
         ...initialData()
       };

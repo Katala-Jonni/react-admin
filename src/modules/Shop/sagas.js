@@ -14,7 +14,7 @@ import orders from "./orders";
 import days from "./totalDay";
 import { loadApp } from "../Admin";
 import { endLockOpen } from "../Till/actions";
-import { lockClose, lockOpen, clearTillInfo } from "../Till";
+import { lockClose, lockOpen, clearTillInfo, openTill } from "../Till";
 
 const fetchDataDay = info => {
   const {
@@ -56,14 +56,6 @@ const fetchDataDay = info => {
     } else {
       day.paymentByCard = [paymentByCard];
     }
-    // // totalOrders
-    // if (day.totalOrders) {
-    //   const keys = Object.keys(totalOrders);
-    //   const orders = keys.map(key => totalOrders[key]);
-    //   day.totalOrders = [...day.totalOrders, ...orders];
-    // } else {
-    //   day.totalOrders = [totalOrders];
-    // }
     // totalDay
     if (day.members) {
       const keys = Object.keys(totalDay);
@@ -260,6 +252,7 @@ function* startRemoveTotalDay({ payload }) {
     yield put(endRemoveDay());
     yield put(clearTillInfo());
     yield put(lockOpen(true));
+    yield put(openTill(false));
     console.log("Смена закрыта");
   }
 };
@@ -272,5 +265,5 @@ function* shopWatcher() {
 
 export default function* () {
   yield fork(shopWatcher);
-  console.log("Shop saga run");
+  // console.log("Shop saga run");
 }

@@ -118,5 +118,5 @@ function* calendarWatcher() {
 
 export default function* () {
   yield fork(calendarWatcher);
-  console.log("Calendar saga run");
+  // console.log("Calendar saga run");
 }

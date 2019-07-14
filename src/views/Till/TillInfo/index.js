@@ -5,7 +5,7 @@ import {
   getInTillSum,
   getOutTill,
   getOutTillSum,
-  loadTill,
+  // loadTill,
   loadInfoTill,
   getRevenue,
   getIncome,
@@ -24,7 +24,7 @@ const mapStateFromProps = state => ({
   revenue: getRevenue(state),
   income: getIncome(state)
 });
-
-const mapDispatchFromProps = { loadTill, loadInfoTill, startRemoveDay };
+//loadTill
+const mapDispatchFromProps = { loadInfoTill, startRemoveDay };
 
 export default connect(mapStateFromProps, mapDispatchFromProps)(TillInfo);

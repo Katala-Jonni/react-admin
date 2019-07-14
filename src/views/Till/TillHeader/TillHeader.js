@@ -4,7 +4,7 @@ import moment from "moment/min/moment-with-locales";
 
 class TillHeader extends Component {
   state = {
-    time: moment().format("DD.MM.YY")
+    time: moment().format("LTS")
   };
 
   componentWillUnmount() {

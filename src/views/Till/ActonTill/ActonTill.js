@@ -12,6 +12,7 @@ import Select from "react-select";
 const getInitialState = () => ({
   selectValue: null,
   countCart: null
+  // isClick: false
 });
 
 class ActonTill extends Component {
@@ -35,18 +36,33 @@ class ActonTill extends Component {
     if (data) {
       this.setState({
         selectValue: data
+        // isClick: false
       });
     }
   };
 
   handleClickAdd = () => {
     const { selectValue, countCart } = this.state;
+    if (!countCart) return;
+    if (selectValue && !this.props.isOutTill) return;
     const data = {
       count: countCart,
       title: selectValue ? selectValue.value : null
     };
     this.props.handleClickAdd(data);
     this.removeField();
+    // this.setState({
+    //   isClick: true
+    // });
+    if (this.props.changeClick) {
+      this.props.changeClick();
+    }
+  };
+
+  handleUp = evt => {
+    if (evt.keyCode === 13) {
+      this.handleClickAdd();
+    }
   };
 
   render() {
@@ -54,7 +70,10 @@ class ActonTill extends Component {
       classes,
       btnAdd,
       isOutTill,
-      options
+      options,
+      label,
+      selectLabel,
+      selectName
     } = this.props;
     const { selectValue, countCart } = this.state;
     return (
@@ -64,11 +83,11 @@ class ActonTill extends Component {
             ? <ItemGrid xs={3}>
               <Select
                 options={options}
-                name="outTillSelect"
+                name={selectName}
                 type="text"
-                id="outTillSelect"
-                label="Выберите вид расхода"
-                placeholder='Выберите вид расхода'
+                id={selectName}
+                label={selectLabel}
+                placeholder={selectLabel}
                 classes={classes}
                 value={selectValue}
                 onChange={this.handleChange}
@@ -76,34 +95,42 @@ class ActonTill extends Component {
             </ItemGrid>
             : null
           }
-
-          {selectValue || !isOutTill
-            ? <ItemGrid xs={2}>
-              <InputNumber
-                value={countCart}
-                onChange={this.handleChangeCountCart}
-                placeholder='Введите число'
-                label="Введите число"
-                name="tillFormInputNumber"
-                type="text"
-                autoFocus
-              />
-            </ItemGrid>
-            : null
-          }
-          {countCart || !isOutTill
-            ? <ItemGrid xs={3}>
-              <Button
-                variant="contained"
-                color={!countCart && countCart < 1 ? "danger" : "success"}
-                disabled={!countCart && countCart < 1}
-                onClick={this.handleClickAdd}
-              >
-                {btnAdd}
-              </Button>
-            </ItemGrid>
-            : null
-          }
+          <ItemGrid
+            xs={!isOutTill ? 12 : 9}
+            container
+            spacing={16}
+            justify={!isOutTill ? "center" : "flex-start"}
+          >
+            {selectValue || !isOutTill
+              ? <ItemGrid xs={2}>
+                <InputNumber
+                  value={countCart}
+                  onChange={this.handleChangeCountCart}
+                  placeholder={label}
+                  label={label}
+                  name="tillFormInputNumber"
+                  type="text"
+                  autoFocus
+                  // disabled={isClick}
+                  onKeyUp={this.handleUp}
+                />
+              </ItemGrid>
+              : null
+            }
+            {countCart || !isOutTill
+              ? <ItemGrid xs={3}>
+                <Button
+                  variant="contained"
+                  color={!countCart && countCart < 1 ? "danger" : "success"}
+                  disabled={!countCart && countCart < 1}
+                  onClick={this.handleClickAdd}
+                >
+                  {btnAdd}
+                </Button>
+              </ItemGrid>
+              : null
+            }
+          </ItemGrid>
         </GridContainer>
       </div>
     );
@@ -111,13 +138,18 @@ class ActonTill extends Component {
 }
 
 ActonTill.defaultProps = {
-  btnAdd: "Внести"
+  btnAdd: "Внести",
+  label: "Введите число",
+  selectLabel: "Выберите вид расхода",
+  selectName: "outTillSelect"
 };
 
 ActonTill.propTypes = {
   classes: propTypes.object,
   handleClickAdd: propTypes.func.isRequired,
   btnAdd: propTypes.string,
+  selectLabel: propTypes.string,
+  selectName: propTypes.string,
   options: propTypes.arrayOf(propTypes.object),
   isOutTill: propTypes.bool
 };

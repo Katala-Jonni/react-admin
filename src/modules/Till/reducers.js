@@ -1,5 +1,14 @@
-import { changeTill, changeInTill, changeOutTill, endLoadInfoTill, changeTillInfo, endLockOpen } from "./actions";
+import {
+  changeTill,
+  changeInTill,
+  changeOutTill,
+  endLoadInfoTill,
+  changeTillInfo,
+  endLockOpen,
+  openTill
+} from "./actions";
 import outTillCategory from "./outTillCategory";
+import administrators from "./administrators";
 
 const initialState = {
   inTill: [],
@@ -11,8 +20,10 @@ const initialState = {
   revenue: 0,
   income: 0,
   outTillCategory,
+  administrators,
   tillInfoView: false,
-  lock: true
+  lock: true,
+  viewTill: false
 };
 
 export default (state = initialState, action) => {
@@ -48,6 +59,11 @@ export default (state = initialState, action) => {
       return {
         ...state,
         lock: payload
+      };
+    case openTill.toString():
+      return {
+        ...state,
+        viewTill: payload
       };
     default: {
       return state;

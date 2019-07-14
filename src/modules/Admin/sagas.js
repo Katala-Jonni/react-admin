@@ -6,5 +6,5 @@ function* tillWatcher() {
 
 export default function* () {
   yield fork(tillWatcher);
-  console.log("Admin saga run");
+  // console.log("Admin saga run");
 }

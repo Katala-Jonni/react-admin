@@ -18,6 +18,11 @@ import Footer from "components/Footer/Footer.jsx";
 import Sidebar from "components/Sidebar/Sidebar.jsx";
 import FixedPlugin from "components/FixedPlugin/FixedPlugin.jsx";
 import Progress from "components/Progress/Progress";
+import LinearProgress from "components/Progress/LinearProgress";
+import GridContainer from "components/Grid/GridContainer.jsx";
+import ItemGrid from "components/Grid/GridItem.jsx";
+import ActonTill from "../views/Till/ActonTill";
+import InfoPaper from "components/Typography/Info.jsx";
 
 import routes from "routes.js";
 
@@ -29,18 +34,22 @@ import logo from "assets/img/logo_solntseva.png";
 // import { deleteMasters, editEvents, getEvents, getResource, loadResource, selectDay } from "../modules/Calendar";
 
 import { connect } from "react-redux";
+import { loadResource } from "../modules/Calendar";
 import {
-  getResource,
-  getEvents,
-  getTotalResource,
-  selectDay,
-  deleteMasters,
-  editEvents,
-  loadResource
-} from "../modules/Calendar";
-import { endLockOpen, getInTill, getLock, lockOpen } from "../modules/Till";
+  endLockOpen,
+  getInTill,
+  getLock,
+  lockOpen,
+  loadTill,
+  addInTill,
+  openTill,
+  loadStateTill,
+  getstateTill,
+  getAdministrators
+} from "../modules/Till";
 import { getTotalDay, loadTotalDay } from "../modules/Shop";
 import { getLoad, loadApp } from "../modules/Admin";
+import administrators from "../modules/Till/administrators";
 
 const switchRoutes = (
   <Switch>
@@ -67,7 +76,8 @@ class Dashboard extends React.Component {
       hasImage: true,
       fixedClasses: "dropdown",
       mobileOpen: false,
-      isLock: null
+      isLock: null,
+      isClick: false
     };
   }
 
@@ -99,28 +109,28 @@ class Dashboard extends React.Component {
   };
 
   static getDerivedStateFromProps(nextProps, prevState) {
-    // console.log(nextProps);
-    // console.log(prevState);
-    const { totalDay, endLockOpen } = nextProps;
+    const { totalDay, endLockOpen, lock } = nextProps;
     const keys = Object.keys(totalDay);
     if (keys.length) {
       endLockOpen();
+    }
+    if (!lock) {
+      return {
+        isClick: false
+      };
     }
     return null;
   }
 
 
   componentDidMount() {
-    const { loadResource, loadTotalDay, loadApp } = this.props;
+    const { loadResource, loadTotalDay, loadStateTill } = this.props;
     if (navigator.platform.indexOf("Win") > -1) {
       const ps = new PerfectScrollbar(this.refs.mainPanel);
     }
     loadResource();
     loadTotalDay();
-
-    // решить проблему с загрузкой кассы
-    // мигает как бы
-    // надо чтобы один раз прогрузилась
+    loadStateTill();
     window.addEventListener("resize", this.resizeFunction);
   }
 
@@ -137,51 +147,86 @@ class Dashboard extends React.Component {
     window.removeEventListener("resize", this.resizeFunction);
   }
 
-  handleClickLock = () => {
-    this.props.lockOpen(false);
-    // this.props.endLockOpen(false);
+  isValidData = data => {
+    if (!data || typeof data !== "object") return false;
+    const keys = Object.keys(data);
+    return !!keys.length;
+  };
+
+  handleClickAddInTill = data => {
+    if (!this.isValidData(data)) return;
+    return this.props.loadTill(data);
+  };
+
+  changeClick = () => {
+    this.setState({
+      isClick: true
+    });
   };
 
   render() {
-    const { classes, lock, inTill, isLoad, ...rest } = this.props;
+    const { classes, lock, isLoad, viewTill, administrators, ...rest } = this.props;
     return (
       <div className={classes.wrapper}>
         <Dialog
           maxWidth={"lg"}
           fullScreen={lock}
           fullWidth={true}
-          open={!!(lock && isLoad)}
-          onClose={this.handleClickLock}
+          // open={!viewTill}
+          open={!!(lock && isLoad) && !viewTill}
+          // onClose={this.handleClickLock}
           // onClose={inTill.length ? this.handleClickLock : () => ({})}
           scroll="body"
         >
-          <DialogTitle>
-            Заголовок
-          </DialogTitle>
-          <DialogContent>
-            Контент
-          </DialogContent>
-          <DialogActions>
-            {inTill.length
-              ? <Button
-                // убрать здесь кнопку и добавить красивый на весь экран инпут
-                // внести приход
-                // поле только числа
-                // ввожу появляется кнопка внести приход
-                // после открываем интерфейс приложения
-                // массив смен, а ключ это дата
-                onClick={this.handleClickLock}
-                color={"primary"}
-                variant="contained"
-              >
-                Открыть смену
-              </Button>
-              : null
-            }
+          {this.state.isClick
+            ? <LinearProgress/>
+            : <Fragment>
+              <DialogTitle>
+                Для продолжения необходимо выбрать администратора, внести сумму прихода и открыть смену.
+              </DialogTitle>
+              <DialogContent>
+                <GridContainer
+                  direction={"row"}
+                  justify={"center"}
+                  alignItems={"center"}
+                  alignContent={"center"}
+                >
+                  <ActonTill
+                    handleClickAdd={this.handleClickAddInTill}
+                    btnAdd={"Открыть смену"}
+                    label={"Введите сумму"}
+                    changeClick={this.changeClick}
+                    options={administrators}
+                    selectName={"administrators"}
+                    selectLabel={"Выберите администратора"}
+                    isOutTill
+                    // решить вопрос касательно внесения суммы чтобы мог только один раз внести сумму
+                  />
+                </GridContainer>
+              </DialogContent>
+              <DialogActions>
+                {/*{inTill.length*/}
+                {/*? <Button*/}
+                {/*// убрать здесь кнопку и добавить красивый на весь экран инпут*/}
+                {/*// внести приход*/}
+                {/*// поле только числа*/}
+                {/*// ввожу появляется кнопка внести приход*/}
+                {/*// после открываем интерфейс приложения*/}
+                {/*// массив смен, а ключ это дата*/}
+                {/*onClick={this.handleClickLock}*/}
+                {/*color={"primary"}*/}
+                {/*variant="contained"*/}
+                {/*>*/}
+                {/*Открыть смену*/}
+                {/*</Button>*/}
+                {/*: null*/}
+                {/*}*/}
+              </DialogActions>
+            </Fragment>
+          }
 
-          </DialogActions>
         </Dialog>
-        {!lock && isLoad
+        {!lock && isLoad && viewTill
           ? <Fragment>
             <Sidebar
               routes={routes}
@@ -232,12 +277,24 @@ const mapStateFromProps = state => ({
   lock: getLock(state),
   inTill: getInTill(state),
   totalDay: getTotalDay(state),
-  isLoad: getLoad(state)
+  isLoad: getLoad(state),
+  viewTill: getstateTill(state),
+  administrators: getAdministrators(state)
   // events: getEvents(state),
   // totalResource: getTotalResource(state)
 });
 
-const mapDispatchFromProps = { loadResource, lockOpen, endLockOpen, loadTotalDay, loadApp };
+const mapDispatchFromProps = {
+  loadResource,
+  lockOpen,
+  endLockOpen,
+  loadTotalDay,
+  loadApp,
+  addInTill,
+  loadTill,
+  openTill,
+  loadStateTill
+};
 
 export default withStyles(dashboardStyle)(connect(mapStateFromProps, mapDispatchFromProps)(Dashboard));
 

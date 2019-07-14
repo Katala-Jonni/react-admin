@@ -30,7 +30,11 @@ const appStyle = theme => ({
   container,
   map: {
     marginTop: "70px"
-  }
+  },
+  // root: {
+  //   display: "flex",
+  //   justifyContent: "center"
+  // }
 });
 
 export default appStyle;

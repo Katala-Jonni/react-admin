@@ -6,8 +6,8 @@ import {
   getInTill, getInTillSum,
   getOutTill,
   getOutTillCategory,
-  getOutTillSum,
-  loadTill
+  getOutTillSum
+  // loadTill
 } from "../../../modules/Till";
 
 const mapStateFromProps = state => ({
@@ -17,7 +17,7 @@ const mapStateFromProps = state => ({
   outTillSum: getOutTillSum(state),
   outTillCategory: getOutTillCategory(state)
 });
-
-const mapDispatchFromProps = { loadTill, addInTill, addOutTill };
+//loadTill
+const mapDispatchFromProps = { addInTill, addOutTill };
 
 export default connect(mapStateFromProps, mapDispatchFromProps)(DialogTable);

@@ -226,7 +226,6 @@ class Calendar extends Component {
       endTimeTimeMinute,
       step
     } = this.props;
-
     const { selectEvent, selectEventValue, isNewEvent } = this.state;
 
     if (!totalResource) {
