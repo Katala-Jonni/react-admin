@@ -15,6 +15,9 @@ const customEventsStyle = theme => ({
     display: "flex",
     flexWrap: "wrap"
   },
+  addCardForm: {
+    padding: theme.spacing.unit * 2
+  },
   chip: {
     margin: theme.spacing.unit * 1
   },
@@ -65,6 +68,10 @@ const customEventsStyle = theme => ({
   },
   left: {
     textAlign: "left"
+  },
+  textField: {
+    marginLeft: theme.spacing.unit * 1,
+    marginRight: theme.spacing.unit * 1
   },
   ...buttonStyle
 });

@@ -12,7 +12,7 @@ import DashboardPage from "views/Dashboard/Dashboard.jsx";
 import CalendarPage from "views/Calendar";
 import UserProfile from "views/UserProfile/UserProfile.jsx";
 import ShopPage from "views/Shop";
-import SunPage from "views/Sun/Sun";
+import SunPage from "views/Sun";
 import TillPage from "views/Till";
 import CertificatePage from "views/Certificate/Certificate";
 import TableList from "views/TableList/TableList.jsx";
@@ -31,6 +31,7 @@ import Picker from "./components/Inputs/Picker";
 const newCal = () => <CalendarPage/>;
 const newShop = () => <ShopPage/>;
 const newTill = () => <TillPage/>;
+const newSun = () => <SunPage/>;
 
 const CustomComponent = () => {
   return (
@@ -73,10 +74,10 @@ const dashboardRoutes = [
   },
   {
     path: "/sun",
-    name: "Солярий",
+    name: "Абонементы",
     rtlName: "ملف تعريفي للمستخدم",
     icon: "wb_sunny",
-    component: SunPage,
+    component: newSun,
     layout: "/admin"
   },
   {
@@ -86,55 +87,55 @@ const dashboardRoutes = [
     icon: "card_giftcard",
     component: CertificatePage,
     layout: "/admin"
-  },
-  {
-    path: "/table",
-    name: "Table List",
-    rtlName: "قائمة الجدول",
-    icon: "content_paste",
-    component: TableList,
-    layout: "/admin"
-  },
-  {
-    path: "/typography",
-    name: "Typography",
-    rtlName: "طباعة",
-    icon: LibraryBooks,
-    component: Typography,
-    layout: "/admin"
-  },
-  {
-    path: "/icons",
-    name: "Icons",
-    rtlName: "الرموز",
-    icon: BubbleChart,
-    component: Icons,
-    layout: "/admin"
-  },
-  {
-    path: "/maps",
-    name: "Maps",
-    rtlName: "خرائط",
-    icon: LocationOn,
-    component: Maps,
-    layout: "/admin"
-  },
-  {
-    path: "/notifications",
-    name: "Notifications",
-    rtlName: "إخطارات",
-    icon: Notifications,
-    component: NotificationsPage,
-    layout: "/admin"
-  },
-  {
-    path: "/upgrade-to-pro",
-    name: "Upgrade To PRO",
-    rtlName: "التطور للاحترافية",
-    icon: Unarchive,
-    component: UpgradeToPro,
-    layout: "/admin"
   }
+  // {
+  //   path: "/table",
+  //   name: "Table List",
+  //   rtlName: "قائمة الجدول",
+  //   icon: "content_paste",
+  //   component: TableList,
+  //   layout: "/admin"
+  // },
+  // {
+  //   path: "/typography",
+  //   name: "Typography",
+  //   rtlName: "طباعة",
+  //   icon: LibraryBooks,
+  //   component: Typography,
+  //   layout: "/admin"
+  // },
+  // {
+  //   path: "/icons",
+  //   name: "Icons",
+  //   rtlName: "الرموز",
+  //   icon: BubbleChart,
+  //   component: Icons,
+  //   layout: "/admin"
+  // },
+  // {
+  //   path: "/maps",
+  //   name: "Maps",
+  //   rtlName: "خرائط",
+  //   icon: LocationOn,
+  //   component: Maps,
+  //   layout: "/admin"
+  // },
+  // {
+  //   path: "/notifications",
+  //   name: "Notifications",
+  //   rtlName: "إخطارات",
+  //   icon: Notifications,
+  //   component: NotificationsPage,
+  //   layout: "/admin"
+  // },
+  // {
+  //   path: "/upgrade-to-pro",
+  //   name: "Upgrade To PRO",
+  //   rtlName: "التطور للاحترافية",
+  //   icon: Unarchive,
+  //   component: UpgradeToPro,
+  //   layout: "/admin"
+  // }
   // {
   //   path: "/rtl-page",
   //   name: "RTL Support",

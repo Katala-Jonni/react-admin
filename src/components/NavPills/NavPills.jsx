@@ -25,10 +25,12 @@ class NavPills extends React.Component {
 
   componentDidMount() {
     const { changeTill, tabs } = this.props;
-    if (tabs.length < 2) {
-      changeTill({ tillInfoView: true });
-    } else {
-      changeTill({ tillInfoView: false });
+    if (changeTill) {
+      if (tabs.length < 2) {
+        changeTill({ tillInfoView: true });
+      } else {
+        changeTill({ tillInfoView: false });
+      }
     }
   }
 
@@ -45,10 +47,12 @@ class NavPills extends React.Component {
   handleChange = (event, active) => {
     this.setState({ active });
     const { changeTill } = this.props;
-    if (event.currentTarget.dataset.name === "касса") {
-      changeTill({ tillInfoView: true });
-    } else {
-      changeTill({ tillInfoView: false });
+    if (changeTill) {
+      if (event.currentTarget.dataset.name === "касса") {
+        changeTill({ tillInfoView: true });
+      } else {
+        changeTill({ tillInfoView: false });
+      }
     }
   };
   handleChangeIndex = index => {
@@ -176,7 +180,7 @@ NavPills.propTypes = {
     contentGrid: PropTypes.object
   }),
   alignCenter: PropTypes.bool,
-  changeTill: PropTypes.func.isRequired
+  changeTill: PropTypes.func
 };
 
 export default withStyles(navPillsStyle)(NavPills);

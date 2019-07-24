@@ -52,7 +52,6 @@ class OrderNumber extends Component {
               ? <KeyboardArrowUp className={classes.icon}/>
               : <KeyboardArrowDown className={classes.icon}/>
             }
-
           </ItemGrid>
         </GridContainer>
       </CustomButton>

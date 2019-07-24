@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { Component, Fragment } from "react";
 import PropTypes from "prop-types";
 import cx from "classnames";
 
@@ -37,10 +37,10 @@ class CustomInput extends Component {
       helpText,
       rtlActive,
       input,
+      notViewIcon,
       initialSelectValue,
       ...rest
     } = this.props;
-
     var labelClasses = cx({
       [" " + classes.labelRootError]: error,
       [" " + classes.labelRootSuccess]: success && !error
@@ -101,7 +101,6 @@ class CustomInput extends Component {
         [classes.inputRTL]: rtlActive,
         [classes.inputNoLabel]: labelText === undefined
       });
-
     return (
       <FormControl
         {...formControlProps}
@@ -134,7 +133,7 @@ class CustomInput extends Component {
           <Check className={successClasses}/>
         ) : null}
         {helpText !== undefined ? (
-          <FormHelperText id={id + "-text"}>{helpText}</FormHelperText>
+          <FormHelperText style={{ color: "red" }} id={id + "-text"}>{helpText}</FormHelperText>
         ) : null}
       </FormControl>
     );

@@ -23,7 +23,8 @@ class CustomSelectView extends Component {
       disabled,
       classes,
       defaultValue,
-      menuIsOpen
+      menuIsOpen,
+      height
     } = this.props;
     return (
       <Fragment>
@@ -31,10 +32,10 @@ class CustomSelectView extends Component {
           name={input.name}
           id={id}
           options={options}
-          placeholder={`Выберите ${label}`}
+          placeholder={label}
           defaultValue={defaultValue}
           isDisabled={disabled}
-          maxMenuHeight={150}
+          maxMenuHeight={height}
           onChange={this.handleChange}
           menuIsOpen={menuIsOpen}
           theme={theme => ({
@@ -52,6 +53,11 @@ class CustomSelectView extends Component {
     );
   }
 }
+
+CustomSelectView.defaultProps = {
+  height: 150,
+  label: "Выберите имя мастера/Солярий"
+};
 
 CustomSelectView.propTypes = {
   classes: PropTypes.object.isRequired,

@@ -172,9 +172,8 @@ class Dashboard extends React.Component {
           maxWidth={"lg"}
           fullScreen={lock}
           fullWidth={true}
-          // open={!viewTill}
-          open={!!(lock && isLoad) && !viewTill}
-          // onClose={this.handleClickLock}
+          open={false}
+          // open={!!(lock && isLoad) && !viewTill}
           // onClose={inTill.length ? this.handleClickLock : () => ({})}
           scroll="body"
         >
@@ -205,30 +204,15 @@ class Dashboard extends React.Component {
                 </GridContainer>
               </DialogContent>
               <DialogActions>
-                {/*{inTill.length*/}
-                {/*? <Button*/}
-                {/*// убрать здесь кнопку и добавить красивый на весь экран инпут*/}
-                {/*// внести приход*/}
-                {/*// поле только числа*/}
-                {/*// ввожу появляется кнопка внести приход*/}
-                {/*// после открываем интерфейс приложения*/}
-                {/*// массив смен, а ключ это дата*/}
-                {/*onClick={this.handleClickLock}*/}
-                {/*color={"primary"}*/}
-                {/*variant="contained"*/}
-                {/*>*/}
-                {/*Открыть смену*/}
-                {/*</Button>*/}
-                {/*: null*/}
-                {/*}*/}
               </DialogActions>
             </Fragment>
           }
 
         </Dialog>
-        {!lock && isLoad && viewTill
+        {true
           ? <Fragment>
             <Sidebar
+              //!lock && isLoad && viewTill
               routes={routes}
               logo={logo}
               image={this.state.image}
