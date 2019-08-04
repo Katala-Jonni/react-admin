@@ -36,7 +36,7 @@ function RegularButton({ ...props }) {
     [classes[size]]: size
   });
   return (
-    <Button {...rest} className={classes.button + " " + btnClasses}>
+    <Button {...rest} fullWidth={fullWidth} className={classes.button + " " + btnClasses}>
       {children}
     </Button>
   );

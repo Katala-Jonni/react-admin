@@ -15,7 +15,7 @@ class Progress extends Component {
   state = {};
 
   render() {
-    const { classes } = this.props;
+    const { classes, size } = this.props;
     return (
       <GridContainer
         direction={"row"}
@@ -24,14 +24,16 @@ class Progress extends Component {
         style={{ height: "100vh" }}
       >
         <ItemGrid xs={2} item>
-          <CircularProgress className={classes.progress} size={67}/>
+          <CircularProgress className={classes.progress} size={size}/>
         </ItemGrid>
       </GridContainer>
     );
   }
 }
 
-Progress.defaultProps = {};
+Progress.defaultProps = {
+  size: 67
+};
 
 Progress.propTypes = {
   classes: PropTypes.object.isRequired

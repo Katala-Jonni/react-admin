@@ -1,4 +1,5 @@
 import moment from "moment";
+import {ticketTypes} from "./options";
 
 const getDifferenceTime = (date, start) => {
   const time = moment(date).set({ "hour": moment(start).hour(), "minute": moment(start).minute() });
@@ -41,30 +42,30 @@ const verifyLength = (value, lth) => {
 };
 
 const isOneOfType = data => {
-  const options = [
-    {
-      label: "30 минут",
-      value: "30 минут"
-    },
-    {
-      label: "50 минут",
-      value: "50 минут"
-    },
-    {
-      label: "100 минут",
-      value: "100 минут"
-    },
-    {
-      label: "200 минут",
-      value: "200 минут"
-    }
-  ];
-  return options.find(item => item.value === data);
+  // const options = [
+  //   {
+  //     label: "30 минут",
+  //     value: "30 минут"
+  //   },
+  //   {
+  //     label: "50 минут",
+  //     value: "50 минут"
+  //   },
+  //   {
+  //     label: "100 минут",
+  //     value: "100 минут"
+  //   },
+  //   {
+  //     label: "200 минут",
+  //     value: "200 минут"
+  //   }
+  // ];
+  return ticketTypes.find(item => item.value === data);
 };
 
 const validate = values => {
   const errors = {};
-  const { lastName, surname, phoneNumber, name, typeCard, cardNumber } = values;
+  const { lastName, surname, phoneNumber, name, typeCard, cardNumber, typePay } = values;
   if (!lastName) {
     errors.lastName = "Обязательное поле";
   }
@@ -115,6 +116,10 @@ const validate = values => {
 
   if (!cardNumber) {
     errors.cardNumber = "Обязательное поле";
+  }
+
+  if (!typePay) {
+    errors.typePay = "Обязательное поле";
   }
 
   if (cardNumber && !verifyNumberPhone(cardNumber, 11, 12)) {

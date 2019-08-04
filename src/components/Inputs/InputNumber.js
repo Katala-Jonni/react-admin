@@ -41,7 +41,8 @@ NumberFormatCustom.propTypes = {
 
 class InputNumber extends Component {
   render() {
-    const { classes, value, onChange, label, name, ...rest } = this.props;
+    const { classes, value, onChange, label, name,fullWidth, ...rest } = this.props;
+    console.log(rest);
     return (
       <div className={classes.container}>
         <TextField

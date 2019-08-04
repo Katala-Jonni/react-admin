@@ -4,13 +4,34 @@ import Select from "react-select";
 import FormHelperText from "@material-ui/core/FormHelperText";
 
 class CustomSelectView extends Component {
+  state = {};
+
   componentDidMount() {
     const { selectEvent, defaultValue, input: { onChange } } = this.props;
     selectEvent ? onChange(defaultValue) : onChange("");
   }
 
   handleChange = data => {
-    this.props.input.onChange(data.value);
+    if (this.props.isMulti) {
+      return this.props.input.onChange(data);
+    }
+    return this.props.input.onChange(data.value);
+  };
+
+  handleFocus = () => {
+    this.props.handleFocus && this.props.handleFocus();
+  };
+
+  onInputChange = () => {
+    this.props.onInputChange && this.props.onInputChange();
+  };
+
+  onMenuClose = () => {
+    this.props.onMenuClose && this.props.onMenuClose();
+  };
+
+  onMenuOpen = () => {
+    this.props.onMenuOpen && this.props.onMenuOpen();
   };
 
   render() {
@@ -24,7 +45,9 @@ class CustomSelectView extends Component {
       classes,
       defaultValue,
       menuIsOpen,
-      height
+      height,
+      isMulti,
+      selectValues
     } = this.props;
     return (
       <Fragment>
@@ -33,10 +56,18 @@ class CustomSelectView extends Component {
           id={id}
           options={options}
           placeholder={label}
+          label={label}
           defaultValue={defaultValue}
+          // тут менял selectValues
+          value={selectValues}
           isDisabled={disabled}
           maxMenuHeight={height}
+          isMulti={isMulti}
           onChange={this.handleChange}
+          onFocus={this.handleFocus}
+          onInputChange={this.onInputChange}
+          onMenuClose={this.onMenuClose}
+          onMenuOpen={this.onMenuOpen}
           menuIsOpen={menuIsOpen}
           theme={theme => ({
             ...theme,

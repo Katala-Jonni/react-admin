@@ -9,3 +9,7 @@ export const startSearchNumber = createAction("@@Sun/START_SEARCH_NUMBER");
 export const endSearchNumber = createAction("@@Sun/END_SEARCH_NUMBER");
 export const startSearchPhoneNumber = createAction("@@Sun/START_SEARCH_PHONE_NUMBER");
 export const endSearchPhoneNumber = createAction("@@Sun/END_SEARCH_PHONE_NUMBER");
+export const startUseCard = createAction("@@Sun/START_USE_CARD");
+export const endUseCard = createAction("@@Sun/END_USE_CARD");
+export const turnOnLoader = createAction("@@Sun/TURN_ON_LOADER");
+export const deleteUseCard = createAction("@@Sun/DELETE_USE_CARD");

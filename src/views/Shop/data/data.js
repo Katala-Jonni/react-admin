@@ -32,19 +32,19 @@ export default {
     {
       id: 4,
       title: "Окрашивание бровей",
-      price: "price1",
+      price: 300,
       category: "brow"
     },
     {
       id: 5,
       title: "Коррекция бровей",
-      price: "price2",
+      price: 580,
       category: "brow"
     },
     {
       id: 6,
       title: "Моделирование бровей",
-      price: "price3",
+      price: 890,
       category: "brow"
     }
   ],
@@ -52,19 +52,19 @@ export default {
     {
       id: 7,
       title: "Окрашивание ресниц",
-      price: "price1",
+      price: 358,
       category: "cilia"
     },
     {
       id: 8,
       title: "Наращивание ресниц",
-      price: "price2",
+      price: 359,
       category: "cilia"
     },
     {
       id: 9,
       title: "cilia",
-      price: "price3",
+      price: 589,
       category: "cilia"
     }
   ],
@@ -72,19 +72,19 @@ export default {
     {
       id: 10,
       title: "hand",
-      price: "price1",
+      price: 580,
       category: "hand"
     },
     {
       id: 11,
       title: "hand",
-      price: "price2",
+      price: 350,
       category: "hand"
     },
     {
       id: 12,
       title: "hand",
-      price: "price3",
+      price: 800,
       category: "hand"
     }
   ],
@@ -92,7 +92,7 @@ export default {
     {
       id: 13,
       title: "feet",
-      price: "price1",
+      price: 900,
       category: "feet"
     }
   ],

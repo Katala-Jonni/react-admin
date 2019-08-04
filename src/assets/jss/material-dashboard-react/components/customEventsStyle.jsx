@@ -9,17 +9,28 @@ import {
 
 import buttonStyle from "./buttonStyle.jsx";
 
-
 const customEventsStyle = theme => ({
   root: {
     display: "flex",
     flexWrap: "wrap"
+  },
+  topMargin: {
+    marginTop: theme.spacing.unit * 1
+  },
+  rightMargin: {
+    marginRight: theme.spacing.unit * 2
+  },
+  leftMargin: {
+    marginLeft: theme.spacing.unit * 2
   },
   addCardForm: {
     padding: theme.spacing.unit * 2
   },
   chip: {
     margin: theme.spacing.unit * 1
+  },
+  bottomMargin: {
+    marginBottom: theme.spacing.unit * 1
   },
   addButton: {
     backgroundColor: "#2196f3"

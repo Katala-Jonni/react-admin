@@ -1,27 +1,28 @@
 import { connect } from "react-redux";
 import EditCard from "./EditCard";
 import {
-  getCard, getVerifyCardMessage,
-  getVerifyCardNumber, getVerifyPhoneMessage,
+  deleteUseCard,
+  getCard,
+  getLoader,
+  getVerifyCardMessage,
+  getVerifyCardNumber,
+  getVerifyPhoneMessage,
   getVerifyPhoneNumber,
   startSearchNumber,
-  startSearchPhoneNumber
+  startSearchPhoneNumber,
+  startUseCard
 } from "../../../modules/Sun";
-// import { getServerMessage, getError } from "modules/Sun";
-// import { getIsVerifyCard, getVerifyMessage, startVerifyCard } from "../../../modules/Sun";
+import { turnOnLoader } from "../../../modules/Sun/actions";
 
 const mapStateFromProps = state => ({
   card: getCard(state),
   isVerifyPhoneNumber: getVerifyPhoneNumber(state),
   isVerifyCardNumber: getVerifyCardNumber(state),
   verifyCardMessage: getVerifyCardMessage(state),
-  verifyPhoneMessage: getVerifyPhoneMessage(state)
-  // serverMessage: getServerMessage(state),
-  // errorMessage: getError(state),
-  // isVerifyCard: getIsVerifyCard(state),
-  // verifyMessage: getVerifyMessage(state)
+  verifyPhoneMessage: getVerifyPhoneMessage(state),
+  loader: getLoader(state)
 });
 
-const mapDispatchFromProps = { startSearchNumber, startSearchPhoneNumber };
+const mapDispatchFromProps = { startSearchNumber, startSearchPhoneNumber, startUseCard, turnOnLoader, deleteUseCard };
 
 export default connect(mapStateFromProps, mapDispatchFromProps)(EditCard);

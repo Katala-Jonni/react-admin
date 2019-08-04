@@ -4,6 +4,8 @@ import cx from "classnames";
 import { withStyles } from "@material-ui/core/styles";
 import CustomInput from "components/CustomInput/CustomInput.jsx";
 
+import CustomRadio from "components/Inputs/CustomRadioCheckBox";
+
 import validationFormsStyle from "../../assets/jss/material-dashboard-react/views/validationFormsStyle";
 
 class ValidationForms extends Component {
@@ -15,6 +17,7 @@ class ValidationForms extends Component {
       input,
       type,
       placeholder,
+      options,
       meta: { touched, error },
       ...rest
     } = this.props;

@@ -17,7 +17,7 @@ import Snackbar from "components/Snackbar/Snackbar.jsx";
 
 
 // @material-ui/icons
-import Create from "@material-ui/icons/Create";
+import Search from "@material-ui/icons/Search";
 import Add from "@material-ui/icons/Add";
 import AddAlert from "@material-ui/icons/AddAlert";
 
@@ -47,10 +47,10 @@ class Sun extends React.Component {
   getTabs = () => {
     return [
       {
-        tabButton: "Изменить",
-        tabIcon: Create,
+        tabButton: "Найти",
+        tabIcon: Search,
         tabContent: (<EditCard/>),
-        dataName: "Изменить".toLowerCase()
+        dataName: "Найти".toLowerCase()
       },
       {
         tabButton: "Новый",

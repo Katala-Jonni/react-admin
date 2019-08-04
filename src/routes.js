@@ -14,7 +14,7 @@ import UserProfile from "views/UserProfile/UserProfile.jsx";
 import ShopPage from "views/Shop";
 import SunPage from "views/Sun";
 import TillPage from "views/Till";
-import CertificatePage from "views/Certificate/Certificate";
+import CertificatePage from "views/Certificate";
 import TableList from "views/TableList/TableList.jsx";
 import Typography from "views/Typography/Typography.jsx";
 import Icons from "views/Icons/Icons.jsx";
@@ -32,6 +32,7 @@ const newCal = () => <CalendarPage/>;
 const newShop = () => <ShopPage/>;
 const newTill = () => <TillPage/>;
 const newSun = () => <SunPage/>;
+const newCertificate = () => <CertificatePage/>;
 
 const CustomComponent = () => {
   return (
@@ -85,7 +86,7 @@ const dashboardRoutes = [
     name: "Сертификаты",
     rtlName: "ملف تعريفي للمستخدم",
     icon: "card_giftcard",
-    component: CertificatePage,
+    component: newCertificate,
     layout: "/admin"
   }
   // {

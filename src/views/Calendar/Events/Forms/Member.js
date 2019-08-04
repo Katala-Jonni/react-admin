@@ -47,6 +47,7 @@ class Member extends Component {
   render() {
     const { member, index, classes, fields, noButton } = this.props;
     const { selectedDate, switchDate } = this.state;
+    console.log(index);
     return (
       <Fragment>
         {noButton

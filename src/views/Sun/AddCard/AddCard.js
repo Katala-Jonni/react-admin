@@ -1,8 +1,9 @@
 import React, { Component, Fragment } from "react";
 import PropTypes from "prop-types";
 
-import { Field, FieldArray, reduxForm } from "redux-form";
+import { Field, reduxForm } from "redux-form";
 import validate from "modules/Sun/validate.js";
+import { ticketTypes, payTypes } from "modules/Sun/options.js";
 import CustomInputView from "components/Inputs/CustomInputView";
 import Button from "@material-ui/core/Button";
 import { withStyles } from "@material-ui/core/styles";
@@ -11,18 +12,11 @@ import CustomSelectView from "../../../components/Inputs/CustomSelectView";
 import Paper from "@material-ui/core/Paper";
 import GridContainer from "components/Grid/GridContainer.jsx";
 import ItemGrid from "components/Grid/GridItem.jsx";
-import Typography from "@material-ui/core/Typography";
-import Snackbar from "components/Snackbar/Snackbar.jsx";
-import AddAlert from "@material-ui/icons/AddAlert";
-import { startVerifyCard } from "../../../modules/Sun";
+import CustomRadio from "components/Inputs/CustomRadioCheckBox";
 
-
-// const style = {
-//   root: {
-//     padding: theme.spacing(3, 2),
-//   },
-//   ...customEventsStyle
-// };
+const style = (theme) => ({
+  ...customEventsStyle(theme)
+});
 
 class AddCard extends Component {
   state = {
@@ -36,14 +30,16 @@ class AddCard extends Component {
       cardNumber: null,
       typeCard: null
     },
-    isDisabled: false
+    isDisabled: false,
+    isSubmit: false
   };
 
-  static getDerivedStateFromProps(nextProps, prevState) {
+  static getDerivedStateFromProps(nextProps) {
     const { errorMessage } = nextProps;
     if (!errorMessage) {
       return {
-        isDisabled: false
+        isDisabled: false,
+        isSubmit: false
       };
     }
     return null;
@@ -62,63 +58,26 @@ class AddCard extends Component {
     });
   };
 
-
   handleClickReset = () => {
     this.props.reset();
     return this.removeField();
-  };
-
-  getOptions = () => {
-    return [
-      {
-        label: "30 минут",
-        value: "30 минут"
-      },
-      {
-        label: "50 минут",
-        value: "50 минут"
-      },
-      {
-        label: "100 минут",
-        value: "100 минут"
-      },
-      {
-        label: "200 минут",
-        value: "200 минут"
-      }
-    ];
   };
 
   handleSubmit = evt => {
     this.props.handleSubmit(evt);
     this.handleClickReset();
     this.setState({
-      isDisabled: true
+      isDisabled: true,
+      isSubmit: true
     });
   };
 
   handleChange = evt => {
-    // console.log(evt.target);
     const { name, value } = evt.target;
-    // const data = {
-    //   [name]: value
-    // };
     this.setState({
       form: { ...this.state.form, [name]: value }
     });
     this.props.startVerifyCard(value);
-  };
-
-  handleChangeSelect = data => {
-    // const item = {
-    //   ["typeCard"]: {
-    //     label: data,
-    //     value: data
-    //   }
-    // };
-    // this.setState({
-    //   form: { ...this.state.form, ...item }
-    // });
   };
 
   render() {
@@ -138,8 +97,9 @@ class AddCard extends Component {
       verifyMessage
     } = this.props;
     const {
-      isMember, form: { cardNumber }, isDisabled
+      isMember, form: { cardNumber, typeCard }, isDisabled, isSubmit
     } = this.state;
+
     return (
       // решить проблему с заполненим формы неправильного номера карты
       // не очищать инпуты
@@ -206,18 +166,29 @@ class AddCard extends Component {
                     component={CustomInputView}
                     onChange={this.handleChange}
                   />
+                  <Field
+                    name='typePay'
+                    id='typeCard'
+                    type={"radio"}
+                    label='Выберите тип оплаты*'
+                    options={payTypes}
+                    isVerifyCard={!isVerifyCard}
+                    disabled={isDisabled}
+                    component={CustomRadio}
+                    isSubmit={isSubmit}
+                  />
                 </ItemGrid>
                 {
                   // cardNumber && cardNumber.length === 11
                   !isVerifyCard
-                    ? <ItemGrid xs={6} item>
+                    ? <ItemGrid xs={12} sm={6} item>
                       <Field
                         name='typeCard'
                         type="text"
                         classes={classes}
                         id='typeCard'
                         label='Выберите тип абонемента'
-                        options={this.getOptions()}
+                        options={ticketTypes}
                         menuIsOpen
                         height={200}
                         disabled={isDisabled}
@@ -239,7 +210,7 @@ class AddCard extends Component {
                 >
                   {btnAdd}
                 </Button>
-                <Button
+        <Button
                   type="button"
                   disabled={pristine || submitting}
                   className={classes.indent}
@@ -269,4 +240,4 @@ AddCard.propTypes = {
 export default reduxForm({
   form: "addCard",
   validate
-})(withStyles(customEventsStyle)(AddCard));
+})(withStyles(style)(AddCard));
