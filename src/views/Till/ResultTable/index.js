@@ -1,15 +1,15 @@
 import { connect } from "react-redux";
 import ResultTable from "./ResultTable";
 import {
-  getCash, getIncome,
+  getCash, getExpense, getIncome,
   getInTill,
   getInTillSum,
   getOutTill,
   getOutTillCategory,
-  getOutTillSum, getPaymentByCard, getRevenue, getTillInfoView,
+  getOutTillSum, getPayCategory, getPaymentByCard, getRevenue, getTill, getTillInfoView,
   loadInfoTill
 } from "../../../modules/Till";
-import { getTotalDay } from "../../../modules/Shop";
+import { getTotalDay, getTotalOrders } from "../../../modules/Shop";
 
 const mapStateFromProps = state => ({
   inTill: getInTill(state),
@@ -21,7 +21,11 @@ const mapStateFromProps = state => ({
   revenue: getRevenue(state),
   income: getIncome(state),
   outTillCategory: getOutTillCategory(state),
-  totalDay: getTotalDay(state)
+  totalDay: getTotalDay(state),
+  totalOrders: getTotalOrders(state),
+  payCategory: getPayCategory(state),
+  till: getTill(state),
+  expense: getExpense(state)
 });
 
 const mapDispatchFromProps = { loadInfoTill };

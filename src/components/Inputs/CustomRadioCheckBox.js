@@ -23,8 +23,12 @@ class CustomRadioCheckBox extends Component {
   };
 
   static getDerivedStateFromProps(nextProps) {
-    const { isSubmit } = nextProps;
+    const { isSubmit, input: { value, onChange } } = nextProps;
+    // console.log(nextProps);
     if (isSubmit) {
+      // console.log(isSubmit, "isSubmit");
+      // console.log(nextProps);
+      nextProps.input.onChange(null);
       return {
         selectedValue: null
       };
@@ -33,7 +37,7 @@ class CustomRadioCheckBox extends Component {
   }
 
   render() {
-    const { classes, id, name, options, label, isVerifyCard, meta: { error }, disabled } = this.props;
+    const { classes, id, name, options, label, isVerifyCard, meta: { error }, disabled, radioValue } = this.props;
     return (
       <GridContainer
         spacing={0}
@@ -42,11 +46,8 @@ class CustomRadioCheckBox extends Component {
         alignItems="center"
       >
         <ItemGrid xs={12}>
-          <FormLabel className={error ? classes.labelErrorCustom : null}>
+          <FormLabel>
             {label}
-            {/*{error ? (*/}
-            {/*<FormHelperText className={classes.labelErrorCustom} id={id + "-text"}>{error}</FormHelperText>*/}
-            {/*) : null}*/}
           </FormLabel>
         </ItemGrid>
         {options.map((item, idx) => {
@@ -55,7 +56,7 @@ class CustomRadioCheckBox extends Component {
               <FormControlLabel
                 control={
                   <Radio
-                    checked={disabled ? false : this.state.selectedValue === item.value}
+                    checked={disabled || !radioValue ? false : this.state.selectedValue === item.value}
                     onChange={this.handleChange}
                     value={item.value}
                     name={name}
@@ -69,6 +70,9 @@ class CustomRadioCheckBox extends Component {
           );
         })
         }
+        {error ? (
+          <FormHelperText className={classes.labelErrorCustom} id={id + "-text"}>{error}</FormHelperText>
+        ) : null}
       </GridContainer>
     );
   }

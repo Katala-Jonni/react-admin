@@ -2,7 +2,11 @@ import React, { Component, Fragment } from "react";
 
 // material-ui components
 import { withStyles } from "@material-ui/core/styles";
-
+import Dialog from "@material-ui/core/Dialog";
+import DialogActions from "@material-ui/core/DialogActions";
+import DialogContent from "@material-ui/core/DialogContent";
+import DialogTitle from "@material-ui/core/DialogTitle";
+import Button from "@material-ui/core/Button";
 
 // material-ui icons
 import Close from "@material-ui/icons/Close";
@@ -22,10 +26,14 @@ import Tooltip from "@material-ui/core/Tooltip";
 import Fab from "@material-ui/core/Fab";
 
 import extendedTablesStyle from "../../../assets/jss/material-dashboard-react/views/extendedTablesStyle";
+import CertificateView from "../CertificateView";
+import Template from "../../Template";
+import { sendCertificate as startSendCertificate } from "../../../modules/Certificate";
 
 class ExtendedTables extends Component {
   state = {
-    tr: false
+    tr: false,
+    openViewCertificate: false
   };
   handleClickAdd = item => {
     const { totalCart, addToCart } = this.props;
@@ -63,12 +71,59 @@ class ExtendedTables extends Component {
     return count;
   };
 
+  handleCloseViewCart = () => {
+    this.setState({
+      openViewCertificate: false
+    });
+    this.props.endSearchNumber({
+      isCertificate: true,
+      verifyMessage: "Такой сертификат не найден",
+      certificate: null
+    });
+  };
+
+  handleClickMixed = evt => {
+    // console.log(this.props);
+    this.setState({
+      openViewCertificate: true
+    });
+    // this.handleClickSubmit(evt);
+  };
+
   handleClickSubmit = evt => {
     const { value, dataSetType } = evt.currentTarget;
+    console.log(value, dataSetType);
     const { totalCart, totalDay, totalOrders, startSendCart, masters } = this.props;
-    startSendCart({ totalCart, totalDay, totalOrders, masters, payment: evt.currentTarget.dataset.type });
+    startSendCart({
+      totalCart,
+      totalDay,
+      totalOrders,
+      masters,
+      payment: evt.currentTarget.dataset.type,
+      infoPay: [{ typePay: evt.currentTarget.dataset.type, count: 1 }],
+      certificateNumber: 0
+    });
     this.props.handleCloseView();
     this.props.showNotification("tr");
+  };
+
+  handleClickSubmitMixed = values => {
+    console.log(values);
+    const { members, number } = values;
+    const { totalCart, totalDay, totalOrders, startSendCart, masters } = this.props;
+    startSendCart({
+      totalCart,
+      totalDay,
+      totalOrders,
+      masters,
+      payment: "mixed",
+      typeMixed: values,
+      infoPay: members,
+      certificateNumber: number
+    });
+    // startSendCart({ totalCart, totalDay, totalOrders, masters, payment: "mixed", typeMixed: values});
+    // this.props.handleCloseView();
+    // this.props.showNotification("tr");
   };
 
   getTotalCell = () => {
@@ -118,10 +173,53 @@ class ExtendedTables extends Component {
     });
   };
 
+  handleSubmit = values => {
+    // values.preventDefault();
+    console.log(values, "values");
+  };
+
   render() {
     const { classes } = this.props;
+    const { openViewCertificate } = this.state;
     return (
       <GridContainer>
+        <ItemGrid xs={12}>
+          <Dialog
+            maxWidth={"md"}
+            open={openViewCertificate}
+            onClose={this.handleCloseViewCart}
+            fullScreen={true}
+            scroll="paper"
+            aria-labelledby="max-width-dialog-title"
+          >
+            <DialogTitle id="max-width-dialog-title">
+              Выберите тип оплаты
+            </DialogTitle>
+            <DialogContent>
+              <Template
+                onSubmit={this.handleClickSubmitMixed}
+                // onSubmit={this.handleSubmit}
+                totalPrice={this.getTotalPrice()}
+              />
+              {/*<CertificateView*/}
+              {/*// classes={classes}*/}
+              {/*// handleSubmit={this.handleSubmit}*/}
+              {/*onSubmit={this.handleClickMixed}*/}
+              {/*// onSubmit={this.handleSubmit}*/}
+              {/*totalPrice={this.getTotalPrice()}*/}
+              {/*/>*/}
+            </DialogContent>
+            <DialogActions>
+              <Button
+                onClick={this.handleCloseViewCart}
+                color={"primary"}
+                variant="contained"
+              >
+                Закрыть
+              </Button>
+            </DialogActions>
+          </Dialog>
+        </ItemGrid>
         <ItemGrid xs={12}>
           <Table
             tableHead={[
@@ -178,17 +276,29 @@ class ExtendedTables extends Component {
         </ItemGrid>
         <div className={classes.buttonGroup}>
           {/*<Fab*/}
-            {/*variant="extended"*/}
-            {/*aria-label="mixed"*/}
-            {/*data-type={"mixed"}*/}
-            {/*size={"large"}*/}
-            {/*className={classes.margin}*/}
-            {/*onClick={this.handleClickSubmit}*/}
+          {/*variant="extended"*/}
+          {/*aria-label="certificate"*/}
+          {/*data-type={"certificate"}*/}
+          {/*size={"large"}*/}
+          {/*className={classes.margin}*/}
+          {/*onClick={this.handleClickCertificate}*/}
           {/*>*/}
-            {/*<CreditCard className={classes.extendedIcon}/>*/}
-            {/*Смешанная оплата{" "}*/}
-            {/*<KeyboardArrowRight className={classes.icon}/>*/}
+          {/*<CreditCard className={classes.extendedIcon}/>*/}
+          {/*Сертификат{" "}*/}
+          {/*<KeyboardArrowRight className={classes.icon}/>*/}
           {/*</Fab>*/}
+          <Fab
+            variant="extended"
+            aria-label="mixed"
+            data-type={"mixed"}
+            size={"large"}
+            className={classes.margin}
+            onClick={this.handleClickMixed}
+          >
+            <CreditCard className={classes.extendedIcon}/>
+            Смешанная оплата{" "}
+            <KeyboardArrowRight className={classes.icon}/>
+          </Fab>
           <Fab
             variant="extended"
             color="primary"

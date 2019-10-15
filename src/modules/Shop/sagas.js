@@ -150,7 +150,9 @@ const fetchDays = date => {
 const getSumMaster = ({ masters, name, title, price, count }) => {
   const master = masters.find(a => a.value.toLowerCase() === name.toLowerCase());
   if (master) {
+    // console.log(master);
     const percent = master.workPercent[title.toLowerCase()];
+    // console.log(percent);
     if (percent) {
       return Math.ceil((price * count) * (percent / 100));
     } else {
@@ -160,8 +162,89 @@ const getSumMaster = ({ masters, name, title, price, count }) => {
   return 0;
 };
 
+// function* sendCart(action) {
+//   const { payload: { totalCart, totalDay, totalOrders, masters, payment } } = action;
+//   console.log(payment);
+//   let data = {};
+//   const keys = Object.keys(totalOrders);
+//   let id = Math.max(...keys, 0);
+//   id += 1;
+//   let dayInfo = yield call(fetchDays, moment().format("DD.MM.YY"));
+//   let groupOrderId = 0;
+//   if (dayInfo && dayInfo.totalOrders) {
+//     groupOrderId = dayInfo.totalOrders.length;
+//   }
+//   totalCart.forEach(item => {
+//     const { name, price, title, count, category, isMaster } = item;
+//     const sumMaster = getSumMaster({ masters, name, title, price, count });
+//     if (!data[name]) {
+//       data[name] = [];
+//     }
+//     data[name].push({
+//       price,
+//       count,
+//       title,
+//       category,
+//       isMaster,
+//       totalCount: price * count,
+//       orderNumber: id,
+//       groupOrderId: groupOrderId,
+//       // реализовать заказы в виде групп
+//       inMaster: isMaster ? sumMaster : 0,
+//       outMaster: isMaster ? price * count - sumMaster : price * count,
+//       payment
+//     });
+//   });
+//
+//
+//   const totalDayKeys = Object.keys(totalDay);
+//   if (totalDayKeys.length) {
+//     totalDayKeys.forEach(key => {
+//       if (data[key]) {
+//         data[key] = [...totalDay[key], ...data[key]];
+//       } else {
+//         data[key] = [...totalDay[key]];
+//       }
+//     });
+//   }
+//
+//   const filterOrders = totalCart.reduce((start, cur) => {
+//     const { name, price, title, count, category, isMaster } = cur;
+//     const data = {
+//       name,
+//       price,
+//       title,
+//       count,
+//       category,
+//       isMaster,
+//       totalCount: price * count
+//     };
+//     return [...start, data];
+//   }, []);
+//
+//   const orders = {
+//     [id]: {
+//       payment: payment,
+//       data: filterOrders
+//     }
+//   };
+//
+//   const currentTillFetch = yield call(fetchCurrentTill, data);
+//   const fetchTotalOrders = yield call(fetchOrders, orders);
+//
+//   yield put(endSendCart({
+//     totalDay: currentTillFetch,
+//     totalOrders: fetchTotalOrders
+//   }));
+// }
+
 function* sendCart(action) {
-  const { payload: { totalCart, totalDay, totalOrders, masters, payment } } = action;
+  const { payload: { totalCart, totalDay, totalOrders, masters, payment, typeMixed, infoPay, certificateNumber } } = action;
+  // console.log(payment, "payment");
+  // console.log(totalCart, "totalCart");
+  // console.log(totalDay, "totalDay");
+  // console.log(totalOrders, "totalOrders");
+  // console.log(masters, "masters");
   let data = {};
   const keys = Object.keys(totalOrders);
   let id = Math.max(...keys, 0);
@@ -171,11 +254,52 @@ function* sendCart(action) {
   if (dayInfo && dayInfo.totalOrders) {
     groupOrderId = dayInfo.totalOrders.length;
   }
+
+  let isCertificate = typeMixed && typeMixed.number;
+  let certificateInfo = 0;
+  if (isCertificate) {
+    const { members } = typeMixed;
+    const crt = [...members].find(item => item.typePay === "certificate");
+    if (crt && Array.isArray(crt.count)) {
+      certificateInfo = crt.count.map(item => item.label.toLowerCase());
+    }
+    else {
+      certificateInfo = crt.count;
+    }
+  }
+  // console.log(certificateInfo, "certificateLabels");
+  // console.log(typeMixed, "typeMixed");
+  let certificateSum = [];
+  let totalSum = 0;
   totalCart.forEach(item => {
     const { name, price, title, count, category, isMaster } = item;
+    // console.log(name);
     const sumMaster = getSumMaster({ masters, name, title, price, count });
     if (!data[name]) {
       data[name] = [];
+    }
+    let crtSum = 0;
+    let isInclude = false;
+    // console.log(certificateInfo);
+    if (Array.isArray(certificateInfo)) {
+      // console.log("isIncude");
+      // console.log(title.toLowerCase(), "title.toLowerCase()");
+      isInclude = certificateInfo.includes(title.toLowerCase());
+      // console.log(isInclude);
+      if (isInclude) {
+        crtSum = price;
+        // crtSum = isMaster ? sumMaster / count : price;
+      } else {
+        // crtSum = 0;
+      }
+      // console.log(crtSum);
+    } else {
+      crtSum = 0;
+    }
+
+    certificateSum.push(crtSum);
+    if (payment !== "mixed") {
+      totalSum += price * count;
     }
     data[name].push({
       price,
@@ -189,11 +313,26 @@ function* sendCart(action) {
       // реализовать заказы в виде групп
       inMaster: isMaster ? sumMaster : 0,
       outMaster: isMaster ? price * count - sumMaster : price * count,
-      payment
+      payment: payment === "mixed" ? typeMixed : payment,
+      isCertificate: typeMixed && typeMixed.number ? !!typeMixed.number : false,
+      certificateSum: crtSum
     });
+    if (Array.isArray(certificateInfo) || isInclude) {
+      certificateInfo = certificateInfo.length ? certificateInfo.filter(item => item.toLowerCase() !== title.toLowerCase()) : [];
+      isInclude = false;
+    }
+    else {
+      certificateInfo = 0;
+    }
+    // crtSum = 0;
+
+    // if (payment === "mixed") {
+    //   data["paymentType"] = typeMixed;
+    // }
   });
-
-
+  // console.log(data);
+  //
+  //
   const totalDayKeys = Object.keys(totalDay);
   if (totalDayKeys.length) {
     totalDayKeys.forEach(key => {
@@ -204,7 +343,6 @@ function* sendCart(action) {
       }
     });
   }
-
   const filterOrders = totalCart.reduce((start, cur) => {
     const { name, price, title, count, category, isMaster } = cur;
     const data = {
@@ -216,16 +354,38 @@ function* sendCart(action) {
       isMaster,
       totalCount: price * count
     };
+    // infoPay[0].count = data.totalCount;
     return [...start, data];
   }, []);
+  console.log(infoPay, "infoPay");
+  // if (payment !== "mixed") {
+  //   infoPay[0].count = totalSum;
+  // }
+  let payInfo = {};
+  infoPay.forEach((item) => {
+    const { count, typePay } = item;
+    let sum = 0;
+    if (payment === "mixed" && typePay !== "certificate") {
+      sum = +count;
+    } else if (typePay === "certificate") {
+      sum = certificateSum.reduce((a, b) => a + b) || +count;
+    } else {
+      sum = totalSum;
+    }
+    payInfo[typePay] = sum;
+    // payInfo[typePay] = +count ? totalSum || +count : certificateSum.reduce((a, b) => a + b);
+  }, {});
 
+  console.log(payInfo);
   const orders = {
     [id]: {
       payment: payment,
-      data: filterOrders
+      typeMixed: payment === "mixed" ? typeMixed : payment,
+      data: filterOrders,
+      certificateSum: certificateSum.reduce((a, b) => a + b),
+      payInfo
     }
   };
-
   const currentTillFetch = yield call(fetchCurrentTill, data);
   const fetchTotalOrders = yield call(fetchOrders, orders);
 
@@ -233,6 +393,7 @@ function* sendCart(action) {
     totalDay: currentTillFetch,
     totalOrders: fetchTotalOrders
   }));
+  console.log("---END---");
 }
 
 function* loadCurrentDay() {

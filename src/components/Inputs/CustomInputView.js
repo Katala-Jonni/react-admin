@@ -21,6 +21,7 @@ class ValidationForms extends Component {
       meta: { touched, error },
       ...rest
     } = this.props;
+
     return (
       <Fragment>
         <CustomInput

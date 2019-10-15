@@ -30,9 +30,8 @@ const verifyLength = (value, lth) => {
 
 const validate = values => {
   const errors = {};
-  console.log(values);
   const { certificateNumber, typeCertificate, phoneNumber, servicesType, cardNumber, certificateSum, typePay } = values;
-
+  // console.log(certificateSum);
   if (!phoneNumber) {
     errors.phoneNumber = "Обязательное поле";
   }
@@ -49,11 +48,15 @@ const validate = values => {
     errors.certificateNumber = "Обязательное поле";
   }
 
-  if (!servicesType) {
+  if (!typeCertificate) {
+    errors.typeCertificate = "Обязательное поле";
+  }
+
+  if (typeCertificate === "service" && !servicesType) {
     errors.servicesType = "Обязательное поле";
   }
 
-  if (servicesType && !servicesType.length) {
+  if (Array.isArray(servicesType) && !servicesType.length) {
     errors.servicesType = "Обязательное поле";
   }
 
@@ -61,8 +64,11 @@ const validate = values => {
     errors.certificateSum = "Обязательное поле";
   }
 
+  if (!certificateSum) {
+    errors.certificateSum = "Обязательное поле";
+  }
 
-  if (certificateSum && !verifyNumber(certificateSum)) {
+  if (certificateSum && typeCertificate === "amount" && !verifyNumber(certificateSum)) {
     errors.certificateSum = "Сумма состоит только из цифр";
   }
 

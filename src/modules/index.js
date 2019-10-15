@@ -5,6 +5,7 @@ import { sagas as tillSagas } from "./Till";
 import { sagas as adminSagas } from "./Admin";
 import { sagas as sunSagas } from "./Sun";
 import { sagas as cerificateSagas } from "./Certificate";
+import { sagas as templateSagas } from "./Template";
 
 export default function* rootSaga() {
   yield fork(adminSagas);
@@ -13,4 +14,5 @@ export default function* rootSaga() {
   yield fork(tillSagas);
   yield fork(sunSagas);
   yield fork(cerificateSagas);
+  yield fork(templateSagas);
 }

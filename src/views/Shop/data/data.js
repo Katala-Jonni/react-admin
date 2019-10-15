@@ -11,7 +11,7 @@ export default {
     },
     {
       id: 2,
-      title: "Стрижка на среднии волосы",
+      title: "Стрижка на средние волосы",
       img: "http://static.jamadvice.com.ua/wp-content/uploads/2015/12/jamadvice_com_ua_pravilnyj_zimnij_uhod_za_volosami_01.jpg",
       icon: "https://c7.uihere.com/files/555/558/444/comb-hair-iron-hairdresser-beauty-parlour-clip-art-scissors.jpg",
       price: 400,

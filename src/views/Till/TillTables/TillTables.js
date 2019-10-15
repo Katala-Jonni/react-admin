@@ -26,13 +26,15 @@ import OrderTable from "../OrderTable";
 const infoPay = {
   ["cash"]: "Наличка",
   ["card"]: "Безнал",
-  ["mixed"]: "Смешанная оплата"
+  ["mixed"]: "Смешанная оплата",
+  ["certificate"]: "Сертификатом",
 };
 
 const infoPayColor = {
   ["cash"]: "primary",
   ["card"]: "secondary",
-  ["mixed"]: "default"
+  ["mixed"]: "default",
+  ["certificate"]: "default",
 };
 
 class TillTable extends Component {

@@ -1,11 +1,24 @@
-import { addToCart, endSendCart, changeSubmitSwitch, endTotalDay, endRemoveDay, endTotalOrders } from "./actions";
+import {
+  addToCart,
+  endSendCart,
+  changeSubmitSwitch,
+  endTotalDay,
+  endRemoveDay,
+  endTotalOrders,
+  changePays, plusPayCount, minusPayCount
+} from "./actions";
 
 const initialData = () => {
   return {
     totalCart: [],
     totalDay: {},
     totalOrders: {},
-    isSubmit: false
+    isSubmit: false,
+    typePays: {
+      cash: false,
+      card: false
+    },
+    payCount: 0
   };
 };
 
@@ -54,6 +67,24 @@ export default (state = initialState, action) => {
       // console.log(payload, "endRemoveDay");
       return {
         ...initialData()
+      };
+    case changePays.toString():
+      console.log(payload, "changePays");
+      return {
+        ...state,
+        typePays: { ...state.typePays, ...payload }
+      };
+    case plusPayCount.toString():
+      console.log(payload, "plusPayCount");
+      return {
+        ...state,
+        payCount: +payload ? state.payCount + +payload : 0
+      };
+    case minusPayCount.toString():
+      console.log(payload, "minusPayCount");
+      return {
+        ...state,
+        payCount: state.payCount - payload < 0 ? 0 : state.payCount - payload
       };
     default: {
       return state;

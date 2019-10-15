@@ -22,6 +22,7 @@ import Add from "@material-ui/icons/Add";
 import AddAlert from "@material-ui/icons/AddAlert";
 import AddCertificate from "./AddCertificate";
 import EditCertificate from "./EditCertificate/EditCertificate";
+import { sendCertificate } from "../../modules/Certificate/actions";
 
 const styles = {
   pageSubcategoriesTitle: {
@@ -37,7 +38,10 @@ class Certificate extends React.Component {
   };
 
   handleSubmit = values => {
-    console.log(values);
+    const { sendCertificate } = this.props;
+    sendCertificate(values);
+    // console.log(values);
+    // console.log(rest);
     // const { sendCard } = this.props;
     // sendCard(values);
     // console.log("Отправленно!");

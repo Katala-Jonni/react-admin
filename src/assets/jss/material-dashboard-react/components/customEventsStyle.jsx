@@ -39,7 +39,11 @@ const customEventsStyle = theme => ({
     backgroundColor: "#ff3d00"
   },
   errorColor: {
-    color: "#ff3d00"
+    color: "#ff3d00",
+    fontWeight: "400",
+    fontSize: "12px",
+    lineHeight: "1.42857",
+    fontFamily: '"Roboto", "Helvetica", "Arial", sans-serif'
   },
   borderColor: {
     border: "1px solid #ff3d00"

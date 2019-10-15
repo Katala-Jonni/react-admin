@@ -41,6 +41,7 @@ class CustomInput extends Component {
       initialSelectValue,
       ...rest
     } = this.props;
+
     var labelClasses = cx({
       [" " + classes.labelRootError]: error,
       [" " + classes.labelRootSuccess]: success && !error

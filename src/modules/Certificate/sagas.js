@@ -1,10 +1,22 @@
 import { fork, takeLatest, put, call } from "redux-saga/effects";
-import { loadNumberCertificate, endNumberCertificate } from "./actions";
+import {
+  sendCertificate,
+  endSendCertificate,
+  startVerifyCertificate,
+  endVerifyCertificate,
+  startSearchNumber,
+  endSearchNumber
+} from "./actions";
+import moment from "moment/moment";
+// import { endSearchNumber, startSearchNumber } from "../Sun/actions";
 
-const certificates = {};
+let certificates = {
+  12345: {}
+};
 const certificateNumbers = {
   1234567890: true,
-  salon: true
+  salon: true,
+  12345: true
 };
 
 const fetchCertificate = value => {
@@ -13,7 +25,40 @@ const fetchCertificate = value => {
   });
 };
 
-function* loadCertificateNumber({ payload }) {
+const fetchCertificates = () => {
+  return new Promise(resolve => {
+    resolve(certificates);
+  });
+};
+
+const fetchAddCertificate = cards => {
+  return new Promise(resolve => {
+    certificates = cards;
+    resolve(certificates);
+  });
+};
+
+const fetchVerifyCardNumber = (item, number) => {
+  return new Promise((resolve, reject) => {
+    // console.log(item[number]);
+    if (item[number]) {
+      resolve({
+        error: false,
+        card: item[number]
+      });
+    }
+    reject({
+      error: true,
+      card: null
+    });
+  })
+    .then(res => res)
+    .catch(error => error);
+};
+
+console.log("-------------------");
+
+function* verifyCertificateNumber({ payload }) {
   const { value } = payload;
   const isVerifyCertificate = yield call(fetchCertificate, value);
   let isCertificate = true;
@@ -22,11 +67,64 @@ function* loadCertificateNumber({ payload }) {
     isCertificate = false;
     verifyMessage = "Такого номера не существует";
   }
-  return yield put(endNumberCertificate({ isCertificate, verifyMessage }));
+  const certificates = yield call(fetchCertificates);
+  if (certificates[value]) {
+    isCertificate = false;
+    verifyMessage = "Данный сертификат уже зарегистрирован";
+  }
+  return yield put(endVerifyCertificate({ isCertificate, verifyMessage }));
 };
 
+function* fetchSendCertificate({ payload }) {
+  let errorMessage = false;
+  let serverMessage = "Сертификат зарегистрирован";
+  let totalCards = yield call(fetchCertificates);
+  const { certificateNumber } = payload;
+  totalCards = {
+    ...totalCards,
+    [certificateNumber]: {
+      ...payload,
+      date: moment().format("DD.MM.YY"),
+      place: "Древлянка 14, корпус 1"
+    }
+  };
+  const totalCertificate = yield call(fetchAddCertificate, totalCards);
+  if (!totalCertificate) {
+    errorMessage = true;
+    serverMessage = "Произошла ошибка, попробуйте снова!";
+  }
+  console.log(totalCertificate);
+  return yield put(endSendCertificate({ errorMessage, serverMessage }));
+}
+
+function* startSearchCertificate({ payload }) {
+  const certificates = yield call(fetchCertificates);
+  let isCertificate = false;
+  let verifyMessage = null;
+  if (!certificates) {
+    isCertificate = true;
+    verifyMessage = "Что-то пошло не так, попробуйте снова";
+  }
+  if (!certificates[payload]) {
+    isCertificate = true;
+    verifyMessage = "Такой сертификат не найден";
+  }
+  // console.log(isCertificate, "isCertificate");
+  // console.log(verifyMessage, "verifyMessage");
+  return yield put(endSearchNumber({
+    isCertificate,
+    verifyMessage,
+    certificate: certificates[payload] ? certificates[payload] : null
+  }));
+}
+
 function* certificateWatcher() {
-  yield takeLatest(loadNumberCertificate, loadCertificateNumber);
+  // верификация номера сертификата в базе
+  yield takeLatest(startVerifyCertificate, verifyCertificateNumber);
+  // создание сертификата
+  yield takeLatest(sendCertificate, fetchSendCertificate);
+  // поиск сертификата
+  yield takeLatest(startSearchNumber, startSearchCertificate);
 }
 
 export default function* () {

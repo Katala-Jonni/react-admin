@@ -103,7 +103,6 @@ function* fetchSendCard({ payload: { cardNumber, ...rest } }) {
   return yield put(endSendCard({ errorMessage, serverMessage }));
 }
 
-
 function* fetchStartVerifyCard({ payload }) {
   const isVerifyCards = yield call(fetchVerifyCardNumber, cards, payload);
   // console.log(isVerifyCards);

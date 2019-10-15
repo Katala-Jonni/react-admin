@@ -1,6 +1,6 @@
 import React, { Component, Fragment } from "react";
 import PropTypes from "prop-types";
-import { Field, FieldArray, reduxForm } from "redux-form";
+import { Field, reduxForm, change } from "redux-form";
 //validate
 // core components
 import Paper from "@material-ui/core/Paper";
@@ -22,14 +22,9 @@ import validate from "modules/Certificate/validate.js";
 import category from "views/Shop/data/category.js";
 import services from "views/Shop/data/data.js";
 import { payTypes } from "modules/Sun/options.js";
-// import RenderMembers from "views/Calendar/Events/Forms/RenderMembers.js";
 
-import RenderMembers from "../RenderMembers";
-import { loadNumberCertificate } from "../../../modules/Certificate";
-
-
-class AddCertificate extends Component {
-  state = {
+const initialState = () => {
+  return {
     isMember: false,
     cardNumber: null,
     form: {
@@ -48,13 +43,31 @@ class AddCertificate extends Component {
     groupValue: null,
     switchType: false,
     selectValues: [],
-    totalSum: 0
+    totalSum: 0,
+    radioValue: null,
+    typeCard: null
+  };
+};
+
+class AddCertificate extends Component {
+  state = {
+    ...initialState()
   };
 
   componentDidMount() {
     const { form: { certificateNumber } } = this.state;
-    this.props.loadNumberCertificate({ value: certificateNumber });
+    // this.props.loadNumberCertificate({ value: certificateNumber });
   }
+
+  // static getDerivedStateFromProps(nextProps, prevState) {
+  //   console.log(nextProps, "nextProps");
+  //   console.log(prevState, "prevState");
+  //   const { form: { certificateSum } } = prevState;
+  //   if (certificateSum) {
+  //     nextProps.dispatch(change("addCertificate", "certificateSum", null));
+  //   }
+  //   return null;
+  // }
 
   addField = () => {
     this.setState({
@@ -62,25 +75,32 @@ class AddCertificate extends Component {
     });
   };
 
-  handleSubmit = values => {
-    console.log(values);
+  handleSubmit = evt => {
+    this.props.reset();
+    this.setState({
+      ...initialState()
+    });
+    this.props.handleSubmit(evt);
   };
 
   removeField = () => {
-    this.setState({
-      isMember: false,
-      form: { ...this.state.form, ["cardNumber"]: "" }
-    });
     this.props.loadNumberCertificate({ value: null });
+    this.props.dispatch(change("addCertificate", "typePay", ""));
   };
 
   handleClickReset = () => {
+    console.log("test");
     this.props.reset();
     this.setState({
       serviceViewSum: 0,
       totalSum: 0,
       selectValues: [],
-      certificateSum: null
+      certificateSum: null,
+      isMember: false,
+      form: { ...this.state.form, ["cardNumber"]: "" },
+      radioValue: null,
+      typeCard: null
+      // isSubmit: true
     });
     return this.removeField();
   };
@@ -96,59 +116,43 @@ class AddCertificate extends Component {
   handleChangeNumber = evt => {
     const { name, value } = evt.target;
     this.setState({
-      form: { ...this.state.form, [name]: value }
+      form: { ...this.state.form, [name]: value },
+      selectValues: null
     });
-    this.props.loadNumberCertificate({ value });
+    this.props.startVerifyCertificate({ value });
   };
 
   handleChangeSelect = value => {
-    // console.log(value);
     if (!value) return false;
     const form = {
       ...this.state.form,
       typeCertificate: value
+      // добавил
+      // certificateSum: null
     };
+
+    const typeCard = options.find(a => a.value.toLowerCase() === value.toLowerCase());
     if (value === "amount") {
+      // this.props.dispatch(change("addCertificate", "servicesType", []));
+      this.props.dispatch(change("addCertificate", "certificateSum", null));
       this.setState({
         amountView: true,
         serviceView: false,
         form,
         totalSum: 0,
-        certificateSum: null,
-        selectValues: [],
+        typeCard,
+        selectValues: []
       });
     } else {
       this.setState({
         amountView: false,
         serviceView: true,
         form,
-        // totalSum: 0,
-        certificateSum: null
+        totalSum: 0,
+        typeCard
+        // certificateSum: null
       });
     }
-  };
-
-  getServices = () => {
-    const exceptionServices = ["certificate", "shop"];
-    if (category && category.length) {
-      return category.filter(item => !exceptionServices.includes(item.name))
-        .map(item => ({
-          value: item.name,
-          label: item.value
-        }));
-    }
-    return [];
-  };
-
-  addService = () => {
-    console.log("addService");
-    console.log(this.props);
-  };
-
-  handleChangeGroup = value => {
-    this.setState({
-      groupValue: value
-    });
   };
 
   getOptions = () => {
@@ -188,19 +192,15 @@ class AddCertificate extends Component {
 
   handleChangeType = values => {
     if (!values) return;
-    this.getTotalSum(values);
+    this.props.dispatch(change("addCertificate", "certificateSum", this.getTotalSum(values)));
     this.setState({
       totalSum: this.getTotalSum(values),
       selectValues: values || []
+      // form: {
+      //   ...this.state.form,
+      //   certificateSum: null
+      // }
     });
-  };
-
-  handleRemoveService = () => {
-    console.log("handleRemoveService");
-    const { index, fields, removeService } = this.props;
-    console.log(index);
-    fields.remove(index);
-    // removeService(index);
   };
 
   getTotalSum = values => {
@@ -220,22 +220,13 @@ class AddCertificate extends Component {
           }
         }
       });
-    // console.log(price);
     return price;
-    // if (services[group]) {
-    //   const product = services[group].find(el => el.title.toLowerCase() === value.toLowerCase());
-    //   if (product) {
-    //     price = product.price;
-    //   }
-    // } else {
-    //   price = 0;
-    // }
-    // const newTotalCounts = [...this.state.totalServices];
-    // newTotalCounts[id] = price;
-    // this.setState({
-    //   totalServices: newTotalCounts
-    //   // totalServices: { ...this.state.totalServices, [id]: price }
-    // });
+  };
+
+  handleChangeRadio = data => {
+    this.setState({
+      radioValue: data
+    });
   };
 
   render() {
@@ -256,35 +247,29 @@ class AddCertificate extends Component {
       certificate
     } = this.props;
     const {
-      isMember,
       form: { certificateNumber, certificateSum },
       isDisabled,
-      isSubmit,
       amountView,
       serviceView,
-      groupValue,
-      switchType,
-      serviceViewSum,
       totalSum,
       selectValues,
-      reset
+      reset,
+      radioValue,
+      typeCard
     } = this.state;
 
-    // возможно сделать только один переключатель
-    // console.log(amountView, "amountView");
-    // console.log(serviceView, "serviceView");
     return (
       <Fragment>
         <Paper style={{ height: "100vh" }}>
           <div className={classes.addCardForm}>
-            <form onSubmit={handleSubmit}>
+            <form onSubmit={this.handleSubmit}>
               <GridContainer justify="flex-start" alignItems="center" spacing={16}>
                 <ItemGrid xs={12} sm={6} item>
                   <Field
                     name="phoneNumber"
                     type="text"
                     id="phoneNumber"
-                    labelText="Введите номер телефона"
+                    labelText="Введите номер телефона владельца сертификата"
                     placeholder='89114232988'
                     // disabled={isDisabled}
                     // value={cardNumber}
@@ -303,12 +288,12 @@ class AddCertificate extends Component {
                     options={options}
                     height={200}
                     disabled={isDisabled}
-                    // value={typeCard}
+                    selectValues={typeCard}
                     component={CustomSelectView}
                     onChange={this.handleChangeSelect}
                   />
                 </ItemGrid>
-                {amountView || serviceView
+                {(amountView || serviceView) && typeCard
                   ?
                   <ItemGrid xs={12} sm={6} item>
                     <Field
@@ -349,9 +334,9 @@ class AddCertificate extends Component {
                 {serviceView && isCertificate
                   ? <ItemGrid xs={12} sm={6} item>
                     <Field
-                      name={`servicesType`}
+                      name="servicesType"
                       classes={classes}
-                      id={`servicesType`}
+                      id="servicesType"
                       // menuIsOpen
                       isMulti
                       label='Выберите услугу'
@@ -362,53 +347,59 @@ class AddCertificate extends Component {
                       // disabled={isDisabled}
                       // value={selectValues}
                       selectValues={selectValues}
-                      // onChange={this.handleChangeTypeService}
                       component={CustomSelectView}
                       onChange={this.handleChangeType}
                     />
                   </ItemGrid>
                   : null
                 }
-                {
-                  (amountView || serviceView) && isCertificate && (selectValues.length || certificateSum)
-                    ? <ItemGrid xs={12} item>
-                      <Field
-                        name='typePay'
-                        id='typeCard'
-                        // type={"radio"}
-                        label='Выберите тип оплаты*'
-                        options={payTypes}
-                        // classes={classes}
-                        // isVerifyCard={!isVerifyCard}
-                        // disabled={isDisabled}
-                        component={CustomRadio}
-                        // isSubmit={isSubmit}
-                      />
+                <ItemGrid xs={12} item>
+                  <Field
+                    name='typePay'
+                    id='typePay'
+                    // type={"radio"}
+                    label='Выберите тип оплаты*'
+                    options={payTypes}
+                    // classes={classes}
+                    // isVerifyCard={!isVerifyCard}
+                    // disabled={isDisabled}
+                    // isSubmit={isSubmit}
+                    radioValue={radioValue}
+                    component={CustomRadio}
+                    onChange={this.handleChangeRadio}
+                  />
+                </ItemGrid>
+                {serviceView && selectValues && selectValues.length
+
+                  ? <Fragment>
+                    <ItemGrid xs={12} sm={6} item>
+                      <Typography
+                        color='textPrimary'
+                        variant="subtitle1">
+                        Сертификат на сумму: {totalSum} ₽
+                      </Typography>
                     </ItemGrid>
-                    : null
-                }
-                {serviceView && selectValues.length
-                  ? <ItemGrid xs={12} item>
-                    <Typography
-                      color='textPrimary'
-                      // className={classes.addCardForm}
-                      variant="subtitle1">
-                      Сертификат на сумму: {totalSum} ₽
-                      {/*Сертификат на сумму: {this.getTotalSum()} ₽*/}
-                    </Typography>
-                  </ItemGrid>
+                    {/*<ItemGrid xs={12} sm={6} item>*/}
+                    {/*<Field*/}
+                    {/*name="certificateSum"*/}
+                    {/*id="certificateSum"*/}
+                    {/*style={{ opacity: "0" }}*/}
+                    {/*disabled={serviceView}*/}
+                    {/*value={totalSum}*/}
+                    {/*component={CustomInputView}*/}
+                    {/*/>*/}
+                    {/*</ItemGrid>*/}
+                  </Fragment>
                   : null
                 }
                 <ItemGrid xs={12}>
                   <div className={classes.topMargin}>
                     {
-                      (amountView || serviceView) && isCertificate && (selectValues.length || certificateSum)
+                      valid && !submitting && isCertificate
                         ? <Button
                           type="submit"
                           color='primary'
                           variant="contained"
-                          // disabled={isMember || (!valid && !submitting)}
-                          // disabled={isMember || (!valid && !submitting) || isVerifyCard}
                         >
                           {btnAdd}
                         </Button>
@@ -420,8 +411,6 @@ class AddCertificate extends Component {
                           type="button"
                           color={"info"}
                           disabled={pristine || submitting}
-                          // className={classes.indent}
-                          // className={classes.leftMargin}
                           style={{ marginLeft: "10px" }}
                           variant="contained"
                           onClick={this.handleClickReset}

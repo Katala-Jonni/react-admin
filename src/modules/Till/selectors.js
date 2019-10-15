@@ -16,3 +16,6 @@ export const getRevenue = createSelector(getTillState, state => state.revenue);
 export const getIncome = createSelector(getTillState, state => state.income);
 export const getTillInfoView = createSelector(getTillState, state => state.tillInfoView);
 export const getLock = createSelector(getTillState, state => state.lock);
+export const getPayCategory = createSelector(getTillState, state => state.payCategory);
+export const getTill = createSelector(getTillState, state => state.till);
+export const getExpense = createSelector(getTillState, state => state.expense);

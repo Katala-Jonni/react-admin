@@ -15,6 +15,7 @@ import ShopPage from "views/Shop";
 import SunPage from "views/Sun";
 import TillPage from "views/Till";
 import CertificatePage from "views/Certificate";
+import Template from "views/Template";
 import TableList from "views/TableList/TableList.jsx";
 import Typography from "views/Typography/Typography.jsx";
 import Icons from "views/Icons/Icons.jsx";
@@ -33,6 +34,14 @@ const newShop = () => <ShopPage/>;
 const newTill = () => <TillPage/>;
 const newSun = () => <SunPage/>;
 const newCertificate = () => <CertificatePage/>;
+const newTemplate = () => {
+  const handleSubmit = values => {
+    console.log(values);
+  };
+  return (
+    <Template onSubmit={handleSubmit}/>
+  );
+};
 
 const CustomComponent = () => {
   return (
@@ -87,6 +96,14 @@ const dashboardRoutes = [
     rtlName: "ملف تعريفي للمستخدم",
     icon: "card_giftcard",
     component: newCertificate,
+    layout: "/admin"
+  },
+  {
+    path: "/template",
+    name: "Черновик",
+    rtlName: "ملف تعريفي للمستخدم",
+    icon: "pie_chart",
+    component: newTemplate,
     layout: "/admin"
   }
   // {

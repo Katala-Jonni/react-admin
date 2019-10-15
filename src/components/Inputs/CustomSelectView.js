@@ -91,7 +91,7 @@ CustomSelectView.defaultProps = {
 };
 
 CustomSelectView.propTypes = {
-  classes: PropTypes.object.isRequired,
+  classes: PropTypes.object,
   options: PropTypes.arrayOf(PropTypes.object.isRequired).isRequired,
   input: PropTypes.object.isRequired,
   defaultValue: PropTypes.object,

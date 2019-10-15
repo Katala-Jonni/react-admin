@@ -7,6 +7,9 @@ import {
   getIsSubmit,
   getTotalOrders
 } from "../../../modules/Shop";
+import {
+  endSearchNumber
+} from "../../../modules/Certificate";
 import CartTable from "./CartTable";
 import { getTotalMasters } from "../../../modules/Calendar";
 
@@ -18,6 +21,6 @@ const mapStateFromProps = state => ({
   isSubmit: getIsSubmit(state)
 });
 
-const mapDispatchFromProps = { addToCart, startSendCart };
+const mapDispatchFromProps = { addToCart, startSendCart, endSearchNumber };
 
 export default connect(mapStateFromProps, mapDispatchFromProps)(CartTable);

@@ -9,3 +9,6 @@ export const endTotalOrders = createAction("@@Shop/END_TOTAL_ORDERS");
 export const startSendCart = createAction("@@Shop/START_SEND_CART");
 export const endSendCart = createAction("@@Shop/END_SEND_CART");
 export const changeSubmitSwitch = createAction("@@Shop/SUBMIT_SWITCH_CART");
+export const changePays = createAction("@@Shop/CHANGE_PAYS");
+export const plusPayCount = createAction("@@Shop/PLUS_PAY_COUNT");
+export const minusPayCount = createAction("@@Shop/MINUS_PAY_COUNT");

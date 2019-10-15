@@ -4,6 +4,7 @@ import PropTypes from "prop-types";
 import { withStyles } from "@material-ui/core/styles";
 import TextField from "@material-ui/core/TextField";
 
+import customEventsStyle from "assets/jss/material-dashboard-react/components/customEventsStyle";
 const useStyles = theme => ({
   container: {
     display: "flex",
@@ -12,13 +13,15 @@ const useStyles = theme => ({
   formControl: {
     // margin: theme.spacing.unit * 1,
     minWidth: 35
-  }
+  },
+  ...customEventsStyle(theme)
 });
 
 class NumberFormatCustom extends Component {
 
   handleChange = event => {
     this.props.onChange(parseFloat(event.target.value));
+    // console.log(this.props);
   };
 
   render() {
@@ -41,21 +44,26 @@ NumberFormatCustom.propTypes = {
 
 class InputNumber extends Component {
   render() {
-    const { classes, value, onChange, label, name,fullWidth, ...rest } = this.props;
-    console.log(rest);
+    const { input, classes, value, onChange, label, name, fullWidth, errorMessage, ...rest } = this.props;
     return (
       <div className={classes.container}>
         <TextField
           className={classes.formControl}
           label={label}
           name={name}
+          fullWidth={fullWidth}
           value={value}
           onChange={onChange}
           InputProps={{
             inputComponent: NumberFormatCustom
           }}
           {...rest}
+          {...input}
         />
+        {this.props.error
+          ? <span className={classes.errorColor}>{errorMessage}</span>
+          : null
+        }
       </div>
     );
   }

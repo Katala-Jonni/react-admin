@@ -129,22 +129,95 @@ function* addInOutTillData({ payload }) {
 
 function* loadTillDataInfo({ payload }) {
   const data = yield call(fetchData);
-  const { totalDay } = payload;
+  const { totalDay, certificateSum, totalOrders } = payload;
+  console.log(totalOrders, "totalOrders");
+  console.log(totalDay, "totalDay");
   const keys = Object.keys(totalDay);
+  const orderKeys = Object.keys(totalOrders);
   let infoDay = {
     revenue: 0,
     income: 0,
-    paymentByCard: 0
+    expense: 0,
+    paymentByCard: 0,
+    card: 0,
+    certificate: 0,
+    cash: 0,
+    till: 0,
+    payCategory: {
+      // card: 0,
+      // certificate: 0,
+      // cash: 0
+    }
   };
   if (keys) {
     keys.forEach((name) => {
       totalDay[name].forEach(item => {
+        // console.log(item);
         infoDay.revenue += item.totalCount;
-        infoDay.income += item.outMaster;
-        infoDay.paymentByCard += item.payment === "card" ? item.totalCount : 0;
+        // infoDay.income += item.outMaster;
+        infoDay.expense += item.isMaster ? item.inMaster : 0;
+        // infoDay.paymentByCard += item.payment === "card" ? item.totalCount : 0;
       });
     });
+
+
+    // console.log(card);
+    // if (card) {
+    //   infoDay.paymentByCard += +card.count;
+    // }
+    // }
   }
+  if (orderKeys) {
+    const map = orderKeys.map(item => totalOrders[item].payInfo);
+    map.forEach(item => {
+      const keys = Object.keys(item);
+      keys.forEach(key => {
+        if (!infoDay.payCategory[key]) {
+          return infoDay.payCategory[key] = item[key];
+        }
+        infoDay.payCategory[key] += item[key];
+      });
+    });
+    const payCategoryKeys = Object.keys(infoDay.payCategory);
+    payCategoryKeys.forEach(key => {
+      if (key !== "certificate") {
+        // infoDay.revenue = +infoDay.payCategory[key];
+      }
+    });
+    console.log(infoDay);
+    // console.log(orderKeys);
+    // orderKeys.forEach(item => {
+    //   console.log(item, "item");
+    //   const payInfoOrder = totalOrders[item].payInfo;
+    //   const payName = Object.keys(payInfoOrder);
+    //   payName.forEach(name => {
+    //     console.log(name, "name");
+    //     console.log(infoDay.payCategory[name], "infoDay.payCategory[name]");
+    //     console.log(payInfoOrder[name], "item.payInfo[name]");
+    //     infoDay.payCategory[name] += payInfoOrder[name];
+    //     if (infoDay.payCategory[name]) {
+    //       infoDay.payCategory[name] += payInfoOrder[name];
+    //     } else {
+    //       infoDay.payCategory[name] = payInfoOrder[name];
+    //     }
+    //   });
+    // });
+    infoDay.revenue -= infoDay.payCategory.certificate || 0;
+    infoDay.income = infoDay.revenue - infoDay.expense;
+    // infoDay.income -= certificateSum;
+    // infoDay.till = infoDay.revenue - infoDay.expense - infoDay.payCategory.card;
+    console.log(infoDay, "infoDay");
+
+    // let card = null;
+    // keys.forEach((name) => {
+    //   totalDay[name].forEach(item => {
+    //     if (item.payment && Array.isArray(item.payment.members)) {
+    //       card = item.payment.members.find(item => item.typePay === "card");
+    //     }
+    //   });
+    // });
+  }
+
   yield put(endLoadInfoTill(infoDay));
   // yield put(endLoadInfoTill(data));
 }
