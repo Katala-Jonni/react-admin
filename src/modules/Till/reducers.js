@@ -15,7 +15,7 @@ const initialState = {
   outTill: [],
   inTillSum: 0,
   outTillSum: 0,
-  // cash: 0,
+  cash: 0,
   // paymentByCard: 0,
   revenue: 0,
   income: 0,

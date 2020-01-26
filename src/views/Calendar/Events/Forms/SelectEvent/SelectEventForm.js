@@ -13,20 +13,19 @@ import customEventsStyle from "../../../../../assets/jss/material-dashboard-reac
 class SelectEventForm extends Component {
   state = {
     switchButton: !this.props.isNewEvent && true,
-    alert: null
+    alert: null,
+    isConfirm: false
   };
 
   successDelete = () => {
-    this.props.deleteEvents();
-
+    this.props.deleteEvents(this.props.fields._id);
     this.setState({
       alert: (
         <SweetAlert
           success
+          onConfirm={() => this.hideAlert(true)}
           style={{ display: "block", marginTop: "-100px" }}
           title={this.props.successAlertTitle}
-          onConfirm={() => this.hideAlert(true)}
-          onCancel={() => this.hideAlert()}
           confirmBtnCssClass={
             this.props.classes.button + " " + this.props.classes.success
           }
@@ -40,7 +39,8 @@ class SelectEventForm extends Component {
   hideAlert = (bool) => {
     bool && this.props.handleClickClose();
     this.setState({
-      alert: null
+      alert: null,
+      isConfirm: false
     });
   };
 
@@ -69,7 +69,8 @@ class SelectEventForm extends Component {
         >
           {this.props.deleteAlertMessage}
         </SweetAlert>
-      )
+      ),
+      isConfirm: true
     });
   };
 
@@ -97,6 +98,9 @@ class SelectEventForm extends Component {
         if (key === "resourceId") {
           const resourceIdValue = formValues[key] && formValues[key].value ? formValues[key].value : formValues[key];
           return resourceIdValue && resourceIdValue.trim().toLowerCase() === fields[key].trim().toLowerCase();
+        }
+        if (key === "id") {
+          return formValues[`_${key}`].trim().toLowerCase() === fields[`_${key}`].trim().toLowerCase();
         }
         return formValues[key].trim().toLowerCase() === fields[key].trim().toLowerCase();
       });
@@ -129,7 +133,7 @@ class SelectEventForm extends Component {
     } = this.props;
 
     const { switchButton } = this.state;
-    const { lastName, surname, phoneNumber, start } = fields;
+    const { lastName, surname, phoneNumber, start, _id } = fields;
     return (
       <Fragment>
         {this.state.alert}
@@ -173,6 +177,16 @@ class SelectEventForm extends Component {
             switchButton={switchButton}
           />
 
+          <Field
+            name="_id"
+            type="hidden"
+            id="_id"
+            // disabled={switchButton}
+            initialSelectValue={_id}
+            component={CustomInputView}
+          />
+
+
           <div>
             {(!isButton || isNewEvent) && !this.getIsEqualValues()
               ? <Button
@@ -186,7 +200,7 @@ class SelectEventForm extends Component {
               </Button>
               : null
             }
-            {isButton && !isNewEvent && this.getDifferenceTime(start)
+            {isButton && !isNewEvent && this.getDifferenceTime(start) && !this.state.isConfirm
               ? <Button
                 type="button"
                 color='primary'
@@ -198,10 +212,10 @@ class SelectEventForm extends Component {
               </Button>
               : null
             }
-            {isButton && !isNewEvent && this.getDifferenceTime(start)
+            {isButton && !isNewEvent && this.getDifferenceTime(start) && !this.state.isConfirm
               ? <Button
                 type="button"
-                color='primary'
+                color='default'
                 variant="contained"
                 className={classes.indent}
                 onClick={this.handleClickDelete}
@@ -232,12 +246,12 @@ SelectEventForm.defaultProps = {
   btnEditText: "Изменить",
   btnSaveText: "Сохранить",
   btnCanсeledText: "Отмена",
-  deleteAlertTitle: "Вы уверены?",
+  deleteAlertTitle: "Удалить запись?",
   deleteAlertMessage: "Запись удалится полностью с календаря!",
   successAlertTitle: "Запись удалена!",
   successAlertMessage: "Запись успешно удалена!",
   confirmBtnText: "Да, удалить запись!",
-  cancelBtnText: "Отмена"
+  cancelBtnText: "Нет"
 };
 
 SelectEventForm.propTypes = {

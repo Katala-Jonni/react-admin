@@ -7,7 +7,9 @@ import {
   changeMasters,
   editMastersStart,
   getTotalMasters,
-  editEvents
+  editEvents,
+  updateEvents,
+  addEvents
 } from "../../../modules/Calendar";
 
 const mapStateFromProps = state => ({
@@ -17,6 +19,6 @@ const mapStateFromProps = state => ({
   totalResource: getTotalResource(state)
 });
 
-const mapDispatchFromProps = { changeMasters, editMastersStart, editEvents };
+const mapDispatchFromProps = { changeMasters, editMastersStart, editEvents, updateEvents, addEvents };
 
 export default connect(mapStateFromProps, mapDispatchFromProps)(AddEvents);

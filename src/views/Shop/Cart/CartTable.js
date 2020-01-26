@@ -27,7 +27,7 @@ import Fab from "@material-ui/core/Fab";
 
 import extendedTablesStyle from "../../../assets/jss/material-dashboard-react/views/extendedTablesStyle";
 import CertificateView from "../CertificateView";
-import Template from "../../Template";
+import Template from "../../MixedPay/index";
 import { sendCertificate as startSendCertificate } from "../../../modules/Certificate";
 
 class ExtendedTables extends Component {

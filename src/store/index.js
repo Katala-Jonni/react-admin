@@ -12,7 +12,7 @@ import till from "../modules/Till";
 import app from "../modules/Admin";
 import sun from "../modules/Sun";
 import certificate from "../modules/Certificate";
-import template from "../modules/Template";
+import mixedPay from "../modules/MixedPay";
 import { reducer as formReducer } from "redux-form";
 
 const sagaMiddleware = createSagaMiddleware();
@@ -24,7 +24,7 @@ const mainReducer = combineReducers({
   app,
   sun,
   certificate,
-  template,
+  mixedPay,
   form: formReducer
 });
 

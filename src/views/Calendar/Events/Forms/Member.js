@@ -12,7 +12,7 @@ import Grid from "@material-ui/core/Grid";
 import Picker from "../../../../components/Inputs/Picker";
 import MomentUtils from "@date-io/moment";
 import { MuiPickersUtilsProvider } from "material-ui-pickers";
-import { getTotalResource } from "../../../../modules/Calendar";
+import { getResource, getTotalResource } from "../../../../modules/Calendar";
 import CustomSelectView from "../../../../components/Inputs/CustomSelectView";
 import defaultResource from "../../../../modules/Calendar/defaultResource";
 
@@ -47,7 +47,6 @@ class Member extends Component {
   render() {
     const { member, index, classes, fields, noButton } = this.props;
     const { selectedDate, switchDate } = this.state;
-    console.log(index);
     return (
       <Fragment>
         {noButton
@@ -129,6 +128,7 @@ class Member extends Component {
 Member.propTypes = {
   classes: PropTypes.object.isRequired,
   totalResource: PropTypes.object.isRequired,
+  resource: PropTypes.array.isRequired,
   fields: PropTypes.object.isRequired,
   member: PropTypes.string.isRequired,
   index: PropTypes.number.isRequired,
@@ -136,7 +136,8 @@ Member.propTypes = {
 };
 
 const mapStateFromProps = state => ({
-  totalResource: getTotalResource(state)
+  totalResource: getTotalResource(state),
+  resource: getResource(state)
 });
 
 export default connect(mapStateFromProps, null)(Member);

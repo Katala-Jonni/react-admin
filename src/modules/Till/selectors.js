@@ -10,8 +10,8 @@ export const getOutTillCategory = createSelector(getTillState, state => state.ou
 export const getAdministrators = createSelector(getTillState, state => state.administrators);
 export const getInTillSum = createSelector(getTillState, state => state.inTillSum);
 export const getOutTillSum = createSelector(getTillState, state => state.outTillSum);
-export const getCash = createSelector(getTillState, state => state.cash);
-export const getPaymentByCard = createSelector(getTillState, state => state.paymentByCard);
+// export const getCash = createSelector(getTillState, state => state.cash);
+// export const getPaymentByCard = createSelector(getTillState, state => state.paymentByCard);
 export const getRevenue = createSelector(getTillState, state => state.revenue);
 export const getIncome = createSelector(getTillState, state => state.income);
 export const getTillInfoView = createSelector(getTillState, state => state.tillInfoView);

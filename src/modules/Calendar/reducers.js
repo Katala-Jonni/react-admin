@@ -5,26 +5,37 @@ import {
   deleteMasters,
   editMastersEnd,
   editEvents,
-  endLoadResource
+  endLoadResource,
+  loadViewEvents,
+  editResource, initialResource
 } from "./actions";
 
 const initialState = {
   resource: [],
-  events: myEventsList || [],
+  // events: myEventsList || [],
+  events: [],
+  currentEvents: {
+    events: [],
+    resource: []
+  },
   totalResource: {},
   masters: null,
   isDay: false,
-  isWizardView: false
+  isWizardView: false,
+  defaultResource: []
 };
 
 export default (state = initialState, action) => {
   const { type, payload } = action;
   switch (type) {
     case endLoadResource.toString():
+      // console.log(payload);
       return {
         ...state,
         totalResource: payload.totalResource,
-        masters: payload.masters
+        masters: payload.masters,
+        events: payload.events,
+        defaultResource: payload.defaultResource
       };
     case showDay.toString():
       return {
@@ -36,14 +47,14 @@ export default (state = initialState, action) => {
         } : { ...state.totalResource }
       };
     case addMasters.toString():
-      // console.log(payload);
+      console.log(payload);
       return {
         ...state,
-        resource: payload.totalResource,
-        totalResource: {
-          ...state.totalResource,
-          [payload.date]: payload.totalResource
-        }
+        resource: payload.totalResource
+        // totalResource: {
+        //   ...state.totalResource,
+        //   [payload.date]: payload.totalResource
+        // }
       };
     case deleteMasters.toString():
       // console.log(payload);
@@ -61,7 +72,6 @@ export default (state = initialState, action) => {
         events: events
       };
     case editEvents.toString():
-      // console.log(payload);
       return {
         ...state,
         events: payload
@@ -77,6 +87,29 @@ export default (state = initialState, action) => {
     //     ...state,
     //     isWizardView: false
     //   };
+    case loadViewEvents.toString():
+      return {
+        ...state,
+        resource: payload.resource,
+        events: payload.events || state.events,
+        totalResource: payload.totalResource || state.totalResource
+      };
+
+    case editResource.toString():
+      console.log(payload, "editResource");
+      return {
+        ...state,
+        resource: payload.resource,
+        events: payload.events
+        // totalResource: payload.totalResource
+      };
+    case initialResource.toString():
+      return {
+        ...state,
+        resource: [],
+        events: []
+        // totalResource: payload.totalResource
+      };
     default: {
       return state;
     }

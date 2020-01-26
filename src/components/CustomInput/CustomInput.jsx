@@ -37,6 +37,7 @@ class CustomInput extends Component {
       helpText,
       rtlActive,
       input,
+      viewIcon,
       notViewIcon,
       initialSelectValue,
       ...rest
@@ -128,11 +129,17 @@ class CustomInput extends Component {
           {...inputProps}
           {...rest}
         />
-        {error ? (
-          <Clear className={errorClasses}/>
-        ) : success ? (
-          <Check className={successClasses}/>
-        ) : null}
+        {viewIcon
+          ? <Fragment>
+            {error ? (
+              <Clear className={errorClasses}/>
+            ) : success ? (
+              <Check className={successClasses}/>
+            ) : null}
+          </Fragment>
+          : null
+        }
+
         {helpText !== undefined ? (
           <FormHelperText style={{ color: "red" }} id={id + "-text"}>{helpText}</FormHelperText>
         ) : null}

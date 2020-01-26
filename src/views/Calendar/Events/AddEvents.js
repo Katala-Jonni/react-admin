@@ -23,27 +23,25 @@ class AddEvents extends React.Component {
   };
 
   handleSubmit = values => {
-    let idList = this.props.events.map(a => a.id);
     const { lastName, surname, phoneNumber } = values;
-    let count = 1;
-    const hours = values.members.map(item => {
-      let newId = Math.max(...idList) + (++count);
+    const events = values.members.map(item => {
+      const milliseconds = moment(item.date).startOf("day");
       const start = moment(item.date).set({ "hour": moment(item.start).hour(), "minute": moment(item.start).minute() });
       const end = moment(item.date).set({ "hour": moment(item.end).hour(), "minute": moment(item.end).minute() });
       return {
-        id: newId,
         title: `${item.title} - ${lastName} ${surname}`,
         start: start._d,
         end: end._d,
-        date: moment(item.date).format(),
+        date: start._d,
         resourceId: item.resourceId,
         titleEvent: item.title,
         lastName,
         surname,
-        phoneNumber
+        phoneNumber,
+        milliseconds: milliseconds.valueOf()
       };
     });
-    this.props.editEvents(this.props.events.concat([...hours]));
+    this.props.addEvents(events);
     this.handleClickClose();
   };
 

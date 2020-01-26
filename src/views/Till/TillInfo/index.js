@@ -9,7 +9,7 @@ import {
   loadInfoTill,
   getRevenue,
   getIncome,
-  getPaymentByCard
+  // getPaymentByCard
 } from "../../../modules/Till";
 import { getTotalDay, getTotalOrders, startRemoveDay } from "../../../modules/Shop";
 
@@ -20,7 +20,7 @@ const mapStateFromProps = state => ({
   outTillSum: getOutTillSum(state),
   totalDay: getTotalDay(state),
   totalOrders: getTotalOrders(state),
-  paymentByCard: getPaymentByCard(state),
+  // paymentByCard: getPaymentByCard(state),
   revenue: getRevenue(state),
   income: getIncome(state)
 });

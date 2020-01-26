@@ -1,28 +1,21 @@
 import React from "react";
 import PropTypes from "prop-types";
-import moment from "moment/min/moment-with-locales";
 
 // core components
 import GridContainer from "components/Grid/GridContainer.jsx";
 import ItemGrid from "components/Grid/GridItem.jsx";
 import NavPills from "components/NavPills/NavPills.jsx";
 
-import AddCard from "../Sun/AddCard";
-import EditCard from "../Sun/EditCard";
-
 // material-ui components
 import { withStyles } from "@material-ui/core/styles";
-import Typography from "@material-ui/core/Typography";
 import Snackbar from "components/Snackbar/Snackbar.jsx";
-
 
 // @material-ui/icons
 import Search from "@material-ui/icons/Search";
 import Add from "@material-ui/icons/Add";
 import AddAlert from "@material-ui/icons/AddAlert";
 import AddCertificate from "./AddCertificate";
-import EditCertificate from "./EditCertificate/EditCertificate";
-import { sendCertificate } from "../../modules/Certificate/actions";
+import EditCertificate from "./EditCertificate";
 
 const styles = {
   pageSubcategoriesTitle: {
@@ -117,7 +110,9 @@ class Certificate extends React.Component {
 
 Certificate.propTypes = {
   classes: PropTypes.object,
-  title: PropTypes.string
+  title: PropTypes.string,
+  serverMessage: PropTypes.string,
+  errorMessage: PropTypes.bool
 };
 
 export default withStyles(styles)(Certificate);

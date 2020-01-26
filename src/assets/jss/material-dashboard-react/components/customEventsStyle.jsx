@@ -26,6 +26,10 @@ const customEventsStyle = theme => ({
   addCardForm: {
     padding: theme.spacing.unit * 2
   },
+  topBottom: {
+    paddingTop: theme.spacing.unit * 1.2,
+    paddingBottom: theme.spacing.unit * 1.2
+  },
   chip: {
     margin: theme.spacing.unit * 1
   },

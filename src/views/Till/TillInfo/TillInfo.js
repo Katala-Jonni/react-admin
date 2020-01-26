@@ -90,7 +90,8 @@ class TillInfo extends Component {
       cash,
       date: moment().format("DD.MM.YY")
     };
-    startRemoveDay(data);
+    console.log(data);
+    // startRemoveDay(data);
   };
 
   handleClickLock = () => {

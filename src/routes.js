@@ -15,7 +15,7 @@ import ShopPage from "views/Shop";
 import SunPage from "views/Sun";
 import TillPage from "views/Till";
 import CertificatePage from "views/Certificate";
-import Template from "views/Template";
+import Template from "views/MixedPay/index";
 import TableList from "views/TableList/TableList.jsx";
 import Typography from "views/Typography/Typography.jsx";
 import Icons from "views/Icons/Icons.jsx";

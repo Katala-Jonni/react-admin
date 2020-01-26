@@ -6,7 +6,7 @@ import { FieldArray, reduxForm } from "redux-form";
 import { withStyles } from "@material-ui/core/styles/index";
 
 // material-ui components
-import RenderMembersType from "./RenderMembers";
+import RenderMembersType from "./RenderMembers/index";
 import GridContainer from "components/Grid/GridContainer.jsx";
 import ItemGrid from "components/Grid/GridItem.jsx";
 
@@ -15,7 +15,7 @@ import ItemGrid from "components/Grid/GridItem.jsx";
 // style
 import customEventsStyle from "assets/jss/material-dashboard-react/components/customEventsStyle";
 
-class Template extends Component {
+class MixedPay extends Component {
   state = {};
 
   render() {
@@ -45,11 +45,11 @@ class Template extends Component {
   }
 }
 
-Template.defaultProps = {};
+MixedPay.defaultProps = {};
 
-Template.propTypes = {
+MixedPay.propTypes = {
   classes: PropTypes.object
 };
 export default reduxForm({
   form: "templateInfo"
-})(withStyles(customEventsStyle)(Template));
+})(withStyles(customEventsStyle)(MixedPay));

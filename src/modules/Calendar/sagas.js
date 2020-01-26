@@ -1,5 +1,7 @@
+import moment from "moment";
 import defaultResource from "./defaultResource";
 import { fork, takeLatest, put, call } from "redux-saga/effects";
+import api from "../../utils/api";
 import {
   addMasters,
   selectDay,
@@ -10,49 +12,106 @@ import {
   editEvents,
   loadResource,
   endLoadResource,
-  deleteEvents
+  deleteEvents,
+  updateEvents,
+  selectViewEvents,
+  loadViewEvents,
+  addEvents,
+  addResource,
+  editResource,
+  updateResource
 } from "./actions";
-import totalResource from "./totalResource";
-import masters from "./mastersData";
-import moment from "moment";
-
-const fetchData = () =>
-  new Promise(resolve => {
-    setTimeout(() => resolve({
-      totalResource,
-      masters
-    }), 1000);
-  })
-    .then(res => res);
 
 
-function* loadTotalResource() {
-  const totalResource = yield call(fetchData);
-  yield put(endLoadResource(totalResource));
-}
+const editEvent = (events) => {
+  return events.map((item) => {
+    const start = moment(item.date).set({ "hour": moment(item.start).hour(), "minute": moment(item.start).minute() });
+    const end = moment(item.date).set({ "hour": moment(item.end).hour(), "minute": moment(item.end).minute() });
+    item.start = start._d;
+    item.end = end._d;
+    item.date = start._d;
+    return item;
+  });
+};
 
+/* fetch */
+const fetchData = async () => {
+  const { baseUrl, calendar } = api;
+  const res = await fetch(`${baseUrl}${calendar}`);
+  return await res.json();
+  // return new Promise(resolve => {
+  //   setTimeout(() => resolve({
+  //     totalResource,
+  //     masters,
+  //     events
+  //   }), 1000);
+  // })
+  //   .then(res => res);
+};
 
-function* showCurrentDay(action) {
-  const { payload: { data, resource } } = action;
+const fetchEventsPost = async (body) => {
+  const { baseUrl, calendar, event } = api;
+  const res = await fetch(`${baseUrl}${calendar}${event}`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json;charset=utf-8"
+    },
+    body: JSON.stringify(body)
+  });
+  return await res.json();
+};
 
-  if (resource) {
-    return yield put({
-      type: showDay.toString(),
-      payload: {
-        date: moment(data).format("DD.MM.YY"),
-        resource
-      }
-    });
-  } else {
-    return yield put({
-      type: showDay.toString(),
-      payload: {
-        date: null,
-        resource: [defaultResource[0]]
-      }
-    });
-  }
-}
+const fetchEventsPut = async (body) => {
+  const { baseUrl, calendar, event } = api;
+  const res = await fetch(`${baseUrl}${calendar}${event}/${body._id}`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json;charset=utf-8"
+    },
+    body: JSON.stringify(body)
+  });
+  return await res.json();
+};
+
+const fetchEventsDelete = async (_id) => {
+  const { baseUrl, calendar, event } = api;
+  const res = await fetch(`${baseUrl}${calendar}${event}/${_id}`, {
+    method: "DELETE"
+  });
+  return await res.json();
+};
+
+const fetchCurrentEvent = async (id) => {
+  const { baseUrl, calendar, event } = api;
+  const res = await fetch(`${baseUrl}${calendar}${event}/${id}`);
+  return await res.json();
+};
+
+const fetchResourcePut = async (body) => {
+  const { baseUrl, calendar, resource } = api;
+  const res = await fetch(`${baseUrl}${calendar}${resource}`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json;charset=utf-8"
+    },
+    body: JSON.stringify(body)
+  });
+  return await res.json();
+};
+
+const fetchResourceEventPut = async (body) => {
+  const { baseUrl, calendar, resource, event } = api;
+  const res = await fetch(`${baseUrl}${calendar}${resource}${event}`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json;charset=utf-8"
+    },
+    body: JSON.stringify(body)
+  });
+  return await res.json();
+};
+
+/* action */
 
 function* addMastersDay(action) {
   const { payload } = action;
@@ -71,49 +130,93 @@ function* addMastersDay(action) {
   return yield put(addMasters(pld));
 }
 
-function* editMastersDay(action) {
-  // если есть уже в базе мастера и мы хотим его изменить
-  const { payload } = action;
-  console.log(payload);
-  const { resource, endValue, startValue, events, date } = payload;
-  const findResource = resource.find(item => item.resourceTitle === startValue.value);
-  if (!findResource) return;
-  console.log(findResource, "findResource");
-  const diffResource = resource.filter(item => item.resourceTitle !== startValue.value);
-  const copyResource = { ...findResource };
-  copyResource.resourceTitle = endValue.value;
-  copyResource.resourceId = endValue.value;
 
-  const newEvents = events.filter(item => {
-    if (
-      moment(item.start).format("DD.MM.YY") === moment(date).format("DD.MM.YY") && item.resourceId.toLowerCase() === startValue.value.toLowerCase()) {
-      item.originally = item.resourceId;
-      item.resourceId = endValue.value;
-    }
-    return item;
-  });
+function* loadTotalResource() {
+  const totalResource = yield call(fetchData);
+  totalResource.events = editEvent(totalResource.events);
+  yield put(endLoadResource(totalResource));
+}
+
+function* selectCurrentDay(action) {
+  const { payload: { date, resource, defaultResource } } = action;
+  const isResource = resource && resource.length;
+  const resourceInfo = isResource ? resource : [defaultResource];
+  const dateView = isResource ? moment(date).format("DD.MM.YY") : null;
 
   return yield put({
-    type: editMastersEnd.toString(), payload: {
-      events: newEvents,
-      resource: [...diffResource, copyResource],
-      date: moment(date).format("DD.MM.YY")
+    type: showDay.toString(),
+    payload: {
+      date: dateView,
+      resource: resourceInfo
     }
   });
 }
 
+function* addEventsDay(action) {
+  const { payload } = action;
+  const res = yield call(fetchEventsPost, payload);
+  const events = editEvent(res);
+  return yield put(editEvents(events));
+}
+
+function* updateEventsDay(action) {
+  const { payload } = action;
+  const res = yield call(fetchEventsPut, payload);
+  const events = editEvent(res);
+  return yield put(editEvents(events));
+}
+
 function* deleteEventsDay(action) {
-  const { payload: { events, selectEventValue } } = action;
-  const data = events.filter(a => a.id !== selectEventValue.id);
-  return yield put(editEvents(data));
+  const { payload } = action;
+  const res = yield call(fetchEventsDelete, payload);
+  const events = editEvent(res.events);
+  return yield put(editEvents(events));
+}
+
+function* selectView(action) {
+  const { payload } = action;
+  const res = yield call(fetchCurrentEvent, moment(payload).valueOf());
+  const { resource: { resourcesInfo: resource }, events } = res;
+  return yield put(loadViewEvents({
+    resource,
+    events: editEvent(events),
+    totalResource: null
+  }));
+}
+
+function* addResourceMasters(action) {
+  const { payload } = action;
+  const res = yield call(fetchResourcePut, payload);
+  const { resource: { resourcesInfo: resource }, totalResource } = res;
+  return yield put(loadViewEvents({
+    resource,
+    events: null,
+    totalResource
+  }));
+}
+
+function* editMastersDay(action) {
+  const { payload } = action;
+  const res = yield call(fetchResourceEventPut, payload);
+  const { resource: { resourcesInfo: resource }, events, totalResource } = res;
+  return yield put(loadViewEvents({
+    resource,
+    events: editEvent(events),
+    totalResource
+  }));
 }
 
 function* calendarWatcher() {
   yield takeLatest(loadResource, loadTotalResource);
-  yield takeLatest(selectDay, showCurrentDay);
-  yield takeLatest(changeMasters, addMastersDay);
-  yield takeLatest(editMastersStart, editMastersDay);
+  yield takeLatest(selectDay, selectCurrentDay);
+  yield takeLatest(addEvents, addEventsDay);
+  yield takeLatest(updateEvents, updateEventsDay);
   yield takeLatest(deleteEvents, deleteEventsDay);
+  yield takeLatest(selectViewEvents, selectView);
+  yield takeLatest(addResource, addResourceMasters);
+  yield takeLatest(editMastersStart, editMastersDay);
+
+  // yield takeLatest(changeMasters, addMastersDay);
 }
 
 export default function* () {

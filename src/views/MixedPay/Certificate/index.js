@@ -5,7 +5,7 @@ import {
   getCurrentCertificate,
   startEditCertificate,
   startSearchCertificate
-} from "../../../modules/Template";
+} from "../../../modules/MixedPay";
 import { getTotalCart } from "../../../modules/Shop";
 
 const mapStateFromProps = state => ({

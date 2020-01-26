@@ -11,8 +11,9 @@ import Month from "@material-ui/icons/ViewWeek";
 import CurrentCalendar from "@material-ui/icons/CalendarToday";
 import Typography from "@material-ui/core/Typography";
 import AddMaster from "./Masters";
-import { changeCalendar, getIsDay, getResource } from "../../modules/Calendar";
+import { changeCalendar, getIsDay, getResource, initialResource, selectViewEvents } from "../../modules/Calendar";
 import AddEvents from "./Events/index";
+import { loadResource } from "../../modules/Calendar/actions";
 
 class CalendarToolBar extends Component {
   isPrev = () => {
@@ -22,21 +23,48 @@ class CalendarToolBar extends Component {
       return +moment(this.props.date).startOf("day") <= +moment().startOf("day");
     }
   };
-  onClickNextMonth = () => this.props.onNavigate("NEXT", moment(this.props.date).toDate());
-  onClickBackMonth = () => {
-    return !this.isPrev() && this.props.onNavigate("PREV", moment(this.props.date).toDate());
+  onClickNextMonth = () => {
+    const { onNavigate, initialResource, loadResource, date } = this.props;
+    console.log("onClickNextMonth");
+    onNavigate("NEXT", moment(date).toDate());
+    initialResource();
+    return loadResource();
   };
-  onClickCurrentMonth = () => this.props.onNavigate("DATE", moment().toDate());
-  onClickCurrentDate = () => this.props.onView("day");
+  onClickBackMonth = () => {
+    const { onNavigate, initialResource, loadResource, date } = this.props;
+    console.log("onClickBackMonth");
+    !this.isPrev() && onNavigate("PREV", moment(date).toDate());
+    initialResource();
+    return loadResource();
+  };
+  onClickCurrentMonth = () => {
+    const { onNavigate, initialResource, loadResource } = this.props;
+    console.log("onClickCurrentMonth");
+    onNavigate("DATE", moment().toDate());
+    initialResource();
+    return loadResource();
+  };
+  onClickCurrentDate = () => {
+    const { onView, initialResource, loadResource, selectViewEvents, date } = this.props;
+    console.log("onClickCurrentDate");
+    onView("day");
+    initialResource();
+    loadResource();
+    return selectViewEvents(date);
+  };
   onClickMonth = () => {
-    if (this.props.view === "month") {
+    const { onNavigate, onView, initialResource, loadResource, view } = this.props;
+    console.log("onClickMonth");
+    initialResource();
+    loadResource();
+    if (view === "month") {
       return;
     }
     if (this.isPrev()) {
-      this.props.onView("month");
-      return this.props.onNavigate("DATE", moment().toDate());
+      onView("month");
+      return onNavigate("DATE", moment().toDate());
     }
-    return this.props.onView("month");
+    return onView("month");
   };
 
   render() {
@@ -145,6 +173,6 @@ const mapStateFromProps = state => ({
   isDay: getIsDay(state)
 });
 
-const mapDispatchFromProps = ({ changeCalendar });
+const mapDispatchFromProps = ({ changeCalendar, loadResource, initialResource, selectViewEvents });
 
 export default connect(mapStateFromProps, mapDispatchFromProps)(CalendarToolBar);

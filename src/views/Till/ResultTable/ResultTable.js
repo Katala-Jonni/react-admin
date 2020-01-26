@@ -66,14 +66,7 @@ class TillTable extends Component {
   };
 
   render() {
-    const { classes, inTillSum, outTillSum, revenue, income, till, expense, payCategory: { cash, card, certificate } } = this.props;
-    // const cash = revenue + inTillSum - (revenue - income) - outTillSum - paymentByCard;
-    // console.log(this.props);
-    console.log(revenue);
-    console.log(inTillSum);
-    console.log(expense);
-    console.log(card);
-    console.log(outTillSum);
+    const { classes, inTillSum, outTillSum, revenue, income, expense, payCategory: { cash, card, certificate } } = this.props;
     return (
       <GridContainer spacing={16}>
         {this.getTableData().length

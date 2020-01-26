@@ -31,7 +31,8 @@ class AddCard extends Component {
       typeCard: null
     },
     isDisabled: false,
-    isSubmit: false
+    isSubmit: false,
+    radioValue: null
   };
 
   static getDerivedStateFromProps(nextProps) {
@@ -80,6 +81,12 @@ class AddCard extends Component {
     this.props.startVerifyCard(value);
   };
 
+  handleChangeRadio = data => {
+    this.setState({
+      radioValue: data
+    });
+  };
+
   render() {
     const {
       handleSubmit,
@@ -97,7 +104,7 @@ class AddCard extends Component {
       verifyMessage
     } = this.props;
     const {
-      isMember, form: { cardNumber, typeCard }, isDisabled, isSubmit
+      isMember, form: { cardNumber, typeCard }, isDisabled, isSubmit, radioValue
     } = this.state;
 
     return (
@@ -175,6 +182,8 @@ class AddCard extends Component {
                     isVerifyCard={!isVerifyCard}
                     disabled={isDisabled}
                     component={CustomRadio}
+                    radioValue={radioValue}
+                    onChange={this.handleChangeRadio}
                     isSubmit={isSubmit}
                   />
                 </ItemGrid>

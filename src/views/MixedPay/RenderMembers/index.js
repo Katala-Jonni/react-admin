@@ -1,7 +1,7 @@
 import RenderMembers from "./RenderMembers";
 import { connect } from "react-redux";
-import { getCard, getCash, getCertificate } from "../../../modules/Template";
-import { removeType } from "../../../modules/Template/actions";
+import { getCard, getCash, getCertificate } from "../../../modules/MixedPay";
+import { removeType } from "../../../modules/MixedPay";
 
 const mapStateFromProps = state => ({
   cash: getCash(state),

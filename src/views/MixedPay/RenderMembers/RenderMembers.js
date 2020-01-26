@@ -4,7 +4,7 @@ import "date-fns";
 import "moment/locale/ru";
 
 // core components
-import Member from "../Member";
+import Member from "../Member/index";
 import GridContainer from "components/Grid/GridContainer.jsx";
 import ItemGrid from "components/Grid/GridItem.jsx";
 
@@ -17,7 +17,7 @@ import Tooltip from "@material-ui/core/Tooltip";
 import Remove from "@material-ui/icons/Remove";
 
 // data
-import options from "../data";
+import options from "../data/index";
 
 class RenderMembers extends Component {
   state = {

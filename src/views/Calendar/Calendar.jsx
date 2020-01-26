@@ -10,6 +10,9 @@ import "react-big-calendar/lib/addons/dragAndDrop/styles.css";
 import "./Calendar.css";
 import SelectEvent from "./Events/Forms/SelectEvent/index";
 import defaultResource from "../../modules/Calendar/defaultResource";
+import Progress from "../../components/Progress/Progress";
+import eventss from "../../modules/Calendar/events";
+import { selectViewEvents, updateEvents } from "../../modules/Calendar";
 
 moment.locale("ru");
 const localizer = BigCalendar.momentLocalizer(moment);
@@ -56,13 +59,9 @@ class Calendar extends Component {
       isDay: true,
       selectEvent: false,
       selectEventValue: null,
-      isNewEvent: false
+      isNewEvent: false,
+      eve: []
     };
-  }
-
-  componentDidMount() {
-    // изначально стояло
-    // this.props.loadResource();
   }
 
   handleClickCloseSelectEvent = () => {
@@ -91,39 +90,43 @@ class Calendar extends Component {
       if (currentResource !== targetResource) return;
     }
 
-    const { events, editEvents } = this.props;
     if (!this.state.resize) return;
-    const idx = events.indexOf(event);
-    let allDay = event.allDay;
+    const { events, editEvents, updateEvents } = this.props;
+    // const idx = events.indexOf(event);
+    // let allDay = event.allDay;
+    //
+    // if (!event.allDay && droppedOnAllDaySlot) {
+    //   allDay = true;
+    // } else if (event.allDay && !droppedOnAllDaySlot) {
+    //   allDay = false;
+    // }
 
-    if (!event.allDay && droppedOnAllDaySlot) {
-      allDay = true;
-    } else if (event.allDay && !droppedOnAllDaySlot) {
-      allDay = false;
-    }
+    const updatedEvent = { ...event, start, end, resourceId, date: start };
 
-    const updatedEvent = { ...event, start, end, allDay, resourceId };
-
-    const nextEvents = [...events];
-    nextEvents.splice(idx, 1, updatedEvent);
+    // const nextEvents = [...events];
+    // nextEvents.splice(idx, 1, updatedEvent);
 
     // запрос в базу и обовление базы
-    editEvents(nextEvents);
+    // console.log(nextEvents);
+    // console.log(updatedEvent);
+    // console.log(event);
+    updateEvents(updatedEvent);
+    // editEvents(nextEvents);
 
   };
 
   resizeEvent = ({ event, start, end }) => {
+    console.log("test");
     if (!this.getDifferenceTime(start)) return;
     if (!this.state.resize) return; // КАСТОМНО СДЕЛАЛ
-    const { events, editEvents } = this.props;
-    // при ресайзе времени меняем на текущее значение времени
-    const nextEvents = events.map(existingEvent => {
-      return existingEvent.id == event.id
-        ? { ...existingEvent, start, end }
-        : existingEvent;
-    });
+    const { updateEvents } = this.props;
+
+    const updatedEvent = { ...event, start, end, date: start };
+    console.log(updatedEvent);
+
     // запрос в базу и обовление базы
-    editEvents(nextEvents);
+    updateEvents(updatedEvent);
+    // editEvents(nextEvents);
   };
 
   newEvent = event => {
@@ -156,22 +159,20 @@ class Calendar extends Component {
 
   onChangeState = () => this.setState({ isDay: false });
 
-  onNavigate = data => {
-    const { selectDay, totalResource } = this.props;
+  onNavigate = date => {
+    // console.log(this.props.totalResource);
+    const { selectDay, totalResource, selectViewEvents, defaultResource, resource } = this.props;
     const { view, isDay } = this.state;
+    // console.log(totalResource, 'onNavigateResource');
+    // this.props.initialResource();
+    // console.log(view);
+    selectViewEvents(date);
+    // selectDay({ resource: totalResource[moment(date).format("DD.MM.YY")], date, defaultResource });
+    const checkNavigate = view === "month" && !isDay;
 
-    if (view === "month" && !isDay) {
-      this.setState({
-        day: moment(data).format("DD.MM.YY"),
-        isDay: true
-      });
-      return selectDay({ resource: totalResource[moment(data).format("DD.MM.YY")], data });
-    }
-    selectDay({ resource: totalResource[moment(data).format("DD.MM.YY")], data });
-
-    this.setState({
-      day: moment(data).format("DD.MM.YY"),
-      isDay: false
+    return this.setState({
+      day: moment(date).format("DD.MM.YY"),
+      isDay: checkNavigate
     });
   };
 
@@ -185,7 +186,7 @@ class Calendar extends Component {
     });
   };
 
-  onView = data => {
+  onView = (data) => {
     // перетаскивание записи, если мы находимся в выбранном дне
     if (data === "day") {
       return this.setState({ resize: true, view: "day" });
@@ -194,6 +195,7 @@ class Calendar extends Component {
   };
 
   onDoubleClick = evt => {
+    // console.log(moment(this.state.day, "DD.MM.YY"), 'onDoubleClick');
     if (!this.getDifferenceTime(moment(this.state.day, "DD.MM.YY"))) return;
     const isTarget = evt.target.classList.contains("rbc-header");
     if (!isTarget) return;
@@ -224,13 +226,22 @@ class Calendar extends Component {
       startTimeMinute,
       endTimeTimeHour,
       endTimeTimeMinute,
-      step
+      step,
+      currentEvents
     } = this.props;
     const { selectEvent, selectEventValue, isNewEvent } = this.state;
 
     if (!totalResource) {
       return <h1>...Loading</h1>;
     }
+
+    if (!events && !events.length) {
+      return (
+        <Progress/>
+      );
+    }
+
+    // console.log(moment().millisecond(Number));
 
     return (
       <Fragment>
@@ -254,8 +265,11 @@ class Calendar extends Component {
             views={["month", "day"]}
             step={step}
             resizable={false}
+            // resources={currentEvents.resource}
+            // events={currentEvents.events}
             resources={resource}
             events={events}
+            // events={currentEvents}
             localizer={localizer}
             style={{ height: "100vh" }}
             defaultDate={moment().toDate()}

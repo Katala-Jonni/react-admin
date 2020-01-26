@@ -1,25 +1,53 @@
-import { endNumberCertificate, endVerifyCertificate, endSearchNumber } from "./actions";
+import {
+  endNumberCertificate,
+  endVerifyCertificate,
+  endSearchNumber,
+  turnOnLoader,
+  turnOnLoaderCertificate, deleteState
+} from "./actions";
+
+const getInitialState = () => {
+  return {
+    certificate: null,
+    isCertificate: true,
+    verifyMessage: null,
+    loader: false,
+    loaderCertificate: false
+  };
+};
 
 const initialState = {
-  certificate: null,
-  isCertificate: true,
-  verifyMessage: null
+  ...getInitialState()
 };
 
 export default (state = initialState, action) => {
   const { type, payload } = action;
   switch (type) {
     case endVerifyCertificate.toString():
-      // console.log(payload);
       return {
         ...state,
         ...payload
       };
     case endSearchNumber.toString():
-      console.log(payload, 'payload');
       return {
         ...state,
-        ...payload
+        ...payload,
+        loaderCertificate: false
+      };
+    case turnOnLoader.toString():
+      return {
+        ...state,
+        loader: true
+      };
+    case turnOnLoaderCertificate.toString():
+      return {
+        ...state,
+        loaderCertificate: true,
+        certificate: null
+      };
+    case deleteState.toString():
+      return {
+        ...getInitialState()
       };
     default: {
       return state;

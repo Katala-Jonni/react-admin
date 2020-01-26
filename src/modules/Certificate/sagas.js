@@ -27,7 +27,9 @@ const fetchCertificate = value => {
 
 const fetchCertificates = () => {
   return new Promise(resolve => {
-    resolve(certificates);
+    setTimeout(() => {
+      resolve(certificates);
+    }, 1000);
   });
 };
 
@@ -80,12 +82,15 @@ function* fetchSendCertificate({ payload }) {
   let serverMessage = "Сертификат зарегистрирован";
   let totalCards = yield call(fetchCertificates);
   const { certificateNumber } = payload;
+  const date = moment().format("DD.MM.YY");
   totalCards = {
     ...totalCards,
     [certificateNumber]: {
       ...payload,
-      date: moment().format("DD.MM.YY"),
-      place: "Древлянка 14, корпус 1"
+      date,
+      dateEnd: moment(date, "DD.MM.YY").add(6, "month").format("DD.MM.YY"),
+      place: "Древлянка 14, корпус 1",
+      history: []
     }
   };
   const totalCertificate = yield call(fetchAddCertificate, totalCards);
@@ -98,6 +103,7 @@ function* fetchSendCertificate({ payload }) {
 }
 
 function* startSearchCertificate({ payload }) {
+  console.log(payload);
   const certificates = yield call(fetchCertificates);
   let isCertificate = false;
   let verifyMessage = null;

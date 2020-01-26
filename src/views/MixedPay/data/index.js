@@ -1,5 +1,5 @@
-import TextFieldInput from "../TextFieldInput";
-import Certificate from "../Certificate";
+import TextFieldInput from "../TextFieldInput/index";
+import Certificate from "../Certificate/index";
 
 const infoPay = {
   ["cash"]: "Наличка",

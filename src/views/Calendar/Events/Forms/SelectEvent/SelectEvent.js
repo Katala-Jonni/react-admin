@@ -21,37 +21,38 @@ class SelectEvent extends Component {
     });
   };
 
-  deleteEvents = () => {
-    const { events, selectEventValue, deleteEvents } = this.props;
-    deleteEvents({
-      events,
-      selectEventValue
-    });
+  deleteEvents = (_id) => {
+    const { deleteEvents } = this.props;
+    deleteEvents(_id);
   };
 
   handleSubmit = values => {
     // копипаст с добавления записи
-    const { selectEventValue, handleClickCloseSelectEvent, events } = this.props;
-    const newEventsList = events.filter(a => a.id !== selectEventValue.id);
-    const { lastName, surname, phoneNumber } = values;
-    const hours = values.members.map(item => {
+    const { handleClickCloseSelectEvent, updateEvents, addEvents } = this.props;
+    const { lastName, surname, phoneNumber, _id } = values;
+    const members = values.members.map(item => {
+      const milliseconds = moment(item.date).startOf("day");
       const start = moment(item.date).set({ "hour": moment(item.start).hour(), "minute": moment(item.start).minute() });
       const end = moment(item.date).set({ "hour": moment(item.end).hour(), "minute": moment(item.end).minute() });
       return {
-        id: selectEventValue.id,
         title: `${item.title} - ${lastName} ${surname}`,
         start: start._d,
         end: end._d,
-        date: moment(item.date).format(),
+        date: start._d,
         resourceId: item.resourceId.value || item.resourceId,
         titleEvent: item.title,
-        lastName,
-        surname,
-        phoneNumber
+        milliseconds: milliseconds.valueOf()
       };
     });
 
-    this.props.editEvents(newEventsList.concat([...hours]));
+    const event = Object.assign({}, { ...members[0] }, { lastName, surname, phoneNumber });
+    if (_id) {
+      Object.assign(event, { _id });
+      updateEvents(event);
+    } else {
+      addEvents(event);
+    }
+
     this.switchButton(false);
     return handleClickCloseSelectEvent();
   };

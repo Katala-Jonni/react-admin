@@ -32,14 +32,12 @@ class AddMaster extends React.Component {
   };
 
   handleAdd = () => {
-    this.handleClose();
-    this.state.value && this.state.value.length && this.props.changeMasters({
-      date: moment(this.props.date).format("DD.MM.YY"),
-      totalResource: this.props.totalResource,
-      value: this.state.value
+    this.state.value && this.state.value.length && this.props.addResource({
+      resourcesInfo: this.state.value,
+      currentDate: moment(this.props.date).format("DD.MM.YY")
     });
-
     this.setState({ value: [] });
+    this.handleClose();
   };
 
   changeState = value => this.setState({ editValue: value });
@@ -49,11 +47,21 @@ class AddMaster extends React.Component {
     if (!this.state.editValue) {
       return null;
     }
+
+    const { endValue, startValue } = this.state.editValue;
+    const endResource = {
+      resourceId: endValue.label,
+      resourceTitle: endValue.value
+    };
+    const startResource = {
+      resourceId: startValue.label,
+      resourceTitle: startValue.value
+    };
+
     this.props.editMastersStart({
-      ...this.state.editValue,
-      date: this.props.date,
-      resource: this.props.resource,
-      events: this.props.events
+      startResource,
+      endResource,
+      currentDate: moment(this.props.date).valueOf()
     });
 
     this.setState({ editValue: null });
@@ -73,15 +81,15 @@ class AddMaster extends React.Component {
     });
   };
 
-  getTitleOptions = () => this.props.resource.map(item => item.resourceTitle);
+  getTitleOptions = () => this.props.resource.map(item => item.resourceTitle && item.resourceTitle);
 
   getOptions = () => this.props.masters.filter(item => !this.getTitleOptions().includes(item.value));
 
-  getStartOptions = () =>
-    this.props.masters.filter(item =>
-      this.getTitleOptions().includes(item.value)
-      && item.value.toLowerCase() !== defaultResource[0].resourceTitle.toLowerCase()
-    );
+  getStartOptions = () => {
+    return this.props.masters.filter(item => {
+      return this.getTitleOptions().includes(item.value) && item.value.toLowerCase() !== defaultResource[0].resourceTitle.toLowerCase();
+    });
+  };
 
   render() {
     const { classes, isNew, title, isNewEdit, isNewAdd, btnText } = this.props;
@@ -146,7 +154,8 @@ AddMaster.defaultProps = {
   title: "Выберите мастера",
   isNewEdit: "Изменить мастера",
   isNewAdd: "Добавить мастера",
-  btnText: "Выбрать"
+  btnText: "Выбрать",
+  btnAddText: "Добавить"
 };
 
 AddMaster.propTypes = {
@@ -160,6 +169,7 @@ AddMaster.propTypes = {
   date: PropTypes.object,
   totalResource: PropTypes.object.isRequired,
   btnText: PropTypes.string,
+  btnAddText: PropTypes.string,
   masters: PropTypes.array
 };
 
