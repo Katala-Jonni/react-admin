@@ -28,8 +28,7 @@ const styles = {
 
 class Certificate extends React.Component {
   state = {
-    tr: false,
-    isChange: false
+    tr: false
   };
 
   componentWillUnmount() {
@@ -50,26 +49,21 @@ class Certificate extends React.Component {
 
 
   handleTabs = () => {
-    // console.log(this.props);
-    // console.log("handleTabs");
-    this.setState({
-      isChange: !this.state.isChange
-    });
-    // console.log(this.props);
+    console.log(this.props);
   };
-//isChange={this.state.isChange}
+
   getTabs = () => {
     return [
       {
         tabButton: "Найти",
         tabIcon: Search,
-        tabContent: (<EditCertificate isChange={this.state.isChange}/>),
+        tabContent: (<EditCertificate/>),
         dataName: "Найти".toLowerCase()
       },
       {
         tabButton: "Новый",
         tabIcon: Add,
-        tabContent: (<AddCertificate/>),
+        tabContent: (<AddCertificate onSubmit={this.handleSubmit}/>),
         dataName: "Новый".toLowerCase()
       }
     ];
@@ -118,7 +112,6 @@ class Certificate extends React.Component {
               alignCenter
               tabs={this.getTabs()}
               handleTabs={this.handleTabs}
-              // onSubmit={this.handleSubmit}
             />
           </ItemGrid>
         </GridContainer>

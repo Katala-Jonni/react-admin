@@ -447,11 +447,12 @@ function* sendCart(action) {
   const { members } = typeMixed;
 
   let certificate = null;
-
+  const outMember = members ? members.find((item) => item.typePay === "certificate") : null;
+  console.log(crtInfo, "crtInfo");
   if (crtInfo) {
     certificate = {
       _id: crtInfo._id,
-      out: members ? members.find((item) => item.typePay === "certificate").count || null : null,
+      out: outMember ? outMember.count : null
       // amount: payInfo.certificate
     };
     console.log(certificate.out);
