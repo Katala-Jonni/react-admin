@@ -27,7 +27,7 @@ import Fab from "@material-ui/core/Fab";
 
 import extendedTablesStyle from "../../../assets/jss/material-dashboard-react/views/extendedTablesStyle";
 import CertificateView from "../CertificateView";
-import Template from "../../MixedPay/index";
+import MixedPay from "../../MixedPay/index";
 import { sendCertificate as startSendCertificate } from "../../../modules/Certificate";
 
 class ExtendedTables extends Component {
@@ -36,32 +36,32 @@ class ExtendedTables extends Component {
     openViewCertificate: false
   };
   handleClickAdd = item => {
-    const { totalCart, addToCart } = this.props;
+    const { totalCart, addToCartStart } = this.props;
     const products = totalCart.filter(a => {
-      if (a.id === item.id) {
+      if (a._id === item._id) {
         a.count += 1;
       }
       return a;
     });
 
-    addToCart(products);
+    addToCartStart(products);
   };
 
   handleClickRemove = item => {
-    const { totalCart, addToCart } = this.props;
+    const { totalCart, addToCartStart } = this.props;
     const products = totalCart.filter(a => {
-      if (a.id === item.id) {
+      if (a._id === item._id) {
         a.count = a.count <= 1 ? 1 : a.count - 1;
       }
       return a;
     });
 
-    addToCart(products);
+    addToCartStart(products);
   };
 
   handleClickClose = item => {
-    const { totalCart, addToCart } = this.props;
-    addToCart(totalCart.filter(a => a.id !== item.id));
+    const { totalCart, addToCartStart } = this.props;
+    addToCartStart(totalCart.filter(a => a._id !== item._id));
   };
 
   getTotalPrice = () => {
@@ -92,9 +92,8 @@ class ExtendedTables extends Component {
 
   handleClickSubmit = evt => {
     const { value, dataSetType } = evt.currentTarget;
-    console.log(value, dataSetType);
     const { totalCart, totalDay, totalOrders, startSendCart, masters } = this.props;
-    startSendCart({
+    const data = {
       totalCart,
       totalDay,
       totalOrders,
@@ -102,15 +101,33 @@ class ExtendedTables extends Component {
       payment: evt.currentTarget.dataset.type,
       infoPay: [{ typePay: evt.currentTarget.dataset.type, count: 1 }],
       certificateNumber: 0
-    });
+    };
+    startSendCart(data);
     this.props.handleCloseView();
     this.props.showNotification("tr");
   };
 
+
+  // handleClickSubmit = evt => {
+  //   const { value, dataSetType } = evt.currentTarget;
+  //   const { totalCart, totalDay, totalOrders, startSendCart, masters } = this.props;
+  //   const data = {
+  //     totalCart,
+  //     // totalDay,
+  //     // totalOrders,
+  //     masters,
+  //     payment: evt.currentTarget.dataset.type,
+  //     infoPay: [{ typePay: evt.currentTarget.dataset.type, count: 0 }],
+  //     certificateNumber: 0
+  //   };
+  //   startSendCart(data);
+  //   this.props.handleCloseView();
+  //   this.props.showNotification("tr");
+  // };
+
   handleClickSubmitMixed = values => {
-    console.log(values);
     const { members, number } = values;
-    const { totalCart, totalDay, totalOrders, startSendCart, masters } = this.props;
+    const { totalCart, totalDay, totalOrders, startSendCart, masters, certificate } = this.props;
     startSendCart({
       totalCart,
       totalDay,
@@ -119,7 +136,8 @@ class ExtendedTables extends Component {
       payment: "mixed",
       typeMixed: values,
       infoPay: members,
-      certificateNumber: number
+      certificateNumber: number,
+      certificateInfo: certificate
     });
     // startSendCart({ totalCart, totalDay, totalOrders, masters, payment: "mixed", typeMixed: values});
     // this.props.handleCloseView();
@@ -196,18 +214,11 @@ class ExtendedTables extends Component {
               Выберите тип оплаты
             </DialogTitle>
             <DialogContent>
-              <Template
+              <MixedPay
                 onSubmit={this.handleClickSubmitMixed}
                 // onSubmit={this.handleSubmit}
                 totalPrice={this.getTotalPrice()}
               />
-              {/*<CertificateView*/}
-              {/*// classes={classes}*/}
-              {/*// handleSubmit={this.handleSubmit}*/}
-              {/*onSubmit={this.handleClickMixed}*/}
-              {/*// onSubmit={this.handleSubmit}*/}
-              {/*totalPrice={this.getTotalPrice()}*/}
-              {/*/>*/}
             </DialogContent>
             <DialogActions>
               <Button
@@ -243,16 +254,6 @@ class ExtendedTables extends Component {
                   </div>
                 )
               }
-              // {
-              //   purchase: true,
-              //   colspan: "0",
-              //   col: {
-              //     colspan: 6,
-              //     text: (
-              //       null
-              //     )
-              //   }
-              // }
             ]}
             tableShopping
             customHeadCellClasses={[
@@ -275,18 +276,6 @@ class ExtendedTables extends Component {
           />
         </ItemGrid>
         <div className={classes.buttonGroup}>
-          {/*<Fab*/}
-          {/*variant="extended"*/}
-          {/*aria-label="certificate"*/}
-          {/*data-type={"certificate"}*/}
-          {/*size={"large"}*/}
-          {/*className={classes.margin}*/}
-          {/*onClick={this.handleClickCertificate}*/}
-          {/*>*/}
-          {/*<CreditCard className={classes.extendedIcon}/>*/}
-          {/*Сертификат{" "}*/}
-          {/*<KeyboardArrowRight className={classes.icon}/>*/}
-          {/*</Fab>*/}
           <Fab
             variant="extended"
             aria-label="mixed"

@@ -1,6 +1,7 @@
 import React, { Component, Fragment } from "react";
 import PropTypes from "prop-types";
 import cx from "classnames";
+import momentTimeZone from "moment-timezone";
 import moment from "moment";
 
 // core components
@@ -118,6 +119,8 @@ const options = [
   }
 ];
 
+const getTimeZone = (currentDate) => momentTimeZone.tz(currentDate, "Europe/Moscow");
+
 class EditCertificate extends Component {
   state = {
     clickSearch: false
@@ -128,8 +131,8 @@ class EditCertificate extends Component {
   }
 
   searchData = value => {
-    const { startSearchNumber } = this.props;
-    startSearchNumber(value);
+    const { startSearchNumber, certificateStatus, isPay } = this.props;
+    startSearchNumber({ value, certificateStatus, isPay });
     return this.setState({
       clickSearch: true
     });
@@ -177,6 +180,11 @@ class EditCertificate extends Component {
     });
   };
 
+  getStatus = (date) => {
+    const dateZone = getTimeZone(date);
+    return moment().isSameOrBefore(moment(dateZone));
+  };
+
   render() {
     const {
       classes,
@@ -184,9 +192,13 @@ class EditCertificate extends Component {
       certificate,
       loaderCertificate,
       turnOnLoaderCertificate,
-      verifyMessage
+      verifyMessage,
+      isPay,
+      certificateStatus
     } = this.props;
     const { clickSearch } = this.state;
+
+    // console.log(certificateStatus);
 
     return (
       <Fragment>
@@ -203,6 +215,7 @@ class EditCertificate extends Component {
                 getLoader={turnOnLoaderCertificate}
                 loader={loaderCertificate}
                 onDeleteState={this.onDeleteState}
+                isPay={isPay}
               />
             </ItemGrid>
             {loaderCertificate
@@ -221,7 +234,7 @@ class EditCertificate extends Component {
               </GridContainer>
               : null
             }
-            {certificate
+            {certificate && !isPay
               ? <GridContainer
                 style={{ width: "100%" }}
                 spacing={16}
@@ -292,8 +305,8 @@ class EditCertificate extends Component {
                     <Chip
                       component={"span"}
                       size="small"
-                      label={"Активный"}
-                      color={"primary"}
+                      label={certificateStatus ? "Активный" : "Неактивный"}
+                      color={certificateStatus ? "primary" : "secondary"}
                     />
                   </Typography>
                   <Typography
@@ -303,7 +316,7 @@ class EditCertificate extends Component {
                     color={"textSecondary"}
                   >
                     Дата приобретения: <span
-                    style={{ color: "black", fontSize: 18 }}>{certificate.date}</span>
+                    style={{ color: "black", fontSize: 18 }}>{getTimeZone(certificate.date).format("DD.MM.YYYY")}</span>
                   </Typography>
                   <Typography
                     variant="body1"
@@ -312,7 +325,10 @@ class EditCertificate extends Component {
                     color={"textSecondary"}
                   >
                     Действителен до: <span
-                    style={{ color: "black", fontSize: 18 }}>{certificate.dateEnd}</span>
+                    style={{
+                      color: "black",
+                      fontSize: 18
+                    }}>{getTimeZone(certificate.dateEnd).format("DD.MM.YYYY")}</span>
                   </Typography>
                   <Typography
                     variant="body1"

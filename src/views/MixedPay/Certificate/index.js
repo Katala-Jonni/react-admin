@@ -1,16 +1,20 @@
 import { connect } from "react-redux";
 import Certificate from "./Certificate";
 import {
-  changeType, getCertificate,
+  changeType,
   getCurrentCertificate,
   startEditCertificate,
-  startSearchCertificate
+  startSearchCertificate,
+  getCertificate
 } from "../../../modules/MixedPay";
 import { getTotalCart } from "../../../modules/Shop";
+import { getCertificate as naturalCertificate } from "../../../modules/Certificate";
 
 const mapStateFromProps = state => ({
   certificate: getCertificate(state),
-  currentCertificate: getCurrentCertificate(state),
+  // certificate: getCertificate(state),
+  // currentCertificate: getCurrentCertificate(state),
+  currentCertificate: naturalCertificate(state),
   totalCart: getTotalCart(state)
 });
 

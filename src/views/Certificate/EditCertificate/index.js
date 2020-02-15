@@ -7,14 +7,15 @@ import {
   getVerifyMessage,
   startSearchNumber,
   turnOnLoaderCertificate,
-  deleteState
+  deleteState, getCertificateStatus
 } from "../../../modules/Certificate";
 
 const mapStateFromProps = state => ({
   certificate: getCertificate(state),
   loader: getLoader(state),
   loaderCertificate: getLoaderCertificate(state),
-  verifyMessage: getVerifyMessage(state)
+  verifyMessage: getVerifyMessage(state),
+  certificateStatus: getCertificateStatus(state)
 });
 
 const mapDispatchFromProps = { startSearchNumber, turnOnLoaderCertificate, deleteState };

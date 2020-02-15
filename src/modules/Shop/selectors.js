@@ -7,3 +7,5 @@ export const getTotalDay = createSelector(getShopState, state => state.totalDay)
 export const getTotalOrders = createSelector(getShopState, state => state.totalOrders);
 export const getIsSubmit = createSelector(getShopState, state => state.isSubmit);
 export const getTypePays = createSelector(getShopState, state => state.typePays);
+export const getCategory = createSelector(getShopState, state => state.categories);
+export const getProducts = createSelector(getShopState, state => state.products);

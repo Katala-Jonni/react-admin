@@ -1,14 +1,14 @@
 import { connect } from "react-redux";
 import {
   getTotalCart,
-  addToCart,
   startSendCart,
   getTotalDay,
   getIsSubmit,
-  getTotalOrders
+  getTotalOrders,
+  addToCartStart
 } from "../../../modules/Shop";
 import {
-  endSearchNumber
+  endSearchNumber, getCertificate as naturalCertificate
 } from "../../../modules/Certificate";
 import CartTable from "./CartTable";
 import { getTotalMasters } from "../../../modules/Calendar";
@@ -18,9 +18,10 @@ const mapStateFromProps = state => ({
   totalDay: getTotalDay(state),
   totalOrders: getTotalOrders(state),
   masters: getTotalMasters(state),
-  isSubmit: getIsSubmit(state)
+  isSubmit: getIsSubmit(state),
+  certificate: naturalCertificate(state)
 });
 
-const mapDispatchFromProps = { addToCart, startSendCart, endSearchNumber };
+const mapDispatchFromProps = { addToCartStart, startSendCart, endSearchNumber };
 
 export default connect(mapStateFromProps, mapDispatchFromProps)(CartTable);

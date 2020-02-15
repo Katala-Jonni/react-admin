@@ -148,7 +148,7 @@ class RenderMembers extends Component {
   render() {
     const { fields, classes, isDisabledBtn, noButton, btnText } = this.props;
     const { changeMember, options } = this.state;
-    // console.log(this.props);
+    console.log(this.props);
     // console.log(this.state.options);
     // console.log(this.state.targetTypes);
     return (

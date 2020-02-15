@@ -46,6 +46,9 @@ class NavPills extends React.Component {
 
   handleChange = (event, active) => {
     this.setState({ active });
+
+    // this.props.handleTabs && this.props.handleTabs();
+
     const { changeTill } = this.props;
     if (changeTill) {
       if (event.currentTarget.dataset.name === "касса") {
@@ -66,8 +69,10 @@ class NavPills extends React.Component {
       direction,
       color,
       horizontal,
-      alignCenter
+      alignCenter,
+      handleTabs
     } = this.props;
+
 
     const flexContainerClasses =
       classes.flexContainer +
@@ -104,6 +109,7 @@ class NavPills extends React.Component {
             <Tab
               label={prop.tabButton}
               key={key}
+              onClick={handleTabs}
               {...icon}
               selected
               classes={{

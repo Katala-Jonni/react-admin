@@ -24,27 +24,27 @@ class RenderMembers extends Component {
     return fields.push({});
   };
 
-  addService = ({ id, value, group }) => {
-    const { fields } = this.props;
-    // console.log(id);
-    // console.log(value);
-    // console.log(group);
-    let price = 0;
-    if (services[group]) {
-      const product = services[group].find(el => el.title.toLowerCase() === value.toLowerCase());
-      if (product) {
-        price = product.price;
-      }
-    } else {
-      price = 0;
-    }
-    const newTotalCounts = [...this.state.totalServices];
-    newTotalCounts[id] = price;
-    this.setState({
-      totalServices: newTotalCounts
-      // totalServices: { ...this.state.totalServices, [id]: price }
-    });
-  };
+  // addService = ({ id, value, group }) => {
+  //   const { fields } = this.props;
+  //   // console.log(id);
+  //   // console.log(value);
+  //   // console.log(group);
+  //   let price = 0;
+  //   if (services[group]) {
+  //     const product = services[group].find(el => el.title.toLowerCase() === value.toLowerCase());
+  //     if (product) {
+  //       price = product.price;
+  //     }
+  //   } else {
+  //     price = 0;
+  //   }
+  //   const newTotalCounts = [...this.state.totalServices];
+  //   newTotalCounts[id] = price;
+  //   this.setState({
+  //     totalServices: newTotalCounts
+  //     // totalServices: { ...this.state.totalServices, [id]: price }
+  //   });
+  // };
 
   removeService = index => {
     console.log(index);

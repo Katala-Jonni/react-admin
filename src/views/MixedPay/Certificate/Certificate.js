@@ -12,6 +12,7 @@ import ItemGrid from "components/Grid/GridItem.jsx";
 import InputNumber from "components/Inputs/InputNumber";
 import CustomInputView from "components/Inputs/CustomInputView";
 import Button from "components/CustomButtons/Button.jsx";
+import EditCertificate from "../../Certificate/EditCertificate";
 
 class Certificate extends Component {
   state = {
@@ -58,7 +59,7 @@ class Certificate extends Component {
         .map(elem => {
           // console.log(elem);
           return {
-            value: `${elem.category}-${elem.id}`,
+            value: `${elem.category}-${elem._id}`,
             label: elem.title
           };
         });
@@ -77,6 +78,7 @@ class Certificate extends Component {
     const { changeType, type, changeAddType, changeDisabled, addStopOption, startEditCertificate, currentCertificate } = this.props;
     const { disabled } = this.state;
     if (disabled) return;
+    console.log(type);
     changeType({ [type]: +count });
     changeAddType(true);
     this.setState({
@@ -138,21 +140,38 @@ class Certificate extends Component {
     return (
       <Fragment>
         <ItemGrid xs={12} md={6} item container justify="space-around" spacing={16}>
+          {/*<ItemGrid xs={12}>*/}
+            {/*<Field*/}
+              {/*autoFocus*/}
+              {/*fullWidth*/}
+              {/*name={"number"}*/}
+              {/*id={`${name}.search`}*/}
+              {/*label={label}*/}
+              {/*placeholder={label}*/}
+              {/*value={searchValue}*/}
+              {/*component={CustomInputView}*/}
+              {/*error={!currentCertificate}*/}
+              {/*helpText={!currentCertificate ? helpText : null}*/}
+              {/*disabled={!!currentCertificate}*/}
+              {/*onChange={this.handleChange}*/}
+            {/*/>*/}
+          {/*</ItemGrid>*/}
           <ItemGrid xs={12}>
-            <Field
-              autoFocus
-              fullWidth
-              name={"number"}
-              id={`${name}.search`}
-              label={label}
-              placeholder={label}
-              value={searchValue}
-              component={CustomInputView}
-              error={!currentCertificate}
-              helpText={!currentCertificate ? helpText : null}
-              disabled={!!currentCertificate}
-              onChange={this.handleChange}
-            />
+            {/*<Field*/}
+            {/*autoFocus*/}
+            {/*fullWidth*/}
+            {/*name={"number"}*/}
+            {/*id={`${name}.search`}*/}
+            {/*label={label}*/}
+            {/*placeholder={label}*/}
+            {/*value={searchValue}*/}
+            {/*component={CustomInputView}*/}
+            {/*error={!currentCertificate}*/}
+            {/*helpText={!currentCertificate ? helpText : null}*/}
+            {/*disabled={!!currentCertificate}*/}
+            {/*onChange={this.handleChange}*/}
+            {/*/>*/}
+            <EditCertificate isPay/>
           </ItemGrid>
         </ItemGrid>
         {currentCertificate

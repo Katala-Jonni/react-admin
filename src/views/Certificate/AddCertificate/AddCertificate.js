@@ -45,7 +45,8 @@ const initialState = () => {
     selectValues: [],
     totalSum: 0,
     radioValue: null,
-    typeCard: null
+    typeCard: null,
+    isChange: false
   };
 };
 
@@ -56,17 +57,34 @@ class AddCertificate extends Component {
 
   componentDidMount() {
     const { form: { certificateNumber } } = this.state;
+
+    this.props.loadView();
+    // console.log("test¬");
     // this.props.loadNumberCertificate({ value: certificateNumber });
   }
 
   // static getDerivedStateFromProps(nextProps, prevState) {
-  //   console.log(nextProps, "nextProps");
+  //   console.log(nextProps.isChange, "nextProps");
   //   console.log(prevState, "prevState");
-  //   const { form: { certificateSum } } = prevState;
-  //   if (certificateSum) {
-  //     nextProps.dispatch(change("addCertificate", "certificateSum", null));
+  //   if (nextProps.isChange !== prevState.isChange) {
+  //     nextProps.reset();
+  //     return {
+  //       // ...initialState(),
+  //       isChange: nextProps.isChange
+  //     };
   //   }
-  //   return null;
+  //   // console.log(prevState);
+  //   return {
+  //     isChange: nextProps.isChange
+  //     //74b8eab6-3872
+  //   };
+  // }
+
+  // componentDidUpdate() {
+  //   console.log("test");
+  //   this.setState({
+  //     ...initialState()
+  //   });
   // }
 
   addField = () => {
@@ -76,11 +94,14 @@ class AddCertificate extends Component {
   };
 
   handleSubmit = evt => {
-    this.props.reset();
+    // console.log(evt);
+    console.log(this.props);
+    const { reset, handleSubmit } = this.props;
+    this.props.handleSubmit(evt);
+    reset();
     this.setState({
       ...initialState()
     });
-    this.props.handleSubmit(evt);
   };
 
   removeField = () => {
@@ -115,11 +136,12 @@ class AddCertificate extends Component {
 
   handleChangeNumber = evt => {
     const { name, value } = evt.target;
+    const { startVerifyCertificate } = this.props;
     this.setState({
       form: { ...this.state.form, [name]: value },
       selectValues: null
     });
-    this.props.startVerifyCertificate({ value });
+    return startVerifyCertificate({ value });
   };
 
   handleChangeSelect = value => {
@@ -133,7 +155,6 @@ class AddCertificate extends Component {
 
     const typeCard = options.find(a => a.value.toLowerCase() === value.toLowerCase());
     if (value === "amount") {
-      // this.props.dispatch(change("addCertificate", "servicesType", []));
       this.props.dispatch(change("addCertificate", "certificateSum", null));
       this.setState({
         amountView: true,
@@ -157,22 +178,32 @@ class AddCertificate extends Component {
 
   getOptions = () => {
     const exceptionServices = ["certificate", "shop", "solarium"];
-    const keys = Object.keys(services);
     let count = 0;
-    if (!keys) return [];
-    return keys
-      .filter(item => !exceptionServices.includes(item))
-      .reduce((start, cur) => {
-        start.push(...services[cur]);
-        return start;
-      }, [])
+    if (!this.props.products.length) return [];
+
+    return this.props.products
+      .filter(item => !exceptionServices.includes(item.categoryName))
       .reduce((start, item) => {
         start.push({
-          value: `${item.category}-${++count}`,
+          value: `${item.categoryName}-${++count}`,
           label: item.title
         });
         return start;
       }, []);
+
+    // return keys
+    //   .filter(item => !exceptionServices.includes(item))
+    //   .reduce((start, cur) => {
+    //     start.push(...services[cur]);
+    //     return start;
+    //   }, [])
+    //   .reduce((start, item) => {
+    //     start.push({
+    //       value: `${item.category}-${++count}`,
+    //       label: item.title
+    //     });
+    //     return start;
+    //   }, []);
   };
 
   onMenuOpen = () => {
@@ -205,21 +236,15 @@ class AddCertificate extends Component {
 
   getTotalSum = values => {
     let price = 0;
-    values.map(item => (
-      {
-        value: item.value.split("-")[0].toString(),
-        label: item.label
-      }
-    ))
-      .forEach(item => {
-        const { value, label } = item;
-        if (services[value] && Array.isArray(services[value])) {
-          const product = services[value].find(el => el.title.toLowerCase() === label.toLowerCase());
-          if (product) {
-            price += product.price;
-          }
+    values.forEach(item => {
+      const { label } = item;
+      if (this.props.products.length) {
+        const product = this.props.products.find(el => el.title.toLowerCase() === label.toLowerCase());
+        if (product) {
+          price += product.price;
         }
-      });
+      }
+    });
     return price;
   };
 
@@ -244,7 +269,8 @@ class AddCertificate extends Component {
       errorMessage,
       isCertificate,
       verifyMessage,
-      certificate
+      certificate,
+      isChange
     } = this.props;
     const {
       form: { certificateNumber, certificateSum },
@@ -257,6 +283,8 @@ class AddCertificate extends Component {
       radioValue,
       typeCard
     } = this.state;
+
+    // console.log(isChange);
 
     return (
       <Fragment>

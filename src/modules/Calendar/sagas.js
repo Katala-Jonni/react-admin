@@ -175,6 +175,7 @@ function* deleteEventsDay(action) {
 
 function* selectView(action) {
   const { payload } = action;
+  console.log(payload);
   const res = yield call(fetchCurrentEvent, moment(payload).valueOf());
   const { resource: { resourcesInfo: resource }, events } = res;
   return yield put(loadViewEvents({

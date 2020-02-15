@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { Component, Fragment } from "react";
 import PropTypes from "prop-types";
 import moment from "moment";
 import { withStyles } from "@material-ui/core/styles";
@@ -27,7 +27,6 @@ import DialogContent from "@material-ui/core/DialogContent";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import Button from "@material-ui/core/Button";
 import Tooltip from "@material-ui/core/Tooltip";
-import category from "../data/category";
 
 const useStyles = theme => ({
   actionRoot: {
@@ -81,39 +80,60 @@ class RecipeReviewCard extends Component {
 
   handleChangeSelect = data => {
     this.setState({
-      selectValue: data ? data.value : data,
-      expanded: null
+      selectValue: data ? data.value : data
+      // expanded: null
     });
   };
 
   handleExpandClick = () => {
     this.setState({
-      expanded: !this.state.expanded
+      expanded: !this.state.expanded,
+      selectValue: null
     });
   };
 
   handleClickAddCart = () => {
-    const { product, changeViewCart, totalCart, addToCart } = this.props;
+    const getLowerCase = (value) => value.toLowerCase();
+    const { product, changeViewCart, totalCart, categories, addToCartStart } = this.props;
     const { countCart, selectValue } = this.state;
-    // console.log(product.category);
-    const targetCategory = category.find(item => item.name.toLowerCase() === product.category.toLowerCase());
-    // console.log(targetCategory);
+    // поиск категории
+    const targetCategory = categories.find(item => item.name.toLowerCase() === product.categoryName.toLowerCase());
+    // выбор имени
     const value = selectValue ? selectValue : targetCategory.value;
-    let goods = totalCart.find(a => a.name === value && a.title === product.title);
+    // console.log(totalCart, "totalCart");
+    // console.log(product, "product");
+    const cart = [...totalCart];
+    let goods = cart.find(a => getLowerCase(a.name) === getLowerCase(value) && a._id === product._id);
+    // let goods = totalCart.find(a => getLowerCase(a.name) === getLowerCase(value) && getLowerCase(a.title) === getLowerCase(product.title));
 
+    // console.log(targetCategory, "targetCategory");
+    // console.log(goods, "goods");
+    // console.log(goods);
     if (goods) {
-      goods = { ...goods, count: countCart };
+      goods.count = countCart;
+      // goods = { ...goods, count: countCart };
+      // cart.forEach((goods) => {
+      //   if (getLowerCase(goods.name) === getLowerCase(value) && goods._id === product._id) {
+      //     goods.count = countCart;
+      //   }
+      // });
     } else {
-      const idList = totalCart.map(a => a.id);
-      const maxId = Math.max(...idList, 0);
       goods = Object.assign({}, product, {
         count: countCart,
-        name: value,
-        id: maxId + 1
+        name: value
       });
+      cart.push(goods);
     }
+    // console.log(value, "value");
+    // console.log(selectValue, "selectValue");
+    // console.log(countCart, "countCart");
+
+    // console.log(goods, "afterGoods");
     changeViewCart();
-    addToCart(totalCart.filter(a => a.id !== goods.id).concat(goods));
+    // console.log(totalCart);
+    // console.log(goods);
+    addToCartStart(cart);
+    // addToCartStart(totalCart.filter(a => a._id !== goods._id).concat(goods));
     this.setState(initialState());
   };
 
@@ -152,8 +172,7 @@ class RecipeReviewCard extends Component {
   render() {
     const { classes, product, typographyResourceError, typographyResourcePlaceholder } = this.props;
     const { countCart, viewNumber } = this.state;
-    // console.log(this.props);
-    // console.log(countCart);
+
     return (
       <Card className={cx(classes.card)}>
         <CardActionArea>
@@ -233,6 +252,10 @@ class RecipeReviewCard extends Component {
           {product.isMaster
             ? <Tooltip title={"Выбрать мастера"} aria-label={"Выбрать мастера"}>
               <IconButton
+                className={cx({
+                  [classes.expand]: classes.expand,
+                  [classes.expandOpen]: this.state.expanded
+                })}
                 onClick={this.handleExpandClick}
                 aria-expanded={this.state.expanded}
                 aria-label="Добавить мастера"
@@ -261,23 +284,25 @@ class RecipeReviewCard extends Component {
           <CardContent>
             <Typography component={"h6"}>Выберите мастера:</Typography>
             <Typography component={"div"} className={classes.typography}>
-              {this.getCurrentDayResource()
+              {this.getCurrentDayResource() && this.state.expanded
                 ? <Select
                   options={this.getCurrentDayResource()}
                   placeholder={typographyResourcePlaceholder}
                   minMenuHeight={150}
                   maxMenuHeight={150}
-                  menuIsOpen
+                  // menuIsOpen
                   isClearable
                   onChange={this.handleChangeSelect}
                 />
-                : <Typography
-                  variant={"subtitle2"}
-                  color={"error"}
-                  component={"h3"}
-                >
-                  {typographyResourceError}
-                </Typography>
+                : !this.getCurrentDayResource() || !this.getCurrentDayResource().length ?
+                  <Typography
+                    variant={"subtitle2"}
+                    color={"error"}
+                    component={"h3"}
+                  >
+                    {typographyResourceError}
+                  </Typography>
+                  : null
               }
             </Typography>
           </CardContent>

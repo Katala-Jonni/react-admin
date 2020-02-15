@@ -12,7 +12,8 @@ const getInitialState = () => {
     isCertificate: true,
     verifyMessage: null,
     loader: false,
-    loaderCertificate: false
+    loaderCertificate: false,
+    certificateStatus: false
   };
 };
 

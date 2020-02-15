@@ -1,15 +1,20 @@
 import {
-  addToCart,
   endSendCart,
   changeSubmitSwitch,
   endTotalDay,
   endRemoveDay,
   endTotalOrders,
-  changePays, plusPayCount, minusPayCount
+  changePays,
+  plusPayCount,
+  minusPayCount,
+  endLoadView,
+  addToCartEnd
 } from "./actions";
 
 const initialData = () => {
   return {
+    categories: [],
+    products: [],
     totalCart: [],
     totalDay: {},
     totalOrders: {},
@@ -29,8 +34,14 @@ const initialState = {
 export default (state = initialState, action) => {
   const { type, payload } = action;
   switch (type) {
-    case addToCart.toString():
-      // console.log(payload);
+    case endLoadView.toString(): {
+      return {
+        ...state,
+        categories: payload.categories,
+        products: payload.products
+      };
+    }
+    case addToCartEnd.toString():
       return {
         ...state,
         totalCart: payload,

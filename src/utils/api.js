@@ -5,6 +5,7 @@ export default {
   wallet: "/wallet",
   shop: "/shop",
   sun: "/sun",
+  day: "/day",
   certificate: "/certificate",
   event: "/event",
   resource: "/resource"

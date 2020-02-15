@@ -7,7 +7,7 @@ import FormGroup from "@material-ui/core/FormGroup";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import FormHelperText from "@material-ui/core/FormHelperText";
 import Checkbox from "@material-ui/core/Checkbox";
-import category from "../data/category";
+// import category from "../data/category";
 
 const useStyles = theme => ({
   root: {
@@ -24,29 +24,31 @@ class CheckboxesGroup extends Component {
   handleChange = event => this.props.handleChange(event);
 
   render() {
-    const { classes, formLabel } = this.props;
+    const { classes, formLabel, categories } = this.props;
 
     return (
       <div className={classes.root}>
         <FormControl component="fieldset" className={classes.formControl}>
           <FormLabel component="legend" filled>{formLabel}</FormLabel>
           <FormGroup>
-            {category.map(item => {
-              return (
-                <FormControlLabel
-                  key={item.id}
-                  label={item.value}
-                  control={
-                    <Checkbox
-                      checked={this.state[item]}
-                      name={item.name}
-                      onChange={this.handleChange}
-                      value={item.value}
-                      color={"primary"}
-                    />
-                  }
-                />
-              );
+            {categories.map(item => {
+              if (item.product.items.length) {
+                return (
+                  <FormControlLabel
+                    key={item._id}
+                    label={item.value}
+                    control={
+                      <Checkbox
+                        checked={this.state[item]}
+                        name={item.name}
+                        onChange={this.handleChange}
+                        value={item.value}
+                        color={"primary"}
+                      />
+                    }
+                  />
+                );
+              }
             })}
           </FormGroup>
           <FormHelperText>Be careful</FormHelperText>

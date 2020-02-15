@@ -11,8 +11,7 @@ import "./Calendar.css";
 import SelectEvent from "./Events/Forms/SelectEvent/index";
 import defaultResource from "../../modules/Calendar/defaultResource";
 import Progress from "../../components/Progress/Progress";
-import eventss from "../../modules/Calendar/events";
-import { selectViewEvents, updateEvents } from "../../modules/Calendar";
+import Popup from "./Popup";
 
 moment.locale("ru");
 const localizer = BigCalendar.momentLocalizer(moment);
@@ -60,7 +59,10 @@ class Calendar extends Component {
       selectEvent: false,
       selectEventValue: null,
       isNewEvent: false,
-      eve: []
+      eve: [],
+      showModal: false,
+      events: null,
+      popupDate: moment()
     };
   }
 
@@ -80,7 +82,7 @@ class Calendar extends Component {
     return true;
   };
 
-  moveEvent = ({ event, start, end, resourceId, isAllDay: droppedOnAllDaySlot }) => {
+  moveEvent = ({ event, start, end, resourceId }) => {
     if (!this.getDifferenceTime(start) || this.state.view === "month") return;
     // не передвигать
     const notMoveResource = defaultResource[0].resourceTitle.toLowerCase();
@@ -89,44 +91,17 @@ class Calendar extends Component {
     if (targetResource === notMoveResource || currentResource === notMoveResource) {
       if (currentResource !== targetResource) return;
     }
-
     if (!this.state.resize) return;
-    const { events, editEvents, updateEvents } = this.props;
-    // const idx = events.indexOf(event);
-    // let allDay = event.allDay;
-    //
-    // if (!event.allDay && droppedOnAllDaySlot) {
-    //   allDay = true;
-    // } else if (event.allDay && !droppedOnAllDaySlot) {
-    //   allDay = false;
-    // }
 
-    const updatedEvent = { ...event, start, end, resourceId, date: start };
-
-    // const nextEvents = [...events];
-    // nextEvents.splice(idx, 1, updatedEvent);
-
-    // запрос в базу и обовление базы
-    // console.log(nextEvents);
-    // console.log(updatedEvent);
-    // console.log(event);
-    updateEvents(updatedEvent);
-    // editEvents(nextEvents);
-
+    this.props.updateEvents({ ...event, start, end, resourceId, date: start });
   };
 
   resizeEvent = ({ event, start, end }) => {
     console.log("test");
     if (!this.getDifferenceTime(start)) return;
     if (!this.state.resize) return; // КАСТОМНО СДЕЛАЛ
-    const { updateEvents } = this.props;
-
-    const updatedEvent = { ...event, start, end, date: start };
-    console.log(updatedEvent);
-
     // запрос в базу и обовление базы
-    updateEvents(updatedEvent);
-    // editEvents(nextEvents);
+    this.props.updateEvents({ ...event, start, end, date: start });
   };
 
   newEvent = event => {
@@ -160,14 +135,9 @@ class Calendar extends Component {
   onChangeState = () => this.setState({ isDay: false });
 
   onNavigate = date => {
-    // console.log(this.props.totalResource);
-    const { selectDay, totalResource, selectViewEvents, defaultResource, resource } = this.props;
+    const { selectViewEvents } = this.props;
     const { view, isDay } = this.state;
-    // console.log(totalResource, 'onNavigateResource');
-    // this.props.initialResource();
-    // console.log(view);
     selectViewEvents(date);
-    // selectDay({ resource: totalResource[moment(date).format("DD.MM.YY")], date, defaultResource });
     const checkNavigate = view === "month" && !isDay;
 
     return this.setState({
@@ -226,8 +196,7 @@ class Calendar extends Component {
       startTimeMinute,
       endTimeTimeHour,
       endTimeTimeMinute,
-      step,
-      currentEvents
+      step
     } = this.props;
     const { selectEvent, selectEventValue, isNewEvent } = this.state;
 
@@ -241,7 +210,21 @@ class Calendar extends Component {
       );
     }
 
-    // console.log(moment().millisecond(Number));
+    // console.log(moment().isSameOrAfter("2020-01-01"));
+    // console.log(this.state.popupDate);
+    // console.log(this.state.popupDate);
+    // console.log(moment().format());
+    // console.log(moment().isSameOrAfter(this.state.popupDate));
+    // console.log(this.state.popupDate);
+    // console.log(moment());
+
+    // console.log(moment() >= this.state.popupDate);
+
+    // console.log(moment(this.state.popupDate).isAfter(moment()));
+    // console.log("---------");
+    //
+    // console.log(moment().toDate());
+    // console.log(moment());
 
     return (
       <Fragment>
@@ -265,13 +248,10 @@ class Calendar extends Component {
             views={["month", "day"]}
             step={step}
             resizable={false}
-            // resources={currentEvents.resource}
-            // events={currentEvents.events}
             resources={resource}
             events={events}
-            // events={currentEvents}
             localizer={localizer}
-            style={{ height: "100vh" }}
+            style={{ height: "85vh" }}
             defaultDate={moment().toDate()}
             defaultView={BigCalendar.Views.MONTH}
             min={moment(`${startTimeHour}:${startTimeMinute}`, "h:mma").toDate()}
@@ -283,10 +263,19 @@ class Calendar extends Component {
             onSelectEvent={this.onSelectEvent}
             onNavigate={this.onNavigate}
             onChangeState={this.onChangeState}
+            onShowMore={(events, date) => this.setState({ events, popupDate: moment(date) })}
+            messages={{
+              showMore: (target) => <span style={{ cursor: "pointer", color: "red" }} role="presentation"
+                                          onClick={() => this.setState({
+                                            calendarOverlay: true,
+                                            currentTitleData: {}
+                                          })}> +{target} еще</span>
+            }}
             components={{
               toolbar: withStyles(styleTooltip)(CalendarToolBar)
             }}
           />
+          {this.state.showModal && <Popup events={this.state.events}/>}
         </div>
       </Fragment>
     );

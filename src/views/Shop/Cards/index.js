@@ -1,13 +1,14 @@
 import { connect } from "react-redux";
 import { getTotalResource } from "../../../modules/Calendar";
-import { addToCart, getTotalCart } from "../../../modules/Shop";
+import { addToCartStart, getCategory, getTotalCart } from "../../../modules/Shop";
 import Card from "./Card";
 
 const mapStateFromProps = state => ({
   totalResource: getTotalResource(state),
-  totalCart: getTotalCart(state)
+  totalCart: getTotalCart(state),
+  categories: getCategory(state)
 });
 
-const mapDispatchFromProps = { addToCart };
+const mapDispatchFromProps = { addToCartStart };
 
 export default connect(mapStateFromProps, mapDispatchFromProps)(Card);

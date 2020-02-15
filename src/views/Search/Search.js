@@ -49,7 +49,7 @@ class Search extends Component {
     });
   };
 
-  handleSubmit = evt => {
+  handleClickSearch = evt => {
     evt.preventDefault();
     const { searchNumber } = this.state;
     const { getLoader } = this.props;
@@ -57,6 +57,11 @@ class Search extends Component {
     this.props.searchData(searchNumber);
     // this.props.startSearchNumber(searchNumber);
   };
+
+  // handleClickSearch = evt => {
+  //   console.log(evt);
+  // };
+
 
   render() {
     const {
@@ -68,7 +73,8 @@ class Search extends Component {
       btnAdd,
       viewIcon,
       classes,
-      loader
+      loader,
+      isPay
     } = this.props;
     const { searchNumber } = this.state;
     return (
@@ -81,24 +87,24 @@ class Search extends Component {
         >
           <ItemGrid xs={12} md={searchNumber ? 9 : 12}>
             <div className={classes.addCardForm}>
-              <form onSubmit={this.handleSubmit}>
-                <Field
-                  autoFocus
-                  viewIcon={viewIcon}
-                  id={id}
-                  name={name}
-                  label={label}
-                  // disabled={loader}
-                  value={searchNumber}
-                  placeholder={placeholder}
-                  component={CustomInputView}
-                  onChange={this.handleChange}
-                  // error={true}
-                  // error={isVerifyCardNumber}
-                  // type={"search"}
-                  // helpText={!pristine && !isVerifyCardNumber ? null : verifyPhoneMessage}
-                />
-              </form>
+              {/*<form onSubmit={this.handleSubmit}>*/}
+              <Field
+                autoFocus
+                viewIcon={viewIcon}
+                id={id}
+                name={name}
+                label={label}
+                // disabled={loader}
+                value={searchNumber}
+                placeholder={placeholder}
+                component={CustomInputView}
+                onChange={this.handleChange}
+                // error={true}
+                // error={isVerifyCardNumber}
+                // type={"search"}
+                // helpText={!pristine && !isVerifyCardNumber ? null : verifyPhoneMessage}
+              />
+              {/*</form>*/}
             </div>
           </ItemGrid>
           {searchNumber
@@ -115,26 +121,28 @@ class Search extends Component {
                 <ItemGrid xs={12} md={6}>
                   <Button
                     fullWidth
-                    size={"xs"}
+                    size={!isPay ? "xs" : "lg"}
                     color={"info"}
                     // disabled={loader}
-                    type={"submit"}
-                    onClick={this.handleSubmit}
+                    type={"button"}
+                    onClick={this.handleClickSearch}
                   >
                     {btnAdd}
                   </Button>
                 </ItemGrid>
-                <ItemGrid xs={12} md={6}>
-                  <Button
-                    fullWidth
-                    size={"xs"}
-                    color={"defaultNoBackground"}
-                    // disabled={loader}
-                    onClick={this.handleClickResetSearchValue}
-                  >
-                    {btnClean}
-                  </Button>
-                </ItemGrid>
+                {!isPay ?
+                  <ItemGrid xs={12} md={6}>
+                    <Button
+                      fullWidth
+                      size={"xs"}
+                      color={"defaultNoBackground"}
+                      // disabled={loader}
+                      onClick={this.handleClickResetSearchValue}
+                    >
+                      {btnClean}
+                    </Button>
+                  </ItemGrid>
+                  : null}
               </GridContainer>
             </Fragment>
             : null

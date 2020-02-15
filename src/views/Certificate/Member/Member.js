@@ -74,6 +74,7 @@ class Member extends Component {
 
   getOptions = () => {
     const { groupValue } = this.state;
+    console.log(groupValue);
     const resources = services[groupValue];
     if (!resources) return [];
     return resources.map(item => ({

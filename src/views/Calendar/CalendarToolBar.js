@@ -45,12 +45,13 @@ class CalendarToolBar extends Component {
     return loadResource();
   };
   onClickCurrentDate = () => {
-    const { onView, initialResource, loadResource, selectViewEvents, date } = this.props;
+    const { onView, onNavigate, initialResource, loadResource, selectViewEvents, date } = this.props;
     console.log("onClickCurrentDate");
+    onNavigate("DATE", moment().startOf("day").toDate());
     onView("day");
     initialResource();
     loadResource();
-    return selectViewEvents(date);
+    return selectViewEvents(moment().startOf("day").toDate());
   };
   onClickMonth = () => {
     const { onNavigate, onView, initialResource, loadResource, view } = this.props;

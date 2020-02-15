@@ -7,7 +7,6 @@ import Grid from "@material-ui/core/Grid";
 
 import Category from "./Category/Category";
 import Card from "./Cards";
-import totalCards from "./data/data";
 import Search from "./Search/Search";
 import IconButton from "@material-ui/core/IconButton";
 import ShoppingCart from "@material-ui/icons/ShoppingCart";
@@ -19,11 +18,10 @@ import Button from "@material-ui/core/Button";
 import Badge from "@material-ui/core/Badge";
 import CartTable from "./Cart";
 import Tooltip from "@material-ui/core/Tooltip";
-import Typography from "@material-ui/core/Typography";
 import AddAlert from "@material-ui/icons/AddAlert";
 import Snackbar from "components/Snackbar/Snackbar.jsx";
 import ItemGrid from "components/Grid/GridItem.jsx";
-import { loadTotalDay } from "../../modules/Shop";
+import category from "./data/category";
 
 const styleShop = () => ({
   root: {
@@ -33,7 +31,7 @@ const styleShop = () => ({
 
 class Shop extends React.Component {
   state = {
-    categories: {},
+    categories: [],
     searchValue: null,
     viewCart: false,
     openViewCart: false,
@@ -42,7 +40,12 @@ class Shop extends React.Component {
   };
 
   componentDidMount() {
-    // this.props.loadTotalDay();
+    // console.log(window.screenY);
+    window.addEventListener("scroll", function() {
+      // document.getElementById('showScroll').innerHTML = pageYOffset + 'px';
+      console.log("test");
+    });
+    this.props.loadView();
   }
 
   componentWillUnmount() {
@@ -59,7 +62,14 @@ class Shop extends React.Component {
 
   handleChangeCategory = event => {
     const { checked, name } = event.target;
-    this.setState({ categories: { ...this.state.categories, [name]: checked } });
+    let categories = [...this.state.categories];
+
+    if (!checked) {
+      categories = categories.filter((el) => el !== name);
+    } else {
+      categories.push(name);
+    }
+    this.setState({ categories });
   };
 
   handleChangeInputSearch = event => this.setState({ searchValue: event.target.value });
@@ -70,19 +80,15 @@ class Shop extends React.Component {
 
   getInitialData = () => {
     const { categories } = this.state;
-
-    const dataKeys = Object.keys(totalCards);
-    const isChecked = dataKeys.some(a => categories[a]);
+    const { products } = this.props;
     let newData = [];
 
-    if (!isChecked && !newData.length) {
-      newData = Object.values(totalCards)
-        .filter(item => item.length)
-        .reduce((start, item) => [...start, ...item], []);
+    if (!categories.length) {
+      newData = [...products];
     } else {
-      dataKeys.forEach(item => {
-        if (categories[item]) {
-          newData = [...newData, ...totalCards[item]];
+      products.forEach(item => {
+        if (categories.includes(item.categoryName)) {
+          newData = [...newData, item];
         }
       });
     }
@@ -92,16 +98,15 @@ class Shop extends React.Component {
 
   getSortData = () => {
     const { categories, searchValue } = this.state;
-    const categoriesKeys = Object.keys(categories);
-    const validCategories = categoriesKeys.filter(el => categories[el]);
-
+    const { products } = this.props;
     let data;
-    if (validCategories.length && searchValue) {
-      data = validCategories
-        .reduce((start, item) => [...start, ...totalCards[item]], [])
+
+    if (categories.length && searchValue) {
+      data = categories
+        .reduce((start, item) => [...start, ...products.filter((el) => el.categoryName === item)], [])
         .filter(item => this.isContain(item.title, searchValue));
     }
-    else if (searchValue && !validCategories.length) {
+    else if (searchValue && !categories.length) {
       data = this.getInitialData().filter(item => this.isContain(item.title, searchValue));
     }
     else {
@@ -112,20 +117,23 @@ class Shop extends React.Component {
   };
 
   handleClickCart = () => {
+    const { changeSubmitSwitch } = this.props;
     this.setState({
       openViewCart: true
     });
-    this.props.changeSubmitSwitch(false);
+    // this.props.changeSubmitSwitch(false);
+    changeSubmitSwitch(false);
   };
 
   handleCloseViewCart = () => {
-    const { totalCart } = this.props;
+    const { changeSubmitSwitch } = this.props;
     this.setState({
       openViewCart: false,
       fullScreen: false
       // viewCart: false
     });
-    this.props.changeSubmitSwitch(true);
+    // this.props.changeSubmitSwitch(true);
+    changeSubmitSwitch(true);
   };
 
   handleCloseView = () => {
@@ -157,8 +165,9 @@ class Shop extends React.Component {
   };
 
   render() {
-    const { classes, totalCart, isSubmit } = this.props;
+    const { classes, totalCart, isSubmit, categories } = this.props;
     const { viewCart, openViewCart, fullScreen } = this.state;
+
     return (
       <div className={classes.root}>
         <Dialog
@@ -231,12 +240,13 @@ class Shop extends React.Component {
           <Grid item xs={12} md={3} lg={3} xl={2}>
             <Category
               handleChange={this.handleChangeCategory}
+              categories={categories}
             />
           </Grid>
           <Grid item xs={12} md={9} lg={9} xl={10} container spacing={16}>
             {this.getSortData().map(el => {
               return (
-                <Grid item xs={12} sm={6} md={6} lg={4} xl={2} key={el.id}>
+                <Grid item xs={12} sm={6} md={6} lg={4} xl={2} key={el._id}>
                   <Card
                     product={el}
                     changeViewCart={this.changeViewCart}
