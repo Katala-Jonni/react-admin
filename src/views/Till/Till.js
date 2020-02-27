@@ -32,12 +32,17 @@ class Till extends React.Component {
   //   time: moment().format("LTS")
   // };
 
+  componentDidMount() {
+    this.props.startLoadDay();
+  }
+
   getViewTillInfo = value => {
     console.log(value);
   };
 
   getTotalTabs = () => {
-    const { totalDay } = this.props;
+    const { totalDay, pay } = this.props;
+    // console.log(pay);
     let keys = Object.keys(totalDay);
     keys = [...keys, "Касса"];
     const data = keys.map(name => {
@@ -45,7 +50,7 @@ class Till extends React.Component {
         return {
           tabButton: name,
           tabIcon: Permidentity,
-          tabContent: (<ResultTable data={totalDay} head={name}/>),
+          tabContent: (<ResultTable data={totalDay} head={name} pay={pay}/>),
           dataName: name.toLowerCase(),
           getViewTillInfo: this.getViewTillInfo
         };

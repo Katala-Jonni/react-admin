@@ -8,6 +8,7 @@ import {
   addToCartStart
 } from "../../../modules/Shop";
 import {
+  deleteState,
   endSearchNumber, getCertificate as naturalCertificate
 } from "../../../modules/Certificate";
 import CartTable from "./CartTable";
@@ -22,6 +23,6 @@ const mapStateFromProps = state => ({
   certificate: naturalCertificate(state)
 });
 
-const mapDispatchFromProps = { addToCartStart, startSendCart, endSearchNumber };
+const mapDispatchFromProps = { addToCartStart, startSendCart, endSearchNumber, deleteState };
 
 export default connect(mapStateFromProps, mapDispatchFromProps)(CartTable);

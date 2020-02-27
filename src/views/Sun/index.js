@@ -1,6 +1,14 @@
 import { connect } from "react-redux";
 import Sun from "./Sun";
-import { getCard, getError, getIsVerifyCard, getServerMessage, resetErrorMessage, sendCard } from "../../modules/Sun";
+import {
+  getCard,
+  getError,
+  getIsVerifyCard,
+  getServerMessage,
+  resetErrorMessage,
+  sendCard,
+  deleteState
+} from "../../modules/Sun";
 
 const mapStateFromProps = state => ({
   card: getCard(state),
@@ -9,6 +17,6 @@ const mapStateFromProps = state => ({
   isVerifyCard: getIsVerifyCard(state)
 });
 
-const mapDispatchFromProps = { sendCard, resetErrorMessage };
+const mapDispatchFromProps = { sendCard, resetErrorMessage, deleteState };
 
 export default connect(mapStateFromProps, mapDispatchFromProps)(Sun);

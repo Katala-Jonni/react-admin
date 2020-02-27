@@ -25,15 +25,42 @@ class ListServices extends Component {
   };
 
   getOptions = () => {
-    return this.props.options.map((item, idx) => {
+    const { options, isFull, isSpend } = this.props;
+    if (!options) {
+      return [];
+    }
+    let data = options.servicesType.map((item) => item.label);
+    if (isFull) {
+      if (options.history.length) {
+        options.history.forEach((item) => {
+          if (item.list.length) {
+            const list = item.list.map((elem) => elem.label);
+            data.push(...list);
+          }
+        });
+      }
+    } else if (isSpend) {
+      // data = options.history.map((item) => item.label);
+      data = [];
+      if (options.history.length) {
+        options.history.forEach((item) => {
+          if (item.list.length) {
+            const list = item.list.map((elem) => elem.label);
+            data.push(...list);
+          }
+        });
+      }
+    }
+    // return [];
+    return data.map((item, idx) => {
       return (
-        <ListItem button={false} key={item.label}>
+        <ListItem button={false} key={idx}>
           <ListItemIcon>
             <StarBorder
               color={idx % 2 === 0 ? "primary" : "secondary"}
             />
           </ListItemIcon>
-          <ListItemText primary={item.label}/>
+          <ListItemText primary={item}/>
         </ListItem>
       );
     });
@@ -65,7 +92,10 @@ ListServices.defaultProps = {
 
 ListServices.propTypes = {
   classes: PropTypes.object,
-  options: PropTypes.array.isRequired,
+  options: PropTypes.oneOfType([
+    PropTypes.array,
+    PropTypes.object
+  ]),
   description: PropTypes.string,
   open: PropTypes.bool
 };

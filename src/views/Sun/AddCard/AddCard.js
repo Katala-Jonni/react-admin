@@ -13,13 +13,14 @@ import Paper from "@material-ui/core/Paper";
 import GridContainer from "components/Grid/GridContainer.jsx";
 import ItemGrid from "components/Grid/GridItem.jsx";
 import CustomRadio from "components/Inputs/CustomRadioCheckBox";
+import { startVerifyCard } from "../../../modules/Sun";
 
 const style = (theme) => ({
   ...customEventsStyle(theme)
 });
 
-class AddCard extends Component {
-  state = {
+const initialState = () => {
+  return {
     isMember: false,
     cardNumber: null,
     form: {
@@ -34,15 +35,21 @@ class AddCard extends Component {
     isSubmit: false,
     radioValue: null
   };
+};
+
+class AddCard extends Component {
+  state = {
+    ...initialState()
+  };
 
   static getDerivedStateFromProps(nextProps) {
     const { errorMessage } = nextProps;
-    if (!errorMessage) {
-      return {
-        isDisabled: false,
-        isSubmit: false
-      };
-    }
+    // if (!errorMessage) {
+    //   return {
+    //     isDisabled: false,
+    //     isSubmit: false
+    //   };
+    // }
     return null;
   }
 
@@ -55,7 +62,8 @@ class AddCard extends Component {
   removeField = () => {
     this.setState({
       isMember: false,
-      form: { ...this.state.form, ["cardNumber"]: "" }
+      form: { ...this.state.form, ["cardNumber"]: "" },
+      radioValue: null
     });
   };
 
@@ -76,9 +84,11 @@ class AddCard extends Component {
   handleChange = evt => {
     const { name, value } = evt.target;
     this.setState({
-      form: { ...this.state.form, [name]: value }
+      form: { ...this.state.form, [name]: value },
+      isDisabled: false,
+      isSubmit: false
     });
-    this.props.startVerifyCard(value);
+    this.props.startVerifyCard({ value });
   };
 
   handleChangeRadio = data => {
@@ -101,7 +111,8 @@ class AddCard extends Component {
       serverMessage,
       errorMessage,
       isVerifyCard,
-      verifyMessage
+      verifyMessage,
+      isCard
     } = this.props;
     const {
       isMember, form: { cardNumber, typeCard }, isDisabled, isSubmit, radioValue
@@ -115,14 +126,14 @@ class AddCard extends Component {
           <div className={classes.addCardForm}>
             <form onSubmit={this.handleSubmit}>
               <GridContainer justify="center" spacing={16}>
-                <ItemGrid xs={!isVerifyCard ? 6 : 12} item>
+                <ItemGrid xs={isCard ? 6 : 12} item>
                   <Field
                     name="lastName"
                     type="text"
                     id="lastName"
                     label="Фамилия*"
                     placeholder='Наталья'
-                    disabled={isDisabled}
+                    disabled={isDisabled && isCard}
                     // value={lastName}
                     component={CustomInputView}
                     // onChange={this.handleChange}
@@ -133,7 +144,7 @@ class AddCard extends Component {
                     id="name"
                     label="Имя*"
                     placeholder='Наталья'
-                    disabled={isDisabled}
+                    disabled={isDisabled && isCard}
                     // value={name}
                     component={CustomInputView}
                     // onChange={this.handleChange}
@@ -144,7 +155,7 @@ class AddCard extends Component {
                     id="surname"
                     label="Отчество*"
                     placeholder='Михайловна'
-                    disabled={isDisabled}
+                    disabled={isDisabled && isCard}
                     // value={surname}
                     component={CustomInputView}
                     // onChange={this.handleChange}
@@ -155,7 +166,7 @@ class AddCard extends Component {
                     id="phoneNumber"
                     labelText="Номер телефона*"
                     placeholder='89212287228'
-                    disabled={isDisabled}
+                    disabled={isDisabled && isCard}
                     // value={phoneNumber}
                     component={CustomInputView}
                     // onChange={this.handleChange}
@@ -166,30 +177,36 @@ class AddCard extends Component {
                     id="cardNumber"
                     labelText="Номер абонемента"
                     placeholder='1234567890'
-                    disabled={isDisabled}
+                    disabled={isDisabled && isCard}
                     value={cardNumber}
-                    error={isVerifyCard}
-                    helpText={!pristine && isVerifyCard ? verifyMessage : verifyMessage}
+                    // error={isVerifyCard}
+                    error={!isCard}
+                    helpText={!pristine && isCard ? undefined : verifyMessage}
+                    // helpText={!pristine && isVerifyCard ? verifyMessage : verifyMessage}
                     component={CustomInputView}
                     onChange={this.handleChange}
                   />
-                  <Field
-                    name='typePay'
-                    id='typeCard'
-                    type={"radio"}
-                    label='Выберите тип оплаты*'
-                    options={payTypes}
-                    isVerifyCard={!isVerifyCard}
-                    disabled={isDisabled}
-                    component={CustomRadio}
-                    radioValue={radioValue}
-                    onChange={this.handleChangeRadio}
-                    isSubmit={isSubmit}
-                  />
+                  {isCard
+                    ? <Field
+                      name='typePay'
+                      id='typeCard'
+                      type="radio"
+                      label='Выберите тип оплаты*'
+                      options={payTypes}
+                      isVerifyCard={isCard}
+                      disabled={isDisabled && isCard}
+                      component={CustomRadio}
+                      radioValue={radioValue}
+                      onChange={this.handleChangeRadio}
+                      isSubmit={isSubmit}
+                    />
+                    : null
+                  }
                 </ItemGrid>
                 {
                   // cardNumber && cardNumber.length === 11
-                  !isVerifyCard
+                  // !isVerifyCard
+                  isCard
                     ? <ItemGrid xs={12} sm={6} item>
                       <Field
                         name='typeCard'
@@ -200,7 +217,7 @@ class AddCard extends Component {
                         options={ticketTypes}
                         menuIsOpen
                         height={200}
-                        disabled={isDisabled}
+                        disabled={isDisabled && isCard}
                         // value={typeCard}
                         component={CustomSelectView}
                         // onChange={this.handleChangeSelect}
@@ -214,12 +231,12 @@ class AddCard extends Component {
                   type="submit"
                   color='primary'
                   variant="contained"
-                  disabled={isMember || (!valid && !submitting) || isVerifyCard}
+                  disabled={isMember || (!valid && !submitting) || !isCard}
                   className={classes.indent}
                 >
                   {btnAdd}
                 </Button>
-        <Button
+                <Button
                   type="button"
                   disabled={pristine || submitting}
                   className={classes.indent}

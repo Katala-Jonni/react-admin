@@ -340,11 +340,11 @@ function* sendCart(action) {
   // console.log(infoPay, "infoPay");
 
   const { day: dayInfo } = yield call(fetchCurrentDay);
-  let id = 0;
-  let groupOrderId = 0;
+  let id = 1;
+  let groupOrderId = 1;
   if (dayInfo && dayInfo.totalOrders) {
-    groupOrderId = dayInfo.totalOrders.length;
-    id = dayInfo.totalOrders.length;
+    groupOrderId = dayInfo.totalOrders.length + 1;
+    id = dayInfo.totalOrders.length + 1;
   }
 
   const isCertificate = typeMixed && typeMixed.number;
@@ -397,7 +397,7 @@ function* sendCart(action) {
       isMaster,
       totalCount: price * count,
       orderNumber: id,
-      groupOrderId: groupOrderId,
+      groupOrderId,
       // реализовать заказы в виде групп
       inMaster: isMaster ? sumMaster : 0,
       outMaster: isMaster ? price * count - sumMaster : price * count,
@@ -444,12 +444,13 @@ function* sendCart(action) {
     payInfo[typePay] = sum;
   }, {});
 
-  const { members } = typeMixed;
 
   let certificate = null;
-  const outMember = members ? members.find((item) => item.typePay === "certificate") : null;
-  console.log(crtInfo, "crtInfo");
+  // console.log(crtInfo, "crtInfo");
   if (crtInfo) {
+    const { members } = typeMixed;
+    console.log(members);
+    const outMember = members ? members.find((item) => item.typePay === "certificate") : null;
     certificate = {
       _id: crtInfo._id,
       out: outMember ? outMember.count : null

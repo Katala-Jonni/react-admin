@@ -27,14 +27,14 @@ const infoPay = {
   ["cash"]: "Наличка",
   ["card"]: "Безнал",
   ["mixed"]: "Смешанная оплата",
-  ["certificate"]: "Сертификатом",
+  ["certificate"]: "Сертификатом"
 };
 
 const infoPayColor = {
   ["cash"]: "primary",
   ["card"]: "secondary",
   ["mixed"]: "default",
-  ["certificate"]: "default",
+  ["certificate"]: "default"
 };
 
 class TillTable extends Component {
@@ -47,7 +47,7 @@ class TillTable extends Component {
 
   handleClickOrderNumber = number => {
     const { totalOrders } = this.props;
-    const { data, payment } = totalOrders[number];
+    const { data, payment } = totalOrders[number - 1 || 0];
     this.setState({
       orderNumberView: true,
       orders: data,
@@ -94,6 +94,7 @@ class TillTable extends Component {
   };
 
   render() {
+
     const { classes } = this.props;
     const { orderNumberView, orders, number, type } = this.state;
     const typePayment = infoPay[type.toLowerCase()];

@@ -9,12 +9,14 @@ import {
 const getInitialState = () => {
   return {
     certificate: null,
-    isCertificate: true,
+    isCertificate: false,
+    // isCertificate: true,
     verifyMessage: null,
     loader: false,
     loaderCertificate: false,
     certificateStatus: false
   };
+
 };
 
 const initialState = {

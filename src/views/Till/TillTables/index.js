@@ -1,7 +1,8 @@
 import { connect } from "react-redux";
 import TillTables from "./TillTables";
-import { getTotalDay, getTotalOrders } from "../../../modules/Shop";
+// import { getTotalOrders } from "../../../modules/Shop";
 import { getTotalMasters } from "../../../modules/Calendar";
+import { getTotalDay, getTotalOrders } from "../../../modules/Till";
 
 const mapStateFromProps = state => ({
   totalDay: getTotalDay(state),

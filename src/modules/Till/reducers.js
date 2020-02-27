@@ -5,7 +5,7 @@ import {
   endLoadInfoTill,
   changeTillInfo,
   endLockOpen,
-  openTill
+  openTill, endLoadDay
 } from "./actions";
 import outTillCategory from "./outTillCategory";
 import administrators from "./administrators";
@@ -30,12 +30,24 @@ const initialState = {
   administrators,
   tillInfoView: false,
   lock: true,
-  viewTill: false
+  viewTill: false,
+  totalDay: {},
+  totalOrders: [],
+  pay: {
+    card: 0,
+    cash: 0,
+    certificate: 0
+  }
 };
 
 export default (state = initialState, action) => {
   const { type, payload } = action;
   switch (type) {
+    case endLoadDay.toString():
+      return {
+        ...state,
+        ...payload
+      };
     case changeTill.toString():
       return {
         ...state,
@@ -44,7 +56,7 @@ export default (state = initialState, action) => {
     case changeInTill.toString():
       return {
         ...state,
-        inTill: [...payload]
+        ...payload
       };
     case changeOutTill.toString():
       return {

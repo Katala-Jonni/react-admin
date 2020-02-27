@@ -8,5 +8,6 @@ export default {
   day: "/day",
   certificate: "/certificate",
   event: "/event",
-  resource: "/resource"
+  resource: "/resource",
+  till: "/till"
 };

@@ -14,6 +14,11 @@ const customEventsStyle = theme => ({
     display: "flex",
     flexWrap: "wrap"
   },
+  rootTable: {
+    display: "flex",
+    flexWrap: "wrap",
+    width: "100%"
+  },
   topMargin: {
     marginTop: theme.spacing.unit * 1
   },
@@ -47,7 +52,7 @@ const customEventsStyle = theme => ({
     fontWeight: "400",
     fontSize: "12px",
     lineHeight: "1.42857",
-    fontFamily: '"Roboto", "Helvetica", "Arial", sans-serif'
+    fontFamily: "\"Roboto\", \"Helvetica\", \"Arial\", sans-serif"
   },
   borderColor: {
     border: "1px solid #ff3d00"

@@ -6,10 +6,10 @@ import {
   getInTillSum,
   getOutTill,
   getOutTillCategory,
-  getOutTillSum, getPayCategory, getPaymentByCard, getRevenue, getTill, getTillInfoView,
+  getOutTillSum, getPayCategory, getPaymentByCard, getRevenue, getTill, getTillInfoView, getTotalDay, getTotalOrders,
   loadInfoTill
 } from "../../../modules/Till";
-import { getTotalDay, getTotalOrders } from "../../../modules/Shop";
+// import { getTotalOrders } from "../../../modules/Shop";
 
 const mapStateFromProps = state => ({
   inTill: getInTill(state),

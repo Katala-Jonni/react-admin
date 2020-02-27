@@ -16,6 +16,7 @@ import Add from "@material-ui/icons/Add";
 import AddAlert from "@material-ui/icons/AddAlert";
 import AddCertificate from "./AddCertificate";
 import EditCertificate from "./EditCertificate";
+import { deleteState } from "../../modules/Certificate";
 
 const styles = {
   pageSubcategoriesTitle: {
@@ -28,7 +29,10 @@ const styles = {
 
 class Certificate extends React.Component {
   state = {
-    tr: false
+    tr: false,
+    changeViewTab: false,
+    addCertificateTab: false,
+    editCertificateTab: true
   };
 
   componentWillUnmount() {
@@ -49,7 +53,24 @@ class Certificate extends React.Component {
 
 
   handleTabs = () => {
-    console.log(this.props);
+    this.setState({
+      changeViewTab: !this.state.changeViewTab
+    });
+    this.props.deleteState();
+  };
+
+  handleAddCertificateTab = () => {
+    this.setState({
+      addCertificateTab: true,
+      editCertificateTab: false
+    });
+  };
+
+  handleEditCertificateTab = () => {
+    this.setState({
+      addCertificateTab: false,
+      editCertificateTab: true
+    });
   };
 
   getTabs = () => {
@@ -57,13 +78,18 @@ class Certificate extends React.Component {
       {
         tabButton: "Найти",
         tabIcon: Search,
-        tabContent: (<EditCertificate/>),
+        tabContent: this.state.editCertificateTab
+          ? (<EditCertificate isViev={this.state.editCertificateTab}/>)
+          : null,
         dataName: "Найти".toLowerCase()
       },
       {
         tabButton: "Новый",
         tabIcon: Add,
-        tabContent: (<AddCertificate onSubmit={this.handleSubmit}/>),
+        tabContent: this.state.addCertificateTab
+          ? (<AddCertificate onSubmit={this.handleSubmit} isViev={this.state.addCertificateTab}/>)
+          : null,
+        // tabContent: (<AddCertificate onSubmit={this.handleSubmit} isViev={this.state.addCertificateTab}/>),
         dataName: "Новый".toLowerCase()
       }
     ];
@@ -92,7 +118,7 @@ class Certificate extends React.Component {
   };
 
   render() {
-    const { tr } = this.state;
+    const { tr, addCertificateTab } = this.state;
     const { serverMessage, errorMessage } = this.props;
     return (
       <div>
@@ -112,6 +138,8 @@ class Certificate extends React.Component {
               alignCenter
               tabs={this.getTabs()}
               handleTabs={this.handleTabs}
+              handleAddCertificateTab={this.handleAddCertificateTab}
+              handleEditCertificateTab={this.handleEditCertificateTab}
             />
           </ItemGrid>
         </GridContainer>

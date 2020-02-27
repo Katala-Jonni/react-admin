@@ -28,6 +28,7 @@ class TillTable extends Component {
   componentDidMount() {
     const { loadInfoTill, totalDay, totalOrders } = this.props;
     loadInfoTill({ totalDay, certificateSum: this.getTotalSumCertificate(), totalOrders });
+    // loadInfoTill({ totalDay, totalOrders });
   }
 
   getTableData = () => {
@@ -66,7 +67,12 @@ class TillTable extends Component {
   };
 
   render() {
-    const { classes, inTillSum, outTillSum, revenue, income, expense, payCategory: { cash, card, certificate } } = this.props;
+    // const { classes, inTillSum, outTillSum, revenue, income, expense, payCategory: { cash, card, certificate } } = this.props;
+    const { classes, inTillSum, outTillSum, income, pay: { cash, card, certificate, expense } } = this.props;
+    const revenue = cash + card;
+    const balance = revenue - expense < 0 ? 0 : revenue - expense;
+    // console.log(this.props.pay);
+    // console.log(certificate);
     return (
       <GridContainer spacing={16}>
         {this.getTableData().length
@@ -113,6 +119,7 @@ class TillTable extends Component {
             iconColor="red"
             title="Выручка"
             description={revenue}
+            // description={revenue}
             small="₽"
             statIcon={ShoppingCart}
           />
@@ -123,7 +130,8 @@ class TillTable extends Component {
             icon={AccountBalanceWallet}
             iconColor="green"
             title="Остаток"
-            description={income}
+            description={balance || 0}
+            // description={income}
             small="₽"
             statIcon={AccountBalanceWallet}
           />
@@ -134,7 +142,8 @@ class TillTable extends Component {
             icon={AttachMoney}
             iconColor="blue"
             title="В кассе"
-            description={revenue + inTillSum - expense - outTillSum - (card || 0)}
+            description={(revenue + inTillSum) - (expense + card + outTillSum) || 0}
+            // description={revenue + inTillSum - expense - outTillSum - (card || 0)}
             small="₽"
             statIcon={AttachMoney}
           />

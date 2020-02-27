@@ -14,6 +14,8 @@ import ItemGrid from "components/Grid/GridItem.jsx";
 
 import navPillsStyle from "../../assets/jss/material-dashboard-react/components/navPillsStyle.jsx";
 import { changeTill } from "../../modules/Till/actions";
+import { deleteState, sendCertificate } from "../../modules/Certificate";
+import Certificate from "../../views/Certificate/Certificate";
 
 class NavPills extends React.Component {
   constructor(props) {
@@ -46,8 +48,13 @@ class NavPills extends React.Component {
 
   handleChange = (event, active) => {
     this.setState({ active });
-
-    // this.props.handleTabs && this.props.handleTabs();
+    const name = event.currentTarget.dataset.name;
+    const { handleEditCertificateTab, handleAddCertificateTab } = this.props;
+    if (name && name === "найти") {
+      handleEditCertificateTab && handleEditCertificateTab();
+    } else if (name && name === "новый") {
+      handleAddCertificateTab && handleAddCertificateTab();
+    }
 
     const { changeTill } = this.props;
     if (changeTill) {
@@ -62,6 +69,21 @@ class NavPills extends React.Component {
     this.setState({ active: index });
   };
 
+  handleClickTab = (evt) => {
+    // console.log(evt.currentTarget);
+    // const name = evt.currentTarget.dataset.name;
+    // console.log(name);
+    // console.log(this.props);
+    // if (name === "найти") {
+    //   this.props.handleAddCertificateTab();
+    // } else if (name === "новый") {
+    //
+    // }
+    if (this.props.handleTabs) {
+      this.props.handleTabs();
+    }
+  };
+
   render() {
     const {
       classes,
@@ -69,9 +91,10 @@ class NavPills extends React.Component {
       direction,
       color,
       horizontal,
-      alignCenter,
-      handleTabs
+      alignCenter
     } = this.props;
+
+    // console.log(this.props);
 
 
     const flexContainerClasses =
@@ -109,7 +132,7 @@ class NavPills extends React.Component {
             <Tab
               label={prop.tabButton}
               key={key}
-              onClick={handleTabs}
+              onClick={this.handleClickTab}
               {...icon}
               selected
               classes={{

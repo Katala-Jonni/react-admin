@@ -13,3 +13,4 @@ export const startUseCard = createAction("@@Sun/START_USE_CARD");
 export const endUseCard = createAction("@@Sun/END_USE_CARD");
 export const turnOnLoader = createAction("@@Sun/TURN_ON_LOADER");
 export const deleteUseCard = createAction("@@Sun/DELETE_USE_CARD");
+export const deleteState = createAction("@@Sun/DELETE_STATE");

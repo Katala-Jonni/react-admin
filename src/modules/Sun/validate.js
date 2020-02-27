@@ -122,13 +122,13 @@ const validate = values => {
     errors.typePay = "Обязательное поле";
   }
 
-  if (cardNumber && !verifyNumberPhone(cardNumber, 11, 12)) {
-    errors.cardNumber = "Номер должен содержать 11 цифр";
-  }
+  // if (cardNumber && !verifyNumberPhone(cardNumber, 11, 12)) {
+  //   errors.cardNumber = "Номер должен содержать 11 цифр";
+  // }
 
-  if (cardNumber && !verifyNumber(cardNumber)) {
-    errors.cardNumber = "Номер состоит только из цифр";
-  }
+  // if (cardNumber && !verifyNumber(cardNumber)) {
+  //   errors.cardNumber = "Номер состоит только из цифр";
+  // }
 
   if (!typeCard) {
     errors.typeCard = "Обязательное поле";

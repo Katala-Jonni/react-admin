@@ -5,7 +5,7 @@ import {
   startVerifyCertificate,
   endVerifyCertificate,
   startSearchNumber,
-  endSearchNumber
+  endSearchNumber, deleteState
 } from "./actions";
 import moment from "moment/moment";
 import api from "../../utils/api";
@@ -104,6 +104,9 @@ console.log("-------------------");
 
 function* verifyCertificateNumber({ payload }) {
   const { value } = payload;
+  if (!value) {
+    return false;
+  }
   const { isValidNumber, errorMessage } = yield call(fetchVerificate, value);
 
   return yield put(endVerifyCertificate({ isCertificate: isValidNumber, verifyMessage: errorMessage }));
@@ -162,7 +165,8 @@ function* fetchSendCertificate({ payload }) {
     serverMessage = "Произошла ошибка, попробуйте снова!";
   }
   console.log(totalCertificate);
-  return yield put(endSendCertificate({ errorMessage, serverMessage }));
+  return yield put(deleteState());
+  // return yield put(endSendCertificate({ errorMessage, serverMessage }));
 }
 
 function* startSearchCertificate({ payload: { value, isPay } }) {

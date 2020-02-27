@@ -29,6 +29,7 @@ import extendedTablesStyle from "../../../assets/jss/material-dashboard-react/vi
 import CertificateView from "../CertificateView";
 import MixedPay from "../../MixedPay/index";
 import { sendCertificate as startSendCertificate } from "../../../modules/Certificate";
+import { deleteState } from "../../../modules/Certificate/actions";
 
 class ExtendedTables extends Component {
   state = {
@@ -139,6 +140,9 @@ class ExtendedTables extends Component {
       certificateNumber: number,
       certificateInfo: certificate
     });
+    if (certificate) {
+      this.props.deleteState();
+    }
     // startSendCart({ totalCart, totalDay, totalOrders, masters, payment: "mixed", typeMixed: values});
     // this.props.handleCloseView();
     // this.props.showNotification("tr");

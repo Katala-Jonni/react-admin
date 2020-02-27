@@ -45,7 +45,8 @@ const initialState = () => {
     selectValues: [],
     totalSum: 0,
     radioValue: null,
-    typeCard: null
+    typeCard: null,
+    isChange: false
   };
 };
 
@@ -56,18 +57,11 @@ class AddCertificate extends Component {
 
   componentDidMount() {
     const { form: { certificateNumber } } = this.state;
+
+    this.props.loadView();
+    // console.log("test¬");
     // this.props.loadNumberCertificate({ value: certificateNumber });
   }
-
-  // static getDerivedStateFromProps(nextProps, prevState) {
-  //   console.log(nextProps, "nextProps");
-  //   console.log(prevState, "prevState");
-  //   const { form: { certificateSum } } = prevState;
-  //   if (certificateSum) {
-  //     nextProps.dispatch(change("addCertificate", "certificateSum", null));
-  //   }
-  //   return null;
-  // }
 
   addField = () => {
     this.setState({
@@ -76,12 +70,14 @@ class AddCertificate extends Component {
   };
 
   handleSubmit = evt => {
-    const { reset, handleSubmit } = this.props;
+    const { reset, handleSubmit, deleteState } = this.props;
+    deleteState();
     reset();
-    handleSubmit(evt);
     this.setState({
       ...initialState()
     });
+    handleSubmit(evt);
+
   };
 
   removeField = () => {
@@ -135,7 +131,6 @@ class AddCertificate extends Component {
 
     const typeCard = options.find(a => a.value.toLowerCase() === value.toLowerCase());
     if (value === "amount") {
-      // this.props.dispatch(change("addCertificate", "servicesType", []));
       this.props.dispatch(change("addCertificate", "certificateSum", null));
       this.setState({
         amountView: true,
@@ -159,22 +154,32 @@ class AddCertificate extends Component {
 
   getOptions = () => {
     const exceptionServices = ["certificate", "shop", "solarium"];
-    const keys = Object.keys(services);
     let count = 0;
-    if (!keys) return [];
-    return keys
-      .filter(item => !exceptionServices.includes(item))
-      .reduce((start, cur) => {
-        start.push(...services[cur]);
-        return start;
-      }, [])
+    if (!this.props.products.length) return [];
+
+    return this.props.products
+      .filter(item => !exceptionServices.includes(item.categoryName))
       .reduce((start, item) => {
         start.push({
-          value: `${item.category}-${++count}`,
+          value: `${item.categoryName}-${++count}`,
           label: item.title
         });
         return start;
       }, []);
+
+    // return keys
+    //   .filter(item => !exceptionServices.includes(item))
+    //   .reduce((start, cur) => {
+    //     start.push(...services[cur]);
+    //     return start;
+    //   }, [])
+    //   .reduce((start, item) => {
+    //     start.push({
+    //       value: `${item.category}-${++count}`,
+    //       label: item.title
+    //     });
+    //     return start;
+    //   }, []);
   };
 
   onMenuOpen = () => {
@@ -207,21 +212,15 @@ class AddCertificate extends Component {
 
   getTotalSum = values => {
     let price = 0;
-    values.map(item => (
-      {
-        value: item.value.split("-")[0].toString(),
-        label: item.label
-      }
-    ))
-      .forEach(item => {
-        const { value, label } = item;
-        if (services[value] && Array.isArray(services[value])) {
-          const product = services[value].find(el => el.title.toLowerCase() === label.toLowerCase());
-          if (product) {
-            price += product.price;
-          }
+    values.forEach(item => {
+      const { label } = item;
+      if (this.props.products.length) {
+        const product = this.props.products.find(el => el.title.toLowerCase() === label.toLowerCase());
+        if (product) {
+          price += product.price;
         }
-      });
+      }
+    });
     return price;
   };
 
@@ -246,8 +245,14 @@ class AddCertificate extends Component {
       errorMessage,
       isCertificate,
       verifyMessage,
-      certificate
+      certificate,
+      isChange,
+      changeViewTab
     } = this.props;
+
+    console.log(this.props.isViev);
+
+    // console.log(changeViewTab);
     const {
       form: { certificateNumber, certificateSum },
       isDisabled,
@@ -314,63 +319,67 @@ class AddCertificate extends Component {
                   </ItemGrid>
                   : null
                 }
-                {amountView && isCertificate
-                  ? <ItemGrid xs={6} item>
-                    <Field
-                      name="certificateSum"
-                      id="certificateSum"
-                      // type='number'
-                      label="Сумма сертификата*"
-                      placeholder='1000'
-                      disabled={serviceView}
-                      value={certificateSum}
-                      // value={cardNumber}
-                      // error={isVerifyCard}
-                      // helpText={!pristine && isVerifyCard ? verifyMessage : verifyMessage}
-                      component={CustomInputView}
-                      onChange={this.handleChange}
-                    />
-                  </ItemGrid>
+                {isCertificate
+                  ? amountView
+                    ? <ItemGrid xs={6} item>
+                      <Field
+                        name="certificateSum"
+                        id="certificateSum"
+                        // type='number'
+                        label="Сумма сертификата*"
+                        placeholder='1000'
+                        disabled={serviceView}
+                        value={certificateSum}
+                        // value={cardNumber}
+                        // error={isVerifyCard}
+                        // helpText={!pristine && isVerifyCard ? verifyMessage : verifyMessage}
+                        component={CustomInputView}
+                        onChange={this.handleChange}
+                      />
+                    </ItemGrid>
+                    : serviceView
+                      ? <ItemGrid xs={12} sm={6} item>
+                        <Field
+                          name="servicesType"
+                          classes={classes}
+                          id="servicesType"
+                          // menuIsOpen
+                          isMulti
+                          label='Выберите услугу'
+                          // defaultValue={selectValues}
+                          reset={reset}
+                          options={this.getOptions()}
+                          height={300}
+                          // disabled={isDisabled}
+                          // value={selectValues}
+                          selectValues={selectValues}
+                          component={CustomSelectView}
+                          onChange={this.handleChangeType}
+                        />
+                      </ItemGrid>
+                      : null
                   : null
                 }
-                {serviceView && isCertificate
-                  ? <ItemGrid xs={12} sm={6} item>
+                {isCertificate
+                  ? <ItemGrid xs={12} item>
                     <Field
-                      name="servicesType"
-                      classes={classes}
-                      id="servicesType"
-                      // menuIsOpen
-                      isMulti
-                      label='Выберите услугу'
-                      // defaultValue={selectValues}
-                      reset={reset}
-                      options={this.getOptions()}
-                      height={300}
+                      name='typePay'
+                      id='typePay'
+                      // type={"radio"}
+                      label='Выберите тип оплаты*'
+                      options={payTypes}
+                      // classes={classes}
+                      // isVerifyCard={!isVerifyCard}
                       // disabled={isDisabled}
-                      // value={selectValues}
-                      selectValues={selectValues}
-                      component={CustomSelectView}
-                      onChange={this.handleChangeType}
+                      // isSubmit={isSubmit}
+                      radioValue={radioValue}
+                      component={CustomRadio}
+                      onChange={this.handleChangeRadio}
                     />
                   </ItemGrid>
                   : null
                 }
-                <ItemGrid xs={12} item>
-                  <Field
-                    name='typePay'
-                    id='typePay'
-                    // type={"radio"}
-                    label='Выберите тип оплаты*'
-                    options={payTypes}
-                    // classes={classes}
-                    // isVerifyCard={!isVerifyCard}
-                    // disabled={isDisabled}
-                    // isSubmit={isSubmit}
-                    radioValue={radioValue}
-                    component={CustomRadio}
-                    onChange={this.handleChangeRadio}
-                  />
-                </ItemGrid>
+
                 {serviceView && selectValues && selectValues.length
 
                   ? <Fragment>

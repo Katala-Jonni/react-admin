@@ -12,3 +12,5 @@ export const getVerifyPhoneMessage = createSelector(getSunState, state => state.
 export const getVerifyCardNumber = createSelector(getSunState, state => state.isVerifyCardNumber);
 export const getVerifyCardMessage = createSelector(getSunState, state => state.verifyCardMessage);
 export const getLoader = createSelector(getSunState, state => state.loader);
+export const getIsCard = createSelector(getSunState, state => state.isCard);
+export const getCardStatus = createSelector(getSunState, state => state.cardStatus);

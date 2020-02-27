@@ -12,11 +12,12 @@ import Paper from "@material-ui/core/Paper";
 import TextField from "@material-ui/core/TextField";
 import GridContainer from "components/Grid/GridContainer.jsx";
 import ItemGrid from "components/Grid/GridItem.jsx";
+import Search from "views/Search";
 import Table from "components/Table/Table.jsx";
 import Typography from "@material-ui/core/Typography";
 import Snackbar from "components/Snackbar/Snackbar.jsx";
 import AddAlert from "@material-ui/icons/AddAlert";
-import { startSearchPhoneNumber, startVerifyCard } from "../../../modules/Sun";
+import { startSearchNumber, startSearchPhoneNumber, startVerifyCard } from "../../../modules/Sun";
 import IconCard from "components/Cards/IconCard.jsx";
 // import IconButton from "components/CustomButtons/IconButton.jsx";
 import IconButton from "@material-ui/core/IconButton";
@@ -60,75 +61,95 @@ class EditCard extends Component {
       searchNumber: null,
       phoneNumber: null
     },
-    addCount: null
+    addCount: null,
+    clickSearch: false
   };
 
-  static getDerivedStateFromProps(nextProps, prevState) {
-    const { startSearchNumber } = nextProps;
-    const { form: { searchNumber } } = prevState;
-    if (!searchNumber) {
-      startSearchNumber(searchNumber);
-      return null;
-    }
-    return null;
-  }
+  // static getDerivedStateFromProps(nextProps, prevState) {
+  //   const { startSearchNumber } = nextProps;
+  //   const { form: { searchNumber } } = prevState;
+  //   if (!searchNumber) {
+  //     startSearchNumber(searchNumber);
+  //     return null;
+  //   }
+  //   return null;
+  // }
 
   componentDidMount() {
-    const { form: { searchNumber } } = this.state;
-    !searchNumber && this.props.startSearchNumber(searchNumber);
+    // const { form: { searchNumber } } = this.state;
+    // !searchNumber && this.props.startSearchNumber(searchNumber);
+    this.onDeleteState();
   }
 
-  removeField = () => {
-    this.setState({
-      form: {}
+  onDeleteState = () => {
+    this.props.deleteState();
+    return this.setState({
+      clickSearch: false
     });
   };
 
-  handleClickReset = () => {
-    this.props.reset();
-    return this.removeField();
-  };
-
-  handleSubmit = evt => {
-    evt.preventDefault();
-    const { form: { searchNumber } } = this.state;
-    this.props.startSearchNumber(searchNumber);
-  };
-
-  handleChange = (evt, callBack) => {
-    const { name, value } = evt.target;
-    this.setState({
-      form: { ...this.state.form, [name]: value }
-    });
-    callBack && callBack(value);
-  };
-
-  getVerifyNumber = number => {
-    if (!number) return false;
-    if (!Number.isInteger(+number)) return false;
-    const { card } = this.props;
-    if (card && card.phoneNumber) {
-      return card.phoneNumber === number;
+  searchData = value => {
+    if (!value) {
+      return false;
     }
-    return false;
+    const { startSearchNumber } = this.props;
+    startSearchNumber({ value });
+    return this.setState({
+      clickSearch: true
+    });
   };
 
-  handleDeleteIseCard = (item) => {
-    const { card, deleteUseCard, turnOnLoader } = this.props;
-    turnOnLoader();
-    deleteUseCard({ card, id: item.id });
-  };
+  // removeField = () => {
+  //   this.setState({
+  //     form: {}
+  //   });
+  // };
+  //
+  // handleClickReset = () => {
+  //   this.props.reset();
+  //   return this.removeField();
+  // };
+  //
+  // handleSubmit = evt => {
+  //   evt.preventDefault();
+  //   const { form: { searchNumber } } = this.state;
+  //   this.props.startSearchNumber(searchNumber);
+  // };
+  //
+  // handleChange = (evt, callBack) => {
+  //   const { name, value } = evt.target;
+  //   this.setState({
+  //     form: { ...this.state.form, [name]: value }
+  //   });
+  //   callBack && callBack(value);
+  // };
+  //
+  // getVerifyNumber = number => {
+  //   if (!number) return false;
+  //   if (!Number.isInteger(+number)) return false;
+  //   const { card } = this.props;
+  //   if (card && card.phoneNumber) {
+  //     return card.phoneNumber === number;
+  //   }
+  //   return false;
+  // };
+  //
+  // handleDeleteIseCard = (item) => {
+  //   const { card, deleteUseCard, turnOnLoader } = this.props;
+  //   turnOnLoader();
+  //   deleteUseCard({ card, id: item.id });
+  // };
 
   getTableData = () => {
     const { card } = this.props;
     if (card && card.history) {
       return card.history.map((item, idx) => {
-        const { count, place, date } = item;
+        const { out, place, date } = item;
         return [
           idx + 1,
+          moment(date).format("LLLL"),
+          out,
           place,
-          count,
-          date,
           <div>
             <GridContainer
               spacing={16}
@@ -159,23 +180,28 @@ class EditCard extends Component {
     let count = 0;
     if (card && card.history) {
       card.history.forEach((a) => {
-        count += a.count;
+        count += a.out;
       });
     }
     return count;
   };
-
+  //
   setExpirationDate = () => {
-    return moment(this.props.card.date, "DD.MM.YY").add(6, "month").format("DD.MM.YY");
+    return moment(this.props.card.dateEnd).format("DD.MM.YY");
+    // return moment(this.props.card.date, "DD.MM.YY").add(6, "month").format("DD.MM.YY");
   };
 
-  getStatus = () => {
-    return moment().isSameOrBefore(moment(this.setExpirationDate(), "DD.MM.YY"));
-  };
-
+  getFormatDate = (date) => moment(date).format("DD.MM.YY");
+  //
+  // getStatus = () => {
+  //   return moment().isSameOrBefore(moment(this.setExpirationDate(), "DD.MM.YY"));
+  // };
+  //
   getBalance = () => {
     const { card } = this.props;
-    return card && Array.isArray(card.history) && card.history.length ? +card.typeCard - this.getTotalCount() : card.typeCard;
+    if (card) {
+      return card && Array.isArray(card.history) && card.history.length ? +card.typeCard - this.getTotalCount() : card.typeCard;
+    }
   };
 
   onChangeAddCount = data => {
@@ -194,16 +220,16 @@ class EditCard extends Component {
       addCount: null
     });
   };
-
-  handleClickResetSearchValue = () => {
-    this.setState({
-      form: {
-        searchNumber: null,
-        phoneNumber: null
-      }
-    });
-    this.props.reset();
-  };
+  //
+  // handleClickResetSearchValue = () => {
+  //   this.setState({
+  //     form: {
+  //       searchNumber: null,
+  //       phoneNumber: null
+  //     }
+  //   });
+  //   this.props.reset();
+  // };
 
   handleKeyUp = evt => {
     if (evt.keyCode === 13 && this.getBalance() - this.state.addCount >= 0) {
@@ -214,16 +240,16 @@ class EditCard extends Component {
 
   render() {
     const {
-      card,
-      pristine,
       classes,
-      isVerifyCardNumber,
-      verifyPhoneMessage,
-      startSearchNumber,
-      loader
+      loader,
+      card,
+      turnOnLoader,
+      verifyMessage,
+      cardStatus
     } = this.props;
-    const { form: { searchNumber }, addCount } = this.state;
-    // if (!card) return null;
+
+    const { clickSearch, addCount } = this.state;
+
     return (
       <Fragment>
         <Paper>
@@ -233,52 +259,41 @@ class EditCard extends Component {
             justify="flex-start"
             alignItems="center"
           >
-            <ItemGrid xs={12} md={searchNumber ? 10 : 12}>
-              <div className={classes.addCardForm}>
-                <form onSubmit={this.handleSubmit}>
-                  <Field
-                    name="searchNumber"
-                    notViewIcon
-                    id="searchNumber"
-                    // type={"search"}
-                    label="Введите номер абонемента*"
-                    placeholder='Начните вводить номер...'
-                    disabled={loader}
-                    // classes={classes}
-                    value={searchNumber}
-                    autoFocus
-                    error={isVerifyCardNumber}
-                    helpText={!pristine && !isVerifyCardNumber ? null : verifyPhoneMessage}
-                    component={CustomInputView}
-                    onChange={(evt) => this.handleChange(evt, startSearchNumber)}
-                  />
-                </form>
-              </div>
+            <ItemGrid xs={12}>
+              <Search
+                searchData={this.searchData}
+                getLoader={turnOnLoader}
+                // loader={loaderCertificate}
+                onDeleteState={this.onDeleteState}
+              />
             </ItemGrid>
-            {searchNumber
-              ? <ItemGrid xs={12} md={2}>
-                <Button
-                  size={"xs"}
-                  color={"defaultNoBackground"}
-                  disabled={loader}
-                  fullWidth
-                  onClick={this.handleClickResetSearchValue}
-                >
-                  Очистить</Button>
-              </ItemGrid>
+            {loader
+              ? <GridContainer
+                spacing={8}
+                direction="row"
+                justify="center"
+                alignItems="center"
+                style={{ width: "100%" }}
+              >
+                <CircularProgress
+                  size={35}
+                  style={{ verticalAlign: "middle" }}
+                  className={classes.addCardForm}
+                />
+              </GridContainer>
               : null
             }
-
-          </GridContainer>
-          {
-            !isVerifyCardNumber && searchNumber
+            {card
               ? <GridContainer
-                spacing={16}
+                spacing={8}
                 direction="row"
-                justify="flex-start"
+                justify="space-between"
+                // alignContent="space-between"
+                // justify="flex-start"
                 // alignItems="center"
+                style={{ width: "100%" }}
               >
-                <ItemGrid xs={12} sm={6} item>
+                <ItemGrid xs={12} sm={5} item>
                   <Typography
                     variant="body1"
                     component="p"
@@ -335,7 +350,7 @@ class EditCard extends Component {
                       alignItems="center"
                     >
                       <ItemGrid xs={12} sm={6} item>
-                        {this.getStatus() && this.getBalance()
+                        {cardStatus && this.getBalance()
                           ? <Fragment>
                             <InputNumber
                               onChange={this.onChangeAddCount}
@@ -349,7 +364,8 @@ class EditCard extends Component {
                             {
                               addCount && this.getBalance() - addCount < 0
                                 ?
-                                <span style={{ color: "rgba(255, 0, 0, 0.7)" }}>Не более {this.getBalance()} мин. </span>
+                                <span
+                                  style={{ color: "rgba(255, 0, 0, 0.7)" }}>Не более {this.getBalance()} мин. </span>
                                 : null
                             }
                           </Fragment>
@@ -373,7 +389,7 @@ class EditCard extends Component {
                     </GridContainer>
                   </Typography>
                 </ItemGrid>
-                <ItemGrid xs={12} sm={6} item>
+                <ItemGrid xs={12} sm={5} item>
                   <Typography
                     variant="body1"
                     component="p"
@@ -384,8 +400,8 @@ class EditCard extends Component {
                     <Chip
                       component={"span"}
                       size="small"
-                      label={this.getStatus() && this.getBalance() ? "Активный" : "Неактивный"}
-                      color={this.getStatus() && this.getBalance() ? "primary" : "secondary"}
+                      label={cardStatus && this.getBalance() ? "Активный" : "Неактивный"}
+                      color={cardStatus && this.getBalance() ? "primary" : "secondary"}
                     />
                   </Typography>
                   <Typography
@@ -395,7 +411,7 @@ class EditCard extends Component {
                     color={"textSecondary"}
                   >
                     Дата приобретения: <span
-                    style={{ color: "black", fontSize: 18 }}>{card.date}</span>
+                    style={{ color: "black", fontSize: 18 }}>{this.getFormatDate(card.date)}</span>
                   </Typography>
                   <Typography
                     variant="body1"
@@ -419,8 +435,14 @@ class EditCard extends Component {
                       label={`${this.getBalance()} мин`}
                       color={"secondary"}
                     />
-                    {loader ? <CircularProgress size={35} style={{ verticalAlign: "middle" }}
-                                                className={classes.addCardForm}/> : null}
+                    {loader
+                      ? <CircularProgress
+                        size={35}
+                        style={{ verticalAlign: "middle" }}
+                        className={classes.addCardForm}
+                      />
+                      : null
+                    }
                   </Typography>
                   <Typography
                     variant="body1"
@@ -443,9 +465,9 @@ class EditCard extends Component {
                       striped
                       tableHead={[
                         "#",
-                        "Салон",
-                        "Количество",
                         "Дата",
+                        "Количество (мин.)",
+                        "Салон",
                         "Действия"
                       ]}
                       tableData={[
@@ -478,7 +500,16 @@ class EditCard extends Component {
                 }
               </GridContainer>
               : null
-          }
+            }
+            {!card && clickSearch && !loader
+              ? <p
+                className={classes.addCardForm}
+              >
+                {verifyMessage}
+              </p>
+              : null
+            }
+          </GridContainer>
         </Paper>
       </Fragment>
     );

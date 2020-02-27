@@ -15,3 +15,6 @@ export const lockOpen = createAction("@@Till/LOCK_OPEN");
 export const lockClose = createAction("@@Till/LOCK_CLOSE");
 export const endLockOpen = createAction("@@Till/END_LOCK_OPEN");
 export const clearTillInfo = createAction("@@Till/CLEAR_TILL_INFO");
+
+export const startLoadDay = createAction("@@Till/START_LOAD_DAY");
+export const endLoadDay = createAction("@@Till/END_LOAD_DAY");

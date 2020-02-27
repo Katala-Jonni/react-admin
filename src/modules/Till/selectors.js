@@ -19,3 +19,8 @@ export const getLock = createSelector(getTillState, state => state.lock);
 export const getPayCategory = createSelector(getTillState, state => state.payCategory);
 export const getTill = createSelector(getTillState, state => state.till);
 export const getExpense = createSelector(getTillState, state => state.expense);
+
+
+export const getTotalDay = createSelector(getTillState, state => state.totalDay);
+export const getTotalOrders = createSelector(getTillState, state => state.totalOrders);
+export const getPay = createSelector(getTillState, state => state.pay);

@@ -4,6 +4,8 @@ import cx from "classnames";
 import momentTimeZone from "moment-timezone";
 import moment from "moment";
 
+import ExpansionPanel from "../ExpansionPanel";
+
 // core components
 import { withStyles } from "@material-ui/core/styles";
 import Paper from "@material-ui/core/Paper";
@@ -25,6 +27,7 @@ import Table from "components/Table/Table.jsx";
 // style
 import customEventsStyle from "assets/jss/material-dashboard-react/components/customEventsStyle";
 import ListServices from "../ListServices/ListServices";
+import CertificateHistory from "../CertificateHistory";
 
 const options = [
   {
@@ -185,6 +188,23 @@ class EditCertificate extends Component {
     return moment().isSameOrBefore(moment(dateZone));
   };
 
+  getBalance = (isFull, isSpend) => {
+    const { certificate } = this.props;
+    let count = certificate.certificateSum;
+    let historyCount = 0;
+    if (certificate.history.length) {
+      historyCount += certificate.history.reduce((start, item) => start += item.out, 0);
+    }
+    if (isFull) {
+      count += historyCount;
+    }
+    if (isSpend) {
+      count = historyCount;
+    }
+    // console.log(count);
+    return count;
+  };
+
   render() {
     const {
       classes,
@@ -197,8 +217,6 @@ class EditCertificate extends Component {
       certificateStatus
     } = this.props;
     const { clickSearch } = this.state;
-
-    // console.log(certificateStatus);
 
     return (
       <Fragment>
@@ -277,9 +295,10 @@ class EditCertificate extends Component {
                     Привилегии:
                     {
                       certificate.typeCertificate !== "service"
-                        ? <span style={{ color: "black", fontSize: 18 }}> {certificate.certificateSum} ₽</span>
+                        ? <span style={{ color: "black", fontSize: 18 }}> {this.getBalance(true)} ₽</span>
                         : <ListServices
-                          options={certificate.servicesType}
+                          options={certificate}
+                          isFull
                           description="Услуга"
                         />
                     }
@@ -343,12 +362,12 @@ class EditCertificate extends Component {
                           <Chip
                             component={"span"}
                             size="small"
-                            label={`${certificate.certificateSum} ₽`}
+                            label={`${this.getBalance()} ₽`}
                             color={"secondary"}
                           />
                         </Fragment>
                         : <ListServices
-                          options={certificate.servicesType}
+                          options={certificate}
                           description="Остаток"
                           open
                         />
@@ -375,51 +394,52 @@ class EditCertificate extends Component {
                           <Chip
                             component={"span"}
                             size="small"
-                            label={`${certificate.certificateSum} ₽`}
+                            label={`${this.getBalance(false, true)} ₽`}
                             color={"primary"}
                           />
                         </Fragment>
                         : <ListServices
-                          options={certificate.servicesType}
+                          options={certificate}
+                          isSpend
                           description="Использовано"
                         />
                     }
                   </Typography>
                 </ItemGrid>
-                {this.getTableData().length
-                  ? <ItemGrid xs={12} item>
-                    <Table
-                      striped
-                      tableHead={[
-                        "#",
-                        "Салон",
-                        "Услуга / Сумма",
-                        "Дата",
-                        "Действия"
-                      ]}
-                      tableData={[
-                        ...this.getTableData()
-                      ]}
-                      customCellClasses={[
-                        classes.center,
-                        classes.center,
-                        classes.center,
-                        classes.center,
-                        classes.center
-                      ]}
-                      customClassesForCells={[0, 5, 6]}
-                      customHeadCellClasses={[
-                        classes.center,
-                        classes.center,
-                        classes.center,
-                        classes.center,
-                        classes.center
-                      ]}
-                      customHeadClassesForCells={[0, 5, 6]}
-                    />
-                  </ItemGrid>
-                  : null
-                }
+                {/*{this.getTableData().length*/}
+                {/*? <ItemGrid xs={12} item>*/}
+                {/*<Table*/}
+                {/*striped*/}
+                {/*tableHead={[*/}
+                {/*"#",*/}
+                {/*"Салон",*/}
+                {/*"Услуга / Сумма",*/}
+                {/*"Дата",*/}
+                {/*"Действия"*/}
+                {/*]}*/}
+                {/*tableData={[*/}
+                {/*...this.getTableData()*/}
+                {/*]}*/}
+                {/*customCellClasses={[*/}
+                {/*classes.center,*/}
+                {/*classes.center,*/}
+                {/*classes.center,*/}
+                {/*classes.center,*/}
+                {/*classes.center*/}
+                {/*]}*/}
+                {/*customClassesForCells={[0, 5, 6]}*/}
+                {/*customHeadCellClasses={[*/}
+                {/*classes.center,*/}
+                {/*classes.center,*/}
+                {/*classes.center,*/}
+                {/*classes.center,*/}
+                {/*classes.center*/}
+                {/*]}*/}
+                {/*customHeadClassesForCells={[0, 5, 6]}*/}
+                {/*/>*/}
+                {/*</ItemGrid>*/}
+                {/*: null*/}
+                {/*}*/}
               </GridContainer>
               : null
             }
@@ -432,7 +452,25 @@ class EditCertificate extends Component {
               : null
             }
           </GridContainer>
+          {/*{!isPay && certificate && certificate.history.length*/}
+          {/*? <div className={classes.topMargin}>*/}
+          {/*<Typography*/}
+          {/*variant="h5"*/}
+          {/*component="h5"*/}
+          {/*align="center"*/}
+          {/*>*/}
+          {/*История сертификата*/}
+          {/*</Typography>*/}
+          {/*<CertificateHistory/>*/}
+          {/*</div>*/}
+          {/*: null*/}
+          {/*}*/}
+          {!isPay && certificate && certificate.history.length
+            ? <ExpansionPanel data={certificate}/>
+            : null
+          }
         </Paper>
+
       </Fragment>
     );
   }

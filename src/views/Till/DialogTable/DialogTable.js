@@ -13,11 +13,11 @@ import ActonTill from "../ActonTill";
 
 class OrderTable extends Component {
 
-  getAmount = value => {
-    let amount = 0;
-    this.props[value].forEach((a) => amount += a.count);
-    return amount;
-  };
+  // getAmount = value => {
+  //   let amount = 0;
+  //   this.props[value].forEach((a) => amount += a.count);
+  //   return amount;
+  // };
 
   isValidData = data => {
     if (!data || typeof data !== "object") return false;
@@ -27,7 +27,9 @@ class OrderTable extends Component {
 
   handleClickAddInTill = data => {
     if (!this.isValidData(data)) return;
-    return this.props.addInTill(data);
+    console.log(data);
+    const type = "inTill";
+    return this.props.addInTill({ data, type });
   };
 
   handleClickAddOutTill = data => {
@@ -35,7 +37,8 @@ class OrderTable extends Component {
     this.setState({
       countCart: null
     });
-    return this.props.addOutTill(data);
+    const type = "outTill";
+    return this.props.addOutTill({ data, type });
   };
 
   getInTill = () => {
@@ -47,6 +50,12 @@ class OrderTable extends Component {
         item.time
       ];
     });
+  };
+
+  getAmount = (array) => {
+    let amount = 0;
+    array.forEach((a) => amount += a.count);
+    return amount;
   };
 
   getOuTill = () => {
@@ -84,7 +93,7 @@ class OrderTable extends Component {
                       total: true,
                       colspan: col,
                       amount: `${inTillSum} ₽`
-                      // amount: `${getAmount("inTill")} ₽`
+                      // amount: `${this.getAmount(inTill)} ₽`
                     }
                   ]}
                   customCellClasses={[

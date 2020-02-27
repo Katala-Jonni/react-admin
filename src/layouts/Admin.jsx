@@ -48,7 +48,7 @@ import {
   getAdministrators
 } from "../modules/Till";
 import { getTotalDay, loadTotalDay } from "../modules/Shop";
-import { getLoad, loadApp } from "../modules/Admin";
+import { getDay, getLoad, loadApp } from "../modules/Admin";
 import administrators from "../modules/Till/administrators";
 
 const switchRoutes = (
@@ -110,6 +110,7 @@ class Dashboard extends React.Component {
 
   static getDerivedStateFromProps(nextProps, prevState) {
     const { totalDay, endLockOpen, lock } = nextProps;
+
     const keys = Object.keys(totalDay);
     if (keys.length) {
       endLockOpen();
@@ -121,7 +122,6 @@ class Dashboard extends React.Component {
     }
     return null;
   }
-
 
   componentDidMount() {
     const { loadResource, loadTotalDay, loadStateTill } = this.props;
@@ -160,94 +160,51 @@ class Dashboard extends React.Component {
 
   changeClick = () => {
     this.setState({
-      isClick: true
+      // isClick: true
     });
   };
 
   render() {
-    const { classes, lock, isLoad, viewTill, administrators, ...rest } = this.props;
+    const { classes, lock, isLoad, viewTill, administrators, isDay, ...rest } = this.props;
+    // console.log(!isDay);
     return (
       <div className={classes.wrapper}>
-        <Dialog
-          maxWidth={"lg"}
-          fullScreen={lock}
-          fullWidth={true}
-          open={false}
-          // open={!!(lock && isLoad) && !viewTill}
-          // onClose={inTill.length ? this.handleClickLock : () => ({})}
-          scroll="body"
-        >
-          {this.state.isClick
-            ? <LinearProgress/>
-            : <Fragment>
-              <DialogTitle>
-                Для продолжения необходимо выбрать администратора, внести сумму прихода и открыть смену.
-              </DialogTitle>
-              <DialogContent>
-                <GridContainer
-                  direction={"row"}
-                  justify={"center"}
-                  alignItems={"center"}
-                  alignContent={"center"}
-                >
-                  <ActonTill
-                    handleClickAdd={this.handleClickAddInTill}
-                    btnAdd={"Открыть смену"}
-                    label={"Введите сумму"}
-                    changeClick={this.changeClick}
-                    options={administrators}
-                    selectName={"administrators"}
-                    selectLabel={"Выберите администратора"}
-                    isOutTill
-                    // решить вопрос касательно внесения суммы чтобы мог только один раз внести сумму
-                  />
-                </GridContainer>
-              </DialogContent>
-              <DialogActions>
-              </DialogActions>
-            </Fragment>
-          }
-
-        </Dialog>
-        {true
-          ? <Fragment>
-            <Sidebar
-              //!lock && isLoad && viewTill
+        <Fragment>
+          <Sidebar
+            //!lock && isLoad && viewTill
+            routes={routes}
+            logo={logo}
+            image={this.state.image}
+            handleDrawerToggle={this.handleDrawerToggle}
+            open={this.state.mobileOpen}
+            color={this.state.color}
+            {...rest}
+          />
+          <div className={classes.mainPanel} ref="mainPanel">
+            <Navbar
               routes={routes}
-              logo={logo}
-              image={this.state.image}
               handleDrawerToggle={this.handleDrawerToggle}
-              open={this.state.mobileOpen}
-              color={this.state.color}
               {...rest}
             />
-            <div className={classes.mainPanel} ref="mainPanel">
-              <Navbar
-                routes={routes}
-                handleDrawerToggle={this.handleDrawerToggle}
-                {...rest}
-              />
-              {/* On the /maps route we want the map to be on full screen - this is not possible if the content and conatiner classes are present because they have some paddings which would make the map smaller */}
-              {this.getRoute() ? (
-                <div className={classes.content}>
-                  <div className={classes.container}>{switchRoutes}</div>
-                </div>
-              ) : (
-                <div className={classes.map}>{switchRoutes}</div>
-              )}
-              {/*{this.getRoute() ? <Footer /> : null}*/}
-              <FixedPlugin
-                handleImageClick={this.handleImageClick}
-                handleColorClick={this.handleColorClick}
-                bgColor={this.state["color"]}
-                bgImage={this.state["image"]}
-                handleFixedClick={this.handleFixedClick}
-                fixedClasses={this.state.fixedClasses}
-              />
-            </div>
-          </Fragment>
-          : <Progress/>
-        }
+            {/* On the /maps route we want the map to be on full screen - this is not possible if the content and conatiner classes are present because they have some paddings which would make the map smaller */}
+            {this.getRoute() ? (
+              <div className={classes.content}>
+                <div className={classes.container}>{switchRoutes}</div>
+              </div>
+            ) : (
+              <div className={classes.map}>{switchRoutes}</div>
+            )}
+            {/*{this.getRoute() ? <Footer /> : null}*/}
+            <FixedPlugin
+              handleImageClick={this.handleImageClick}
+              handleColorClick={this.handleColorClick}
+              bgColor={this.state["color"]}
+              bgImage={this.state["image"]}
+              handleFixedClick={this.handleFixedClick}
+              fixedClasses={this.state.fixedClasses}
+            />
+          </div>
+        </Fragment>
       </div>
     );
   }
@@ -263,7 +220,8 @@ const mapStateFromProps = state => ({
   totalDay: getTotalDay(state),
   isLoad: getLoad(state),
   viewTill: getstateTill(state),
-  administrators: getAdministrators(state)
+  administrators: getAdministrators(state),
+  isDay: getDay(state)
   // events: getEvents(state),
   // totalResource: getTotalResource(state)
 });

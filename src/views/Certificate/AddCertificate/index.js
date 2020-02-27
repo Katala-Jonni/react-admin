@@ -4,7 +4,7 @@ import {
   getCertificate,
   getIsCertificate,
   getVerifyMessage,
-  loadNumberCertificate, startVerifyCertificate
+  loadNumberCertificate, startVerifyCertificate, deleteState
 } from "../../../modules/Certificate";
 import { getProducts, loadView } from "../../../modules/Shop";
 
@@ -15,6 +15,6 @@ const mapStateFromProps = state => ({
   products: getProducts(state)
 });
 
-const mapDispatchFromProps = { loadNumberCertificate, startVerifyCertificate, loadView };
+const mapDispatchFromProps = { loadNumberCertificate, startVerifyCertificate, loadView, deleteState };
 
 export default connect(mapStateFromProps, mapDispatchFromProps)(AddCertificate);

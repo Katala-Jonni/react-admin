@@ -20,6 +20,7 @@ import Snackbar from "components/Snackbar/Snackbar.jsx";
 import Search from "@material-ui/icons/Search";
 import Add from "@material-ui/icons/Add";
 import AddAlert from "@material-ui/icons/AddAlert";
+import { deleteState } from "../../modules/Sun";
 
 
 // import tabs from "./tabs";
@@ -32,16 +33,135 @@ const styles = {
   }
 };
 
+// class Sun extends React.Component {
+//   state = {
+//     tr: false
+//   };
+//
+//   handleSubmit = values => {
+//     const { sendCard } = this.props;
+//     sendCard(values);
+//     console.log("Отправленно!");
+//     this.showNotification();
+//   };
+//
+//   getTabs = () => {
+//     return [
+//       {
+//         tabButton: "Найти",
+//         tabIcon: Search,
+//         tabContent: (<EditCard/>),
+//         dataName: "Найти".toLowerCase()
+//       },
+//       {
+//         tabButton: "Новый",
+//         tabIcon: Add,
+//         tabContent: (<AddCard onSubmit={this.handleSubmit}/>),
+//         dataName: "Новый".toLowerCase()
+//       }
+//     ];
+//   };
+//
+//   showNotification = place => {
+//     if (!this.state[place]) {
+//       this.setState({
+//         tr: true
+//       });
+//       this.timer = setTimeout(
+//         () => {
+//           this.props.resetErrorMessage();
+//           this.setState({
+//             tr: false
+//           });
+//         },
+//         5000
+//       );
+//     }
+//   };
+//
+//   closeNotification = () => {
+//     this.props.resetErrorMessage();
+//     this.setState({ tr: false });
+//   };
+//
+//   render() {
+//     const { tr } = this.state;
+//     const { serverMessage, errorMessage } = this.props;
+//     return (
+//       <div>
+//         <GridContainer justify="center">
+//           <Snackbar
+//             place="tr"
+//             color="success"
+//             icon={AddAlert}
+//             message={serverMessage || ""}
+//             open={serverMessage && !errorMessage && tr}
+//             closeNotification={this.closeNotification}
+//             close
+//           />
+//           <ItemGrid xs={12}>
+//             <NavPills
+//               color="danger"
+//               alignCenter
+//               tabs={this.getTabs()}
+//             />
+//           </ItemGrid>
+//         </GridContainer>
+//       </div>
+//     );
+//   }
+// }
+//
+// Sun.defaultProps = {
+//   title: "Касса"
+// };
+//
+// Sun.propTypes = {
+//   classes: PropTypes.object.isRequired,
+//   title: PropTypes.string
+// };
+
+
 class Sun extends React.Component {
   state = {
-    tr: false
+    tr: false,
+    changeViewTab: false,
+    addCertificateTab: false,
+    editCertificateTab: true
   };
+
+  componentWillUnmount() {
+    this.props.deleteState();
+  }
 
   handleSubmit = values => {
     const { sendCard } = this.props;
     sendCard(values);
-    console.log("Отправленно!");
-    this.showNotification();
+//     console.log("Отправленно!");
+//     this.showNotification();
+  };
+
+
+  handleTabs = () => {
+    this.setState({
+      changeViewTab: !this.state.changeViewTab
+    });
+    this.props.deleteState();
+  };
+
+  handleAddCertificateTab = () => {
+    this.props.deleteState();
+    this.setState({
+      addCertificateTab: true,
+      editCertificateTab: false
+    });
+  };
+
+  handleEditCertificateTab = () => {
+    this.setState({
+      addCertificateTab: false,
+      editCertificateTab: true
+    });
   };
 
   getTabs = () => {
@@ -49,13 +169,18 @@ class Sun extends React.Component {
       {
         tabButton: "Найти",
         tabIcon: Search,
-        tabContent: (<EditCard/>),
+        tabContent: this.state.editCertificateTab
+          ? (<EditCard isViev={this.state.editCertificateTab}/>)
+          : null,
         dataName: "Найти".toLowerCase()
       },
       {
         tabButton: "Новый",
         tabIcon: Add,
-        tabContent: (<AddCard onSubmit={this.handleSubmit}/>),
+        tabContent: this.state.addCertificateTab
+          ? (<AddCard onSubmit={this.handleSubmit} isViev={this.state.addCertificateTab}/>)
+          : null,
+        // tabContent: (<AddCertificate onSubmit={this.handleSubmit} isViev={this.state.addCertificateTab}/>),
         dataName: "Новый".toLowerCase()
       }
     ];
@@ -103,6 +228,9 @@ class Sun extends React.Component {
               color="danger"
               alignCenter
               tabs={this.getTabs()}
+              handleTabs={this.handleTabs}
+              handleAddCertificateTab={this.handleAddCertificateTab}
+              handleEditCertificateTab={this.handleEditCertificateTab}
             />
           </ItemGrid>
         </GridContainer>
@@ -111,13 +239,12 @@ class Sun extends React.Component {
   }
 }
 
-Sun.defaultProps = {
-  title: "Касса"
-};
-
 Sun.propTypes = {
-  classes: PropTypes.object.isRequired,
-  title: PropTypes.string
+  classes: PropTypes.object,
+  title: PropTypes.string,
+  serverMessage: PropTypes.string,
+  errorMessage: PropTypes.bool
 };
 
 export default withStyles(styles)(Sun);
+// export default withStyles(styles)(Sun);

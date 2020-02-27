@@ -6,13 +6,16 @@ import {
   changeInTill,
   changeOutTill,
   loadInfoTill,
-  endLoadInfoTill, lockOpen, lockClose, clearTillInfo, loadStateTill
+  endLoadInfoTill, lockOpen, lockClose, clearTillInfo, loadStateTill, startLoadDay, endLoadDay
 } from "./actions";
 import moment from "moment/min/moment-with-locales";
 import { addOutTill, openTill } from "./index";
 import days from "../Shop/totalDay";
+import api from "../../utils/api.js";
+import { startApp } from "../Admin/actions";
 
 moment.locale("ru");
+
 
 let inTill = [];
 let outTill = [];
@@ -23,6 +26,12 @@ let paymentByCard = 0;
 let revenue = 0;
 let income = 0;
 let lock = true;
+
+const fetchLoadDay = async () => {
+  const { baseUrl, wallet } = api;
+  const res = await fetch(`${baseUrl}${wallet}`);
+  return await res.json();
+};
 
 const fetchData = () =>
   new Promise(resolve => {
@@ -74,6 +83,19 @@ const addInTillFetch = data =>
   })
     .then(res => res);
 
+const fetchChangeTill = async (body) => {
+  const { baseUrl, wallet, till } = api;
+  const res = await fetch(`${baseUrl}${wallet}${till}`,
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json;charset=utf-8"
+      },
+      body: JSON.stringify(body)
+    });
+  return await res.json();
+};
+
 const addOutTillFetch = data =>
   new Promise(resolve => {
     outTill.push(data);
@@ -88,8 +110,22 @@ const getAmount = array => {
 };
 // решить пробему с загрузкой
 // нужно отправлять данные моковые типо на сервер и получать их оттуда
-function* loadTillData() {
+function* loadTillData({ action, payload }) {
+  // console.log(payload);
   console.log("Отправка прихода");
+  console.log("формирование админа");
+  const type = "inTill";
+
+  const tillInfo = {
+    count: payload.count,
+    time: moment().format("DD.MM.YY, LTS")
+  };
+
+  const { day } = yield call(fetchChangeTill, { tillInfo, type });
+  if (day) {
+    return yield put(startApp(true));
+  }
+
   // let loadData = yield call(fetchData);
   // const keys = Object.keys(loadData);
   // const counts = keys.reduce((start, item) => {
@@ -103,26 +139,51 @@ function* loadTillData() {
 }
 
 function* addInTillData({ payload }) {
-  const newInTill = {
-    count: payload.count,
-    time: moment().format("DD.MM.YY, LTS")
-  };
-  const loadData = yield call(addInTillFetch, newInTill);
-  yield put(changeInTill(loadData));
-  const inTillSum = getAmount(loadData);
-  yield put(endLoadInfoTill({ inTillSum }));
+  const { data, type } = payload;
+  if (data) {
+    const tillInfo = {
+      count: data.count,
+      time: moment().format("DD.MM.YY, LTS")
+    };
+    return yield updateTill(tillInfo, type);
+  }
+
+  // const loadData = yield call(addInTillFetch, newInTill);
+  // const { day } = yield call(fetchChangeTill, { tillInfo, type });
+  // if (day) {
+  //   const { totalDay, totalOrders, pay, intill } = day;
+  //   yield put(changeInTill({
+  //     totalDay: totalDay || {},
+  //     totalOrders: totalOrders || [],
+  //     pay: pay || {},
+  //     inTill: intill || [],
+  //     inTillSum: getAmount(intill)
+  //   }));
+  // }
+  // yield put(changeInTill(res));
+  // const inTillSum = getAmount(loadData);
+  // yield put(endLoadInfoTill({ inTillSum }));
+}
+
+function* updateTill(tillInfo, type) {
+  const { day } = yield call(fetchChangeTill, { tillInfo, type });
+  if (day) {
+    return yield updateState(day);
+  }
 }
 
 function* addInOutTillData({ payload }) {
-  const newOutTill = {
-    title: payload.title,
-    count: payload.count,
+  const { data, type } = payload;
+  const tillInfo = {
+    title: data.title,
+    count: data.count,
     time: moment().format("DD.MM.YY, LTS")
   };
-  const loadData = yield call(addOutTillFetch, newOutTill);
-  yield put(changeOutTill(loadData));
-  const outTillSum = getAmount(loadData);
-  yield put(endLoadInfoTill({ outTillSum }));
+  return yield updateTill(tillInfo, type);
+  // const loadData = yield call(addOutTillFetch, newOutTill);
+  // yield put(changeOutTill(loadData));
+  // const outTillSum = getAmount(loadData);
+  // yield put(endLoadInfoTill({ outTillSum }));
 }
 
 function* loadTillDataInfo({ payload }) {
@@ -191,7 +252,6 @@ function* removeTillInfo() {
   // реализовать функционал прихода и добавление имени администратора смены
 }
 
-
 const fetchCurrentDay = date => {
   return new Promise(resolve => {
     setTimeout(() => {
@@ -239,7 +299,29 @@ function* loadStateCurrentTill() {
   }
 }
 
+function* updateState(day) {
+  const { totalDay, totalOrders, pay, inTill, outTill } = day;
+  yield put(endLoadDay({
+    totalDay: totalDay || {},
+    totalOrders: totalOrders || [],
+    pay: pay || {},
+    inTill: inTill || [],
+    outTill: outTill || [],
+    inTillSum: inTill ? getAmount(inTill) : 0,
+    outTillSum: outTill ? getAmount(outTill) : 0
+  }));
+}
+
+function* loadDayInfo() {
+  const { day } = yield call(fetchLoadDay);
+  if (day) {
+    return yield updateState(day);
+  }
+}
+
 function* tillWatcher() {
+  yield takeLatest(startLoadDay, loadDayInfo);
+
   yield takeLatest(loadTill, loadTillData);
   yield takeLatest(loadInfoTill, loadTillDataInfo);
   yield takeLatest(addInTill, addInTillData);
@@ -247,7 +329,10 @@ function* tillWatcher() {
   yield takeLatest(clearTillInfo, removeTillInfo);
   yield takeLatest(lockOpen, lockOpenApp);
   yield takeLatest(loadTill, loadTillCurrentTill);
-  yield takeLatest(loadStateTill, loadStateCurrentTill);
+
+  // yield takeLatest(loadStateTill, loadStateCurrentTill);
+
+
   // yield takeLatest(lockClose, lockCloseApp);
   // yield takeLatest(loadInfoTill, loadInfoTillData);
 }
