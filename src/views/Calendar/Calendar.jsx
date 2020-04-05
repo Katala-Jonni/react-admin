@@ -12,6 +12,8 @@ import SelectEvent from "./Events/Forms/SelectEvent/index";
 import defaultResource from "../../modules/Calendar/defaultResource";
 import Progress from "../../components/Progress/Progress";
 import Popup from "./Popup";
+import { startApp } from "../../modules/Admin/actions";
+import { loadResource } from "../../modules/Calendar";
 
 moment.locale("ru");
 const localizer = BigCalendar.momentLocalizer(moment);
@@ -64,6 +66,11 @@ class Calendar extends Component {
       events: null,
       popupDate: moment()
     };
+  }
+
+  componentDidMount() {
+    this.props.startApp();
+    this.props.loadResource();
   }
 
   handleClickCloseSelectEvent = () => {

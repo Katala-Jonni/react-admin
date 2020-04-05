@@ -14,6 +14,7 @@ import AddMaster from "./Masters";
 import { changeCalendar, getIsDay, getResource, initialResource, selectViewEvents } from "../../modules/Calendar";
 import AddEvents from "./Events/index";
 import { loadResource } from "../../modules/Calendar/actions";
+import getWorkHourBool from "../../utils/getWorkHourBool";
 
 class CalendarToolBar extends Component {
   isPrev = () => {
@@ -88,7 +89,7 @@ class CalendarToolBar extends Component {
     return (
       <div className={classes.container}>
         <div>
-          {isAdd ? <AddEvents/> : null}
+          {isAdd ? <AddEvents date={date} classes={classes}/> : null}
           {isAdd ? <AddMaster date={date} classes={classes}/> : null}
           {isAdd && resource.length >= 2 ? <AddMaster isNew date={date} classes={classes}/> : null}
           <Tooltip title={`Текущий ${mapView[view] || ""}`}>

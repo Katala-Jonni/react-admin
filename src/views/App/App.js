@@ -6,20 +6,26 @@ import DialogActions from "@material-ui/core/DialogActions";
 import DialogContent from "@material-ui/core/DialogContent";
 import DialogTitle from "@material-ui/core/DialogTitle";
 
-
 import GridContainer from "components/Grid/GridContainer.jsx";
 import ActonTill from "../../views/Till/ActonTill";
-
+import isOnline from "is-online";
 // core components
 import Admin from "layouts/Admin.jsx";
+import Error from "components/Modal/Error";
 
 import "assets/css/material-dashboard-react.css?v=1.6.0";
+import { startApp } from "../../modules/Admin";
+import Progress from "components/Progress/Progress";
 
 class App extends Component {
 
   state = {
     isClick: false
   };
+
+  componentDidMount() {
+    this.props.startApp();
+  }
 
   isValidData = data => {
     if (!data || typeof data !== "object") return false;
@@ -32,7 +38,6 @@ class App extends Component {
     return this.props.loadTill(data);
   };
 
-
   changeClick = () => {
     this.setState({
       isClick: true
@@ -40,10 +45,30 @@ class App extends Component {
   };
 
   render() {
-    const { administrators, isDay } = this.props;
+    const { administrators, isDay, isError } = this.props;
+    const { isClick } = this.state;
+    // console.log(isError);
+    if (isError === null) {
+      return (
+        <Progress/>
+      );
+    }
+    else if (isError === true) {
+      return <Error/>;
+    }
     return (
       <Fragment>
-        {!this.state.isClick && !isDay
+        {/*{!this.state.isClick && !isDay*/}
+        {/*{!isClick ?*/}
+        {/*<div*/}
+        {/*className="loader-view-block">*/}
+        {/*<div className="loader-view">*/}
+        {/*<CircularProgress/>*/}
+        {/*</div>*/}
+        {/*</div>*/}
+        {/*: null*/}
+        {/*}*/}
+        {!isDay && !isClick
           ? <Dialog
             maxWidth={"lg"}
             // fullScreen={lock}
@@ -80,7 +105,7 @@ class App extends Component {
             <DialogActions>
             </DialogActions>
           </Dialog>
-          : isDay && <Admin {...this.props}/>
+          : isClick && !isDay ? <Progress/> : <Admin {...this.props}/>
         }
       </Fragment>
     );

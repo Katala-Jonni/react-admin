@@ -7,7 +7,7 @@ import {
   editEvents,
   endLoadResource,
   loadViewEvents,
-  editResource, initialResource
+  editResource, initialResource, editMasters
 } from "./actions";
 
 const initialState = {
@@ -36,6 +36,12 @@ export default (state = initialState, action) => {
         masters: payload.masters,
         events: payload.events,
         defaultResource: payload.defaultResource
+      };
+    case editMasters.toString():
+      // console.log(payload);
+      return {
+        ...state,
+        masters: payload.masters
       };
     case showDay.toString():
       return {
@@ -94,7 +100,6 @@ export default (state = initialState, action) => {
         events: payload.events || state.events,
         totalResource: payload.totalResource || state.totalResource
       };
-
     case editResource.toString():
       console.log(payload, "editResource");
       return {

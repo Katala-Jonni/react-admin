@@ -181,7 +181,11 @@ const fetchDaysAdd = async (body) => {
 const getSumMaster = ({ masters, name, title, price, count }) => {
   const master = masters.find(a => a.value.toLowerCase() === name.toLowerCase());
   if (master) {
-    const percent = master.workPercent && master.workPercent[title.toLowerCase()];
+    console.log(master.workPercent);
+    console.log(title);
+    const percent = master.workPercent && master.workPercent[title];
+    // const percent = master.workPercent && master.workPercent[title.toLowerCase()];
+    console.log(percent);
     if (percent) {
       return Math.ceil((price * count) * (percent / 100));
     } else {
@@ -368,6 +372,7 @@ function* sendCart(action) {
   totalCart.forEach(item => {
     const { name, price, title, count, category, isMaster } = item;
     const sumMaster = getSumMaster({ masters, name, title, price, count });
+    console.log(sumMaster);
     if (!data[name]) {
       data[name] = [];
     }

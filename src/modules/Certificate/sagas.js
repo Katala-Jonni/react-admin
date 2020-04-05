@@ -199,7 +199,7 @@ function* certificateWatcher() {
 
 export default function* () {
   yield fork(certificateWatcher);
-  console.log("Certificate saga run");
+  // console.log("Certificate saga run");
 }
 
 // {

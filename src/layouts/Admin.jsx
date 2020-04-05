@@ -54,6 +54,7 @@ import administrators from "../modules/Till/administrators";
 const switchRoutes = (
   <Switch>
     {routes.map((prop, key) => {
+      // console.log(prop.component);
       if (prop.layout === "/admin") {
         return (
           <Route

@@ -21,3 +21,4 @@ export const addResource = createAction("@@Calendar/ADD_RESOURCE");
 export const editResource = createAction("@@Calendar/EDIT_RESOURCE");
 export const updateResource = createAction("@@Calendar/UPDATE_RESOURCE");
 export const initialResource = createAction("@@Calendar/INITIAL_RESOURCE");
+export const editMasters = createAction("@@Calendar/EDIT_MASTERS");

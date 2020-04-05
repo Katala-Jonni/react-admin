@@ -1,8 +1,9 @@
-import { loadApp, startApp } from "./actions";
+import { endApp, loadApp, startApp } from "./actions";
 
 const initialState = {
   isLoad: false,
-  isDay: false
+  isDay: false,
+  isError: null
 };
 
 export default (state = initialState, action) => {
@@ -14,11 +15,13 @@ export default (state = initialState, action) => {
         ...state,
         isLoad: payload
       };
-    case startApp.toString():
+    case endApp.toString():
+      const { day, error } = payload;
       // console.log(payload);
       return {
         ...state,
-        isDay: payload
+        isDay: day,
+        isError: error
       };
     default: {
       return state;

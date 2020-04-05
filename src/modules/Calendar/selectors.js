@@ -9,3 +9,4 @@ export const getTotalMasters = createSelector(getCalendarState, state => state.m
 export const getIsDay = createSelector(getCalendarState, state => state.isDay);
 export const getCurrentEvents = createSelector(getCalendarState, state => state.currentEvents);
 export const getDefaultResource = createSelector(getCalendarState, state => state.defaultResource);
+export const getMasters = createSelector(getCalendarState, state => state.masters);

@@ -8,7 +8,8 @@ import {
   plusPayCount,
   minusPayCount,
   endLoadView,
-  addToCartEnd
+  addToCartEnd,
+  deleteStateShop
 } from "./actions";
 
 const initialData = () => {

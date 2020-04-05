@@ -27,6 +27,8 @@ import React from "react";
 // import RTLPage from "views/RTLPage/RTLPage.jsx";
 
 import Picker from "./components/Inputs/Picker";
+import Masters from "./views/Masters";
+import Catalog from "./views/Catalog";
 
 
 const newCal = () => <CalendarPage/>;
@@ -34,14 +36,8 @@ const newShop = () => <ShopPage/>;
 const newTill = () => <TillPage/>;
 const newSun = () => <SunPage/>;
 const newCertificate = () => <CertificatePage/>;
-const newTemplate = () => {
-  const handleSubmit = values => {
-    console.log(values);
-  };
-  return (
-    <Template onSubmit={handleSubmit}/>
-  );
-};
+const newMasters = () => <Masters/>;
+const newCatalog = () => <Catalog/>;
 
 const CustomComponent = () => {
   return (
@@ -99,11 +95,21 @@ const dashboardRoutes = [
     layout: "/admin"
   },
   {
-    path: "/template",
-    name: "Черновик",
+    path: "/master",
+    name: "Мастера",
     rtlName: "ملف تعريفي للمستخدم",
-    icon: "pie_chart",
-    component: newTemplate,
+    icon: "face",
+    component: newMasters,
+    // component: newTemplate,
+    layout: "/admin"
+  },
+  {
+    path: "/catalog",
+    name: "Редактирование услуг",
+    rtlName: "ملف تعريفي للمستخدم",
+    icon: "folder-special",
+    component: newCatalog,
+    // component: newTemplate,
     layout: "/admin"
   }
   // {

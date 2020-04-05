@@ -27,6 +27,7 @@ import DialogContent from "@material-ui/core/DialogContent";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import Button from "@material-ui/core/Button";
 import Tooltip from "@material-ui/core/Tooltip";
+import getWorkHourBool from '../../../utils/getWorkHourBool';
 
 const useStyles = theme => ({
   actionRoot: {
@@ -199,87 +200,90 @@ class RecipeReviewCard extends Component {
             </Typography>
           </CardContent>
         </CardActionArea>
-        <CardActions className={classes.actionRoot}>
-          <Tooltip title={"Уменьшить на один"} aria-label={"Уменьшить на один"}>
-            <IconButton aria-label="Уменьшить на один" onClick={this.handleClickRemove}>
-              <Remove color={"primary"}/>
-            </IconButton>
-          </Tooltip>
-          {viewNumber
-            ? <Dialog
-              maxWidth={"xs"}
-              open={viewNumber}
-              onClose={this.handleCloseViewNumber}
-              scroll="body"
-            >
-              <DialogTitle>
-                Введите количество
-              </DialogTitle>
-              <DialogContent>
-                <InputNumber
-                  value={countCart}
-                  onChange={this.handleChangeCountCart}
-                  autoFocus
-                />
-              </DialogContent>
-              <DialogActions>
-                <Button
-                  onClick={this.handleCloseViewNumber}
-                  color={"primary"}
-                  variant="contained"
-                >
-                  Закрыть
-                </Button>
-              </DialogActions>
-            </Dialog>
-            : <Tooltip title={"Ввести количество"} aria-label={"Ввести количество"}>
-              <Typography
-                variant="subtitle2"
-                color="textSecondary"
-                component="h3"
-                className={classes.pointer}
-                onClick={this.handleClickViewNumber}
-              >
-                {countCart}
-              </Typography>
-            </Tooltip>
-          }
-          <Tooltip title={"Увеличить на один"} aria-label={"Увеличить на один"}>
-            <IconButton aria-label="Увеличить на один" onClick={this.handleClickAdd}>
-              <Add color={"primary"}/>
-            </IconButton>
-          </Tooltip>
-          {product.isMaster
-            ? <Tooltip title={"Выбрать мастера"} aria-label={"Выбрать мастера"}>
-              <IconButton
-                className={cx({
-                  [classes.expand]: classes.expand,
-                  [classes.expandOpen]: this.state.expanded
-                })}
-                onClick={this.handleExpandClick}
-                aria-expanded={this.state.expanded}
-                aria-label="Добавить мастера"
-              >
-                <ExpandMoreIcon/>
+        {getWorkHourBool()
+          ? <CardActions className={classes.actionRoot}>
+            <Tooltip title={"Уменьшить на один"} aria-label={"Уменьшить на один"}>
+              <IconButton aria-label="Уменьшить на один" onClick={this.handleClickRemove}>
+                <Remove color={"primary"}/>
               </IconButton>
             </Tooltip>
-            : null
-          }
-          {product.isMaster && this.state.selectValue
-            ? <AddButton
-              className={classes.extendedIcon}
-              handleClickAddCart={this.handleClickAddCart}
-            />
-            : null
-          }
-          {!product.isMaster
-            ? <AddButton
-              className={classes.extendedIcon}
-              handleClickAddCart={this.handleClickAddCart}
-            />
-            : null
-          }
-        </CardActions>
+            {viewNumber
+              ? <Dialog
+                maxWidth={"xs"}
+                open={viewNumber}
+                onClose={this.handleCloseViewNumber}
+                scroll="body"
+              >
+                <DialogTitle>
+                  Введите количество
+                </DialogTitle>
+                <DialogContent>
+                  <InputNumber
+                    value={countCart}
+                    onChange={this.handleChangeCountCart}
+                    autoFocus
+                  />
+                </DialogContent>
+                <DialogActions>
+                  <Button
+                    onClick={this.handleCloseViewNumber}
+                    color={"primary"}
+                    variant="contained"
+                  >
+                    Закрыть
+                  </Button>
+                </DialogActions>
+              </Dialog>
+              : <Tooltip title={"Ввести количество"} aria-label={"Ввести количество"}>
+                <Typography
+                  variant="subtitle2"
+                  color="textSecondary"
+                  component="h3"
+                  className={classes.pointer}
+                  onClick={this.handleClickViewNumber}
+                >
+                  {countCart}
+                </Typography>
+              </Tooltip>
+            }
+            <Tooltip title={"Увеличить на один"} aria-label={"Увеличить на один"}>
+              <IconButton aria-label="Увеличить на один" onClick={this.handleClickAdd}>
+                <Add color={"primary"}/>
+              </IconButton>
+            </Tooltip>
+            {product.isMaster
+              ? <Tooltip title={"Выбрать мастера"} aria-label={"Выбрать мастера"}>
+                <IconButton
+                  className={cx({
+                    [classes.expand]: classes.expand,
+                    [classes.expandOpen]: this.state.expanded
+                  })}
+                  onClick={this.handleExpandClick}
+                  aria-expanded={this.state.expanded}
+                  aria-label="Добавить мастера"
+                >
+                  <ExpandMoreIcon/>
+                </IconButton>
+              </Tooltip>
+              : null
+            }
+            {product.isMaster && this.state.selectValue
+              ? <AddButton
+                className={classes.extendedIcon}
+                handleClickAddCart={this.handleClickAddCart}
+              />
+              : null
+            }
+            {!product.isMaster
+              ? <AddButton
+                className={classes.extendedIcon}
+                handleClickAddCart={this.handleClickAddCart}
+              />
+              : null
+            }
+          </CardActions>
+          : null
+        }
         <Collapse in={this.state.expanded} timeout="auto" component={"div"}>
           <CardContent>
             <Typography component={"h6"}>Выберите мастера:</Typography>

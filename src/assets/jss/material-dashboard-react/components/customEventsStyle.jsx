@@ -22,6 +22,9 @@ const customEventsStyle = theme => ({
   topMargin: {
     marginTop: theme.spacing.unit * 1
   },
+  topMargin2: {
+    marginTop: theme.spacing.unit * 2
+  },
   rightMargin: {
     marginRight: theme.spacing.unit * 2
   },

@@ -316,6 +316,16 @@ function* loadDayInfo() {
   const { day } = yield call(fetchLoadDay);
   if (day) {
     return yield updateState(day);
+  } else {
+    // yield put(endLoadDay({
+    //   totalDay: {},
+    //   totalOrders: [],
+    //   pay: {},
+    //   inTill: [],
+    //   outTill: [],
+    //   inTillSum: 0,
+    //   outTillSum: 0
+    // }));
   }
 }
 

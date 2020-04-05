@@ -38,6 +38,8 @@ class CustomRadioCheckBox extends Component {
 
   render() {
     const { classes, id, name, options, label, isVerifyCard, meta: { error }, disabled, radioValue } = this.props;
+    console.log(this.state.selectedValue);
+
     return (
       <GridContainer
         spacing={0}
@@ -51,6 +53,7 @@ class CustomRadioCheckBox extends Component {
           </FormLabel>
         </ItemGrid>
         {options.map((item, idx) => {
+          console.log(this.state.selectedValue === item.value);
           return (
             <ItemGrid xs={12} sm={isVerifyCard ? 4 : 2} key={idx}>
               <FormControlLabel

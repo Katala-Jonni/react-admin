@@ -24,6 +24,8 @@ import ItemGrid from "components/Grid/GridItem.jsx";
 import Progress from "components/Progress/Progress";
 import category from "./data/category";
 
+import moment from "moment/min/moment-with-locales";
+
 const styleShop = () => ({
   root: {
     flexGrow: 1

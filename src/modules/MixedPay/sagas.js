@@ -77,5 +77,5 @@ function* templateWatcher() {
 
 export default function* () {
   yield fork(templateWatcher);
-  console.log("Template saga run");
+  // console.log("Template saga run");
 }

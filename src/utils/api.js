@@ -9,5 +9,8 @@ export default {
   certificate: "/certificate",
   event: "/event",
   resource: "/resource",
-  till: "/till"
+  till: "/till",
+  master: "/master",
+  label: "/label",
+  catalog: "/catalog"
 };

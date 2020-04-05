@@ -7,9 +7,19 @@ class CustomSelectView extends Component {
   state = {};
 
   componentDidMount() {
-    const { selectEvent, defaultValue, input: { onChange } } = this.props;
+    // console.log("test");
+    const { selectEvent, defaultValue, input: { onChange }, isMaster, selectValues } = this.props;
+    if (isMaster && selectValues.value) {
+      // console.log(selectValues);
+      return onChange(selectValues.value);
+    }
     selectEvent ? onChange(defaultValue) : onChange("");
   }
+
+  // static getDerivedStateFromProps(nextProps, prevState) {
+  //   console.log(nextProps, 'CustomSelectView');
+  //   return null;
+  // }
 
   handleChange = data => {
     if (this.props.isMulti) {

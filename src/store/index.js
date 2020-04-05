@@ -13,6 +13,8 @@ import app from "../modules/Admin";
 import sun from "../modules/Sun";
 import certificate from "../modules/Certificate";
 import mixedPay from "../modules/MixedPay";
+import master from "../modules/Master";
+import catalog from "../modules/Catalog";
 import { reducer as formReducer } from "redux-form";
 
 const sagaMiddleware = createSagaMiddleware();
@@ -25,6 +27,8 @@ const mainReducer = combineReducers({
   sun,
   certificate,
   mixedPay,
+  master,
+  catalog,
   form: formReducer
 });
 

@@ -36,9 +36,14 @@ const editEvent = (events) => {
 
 /* fetch */
 const fetchData = async () => {
-  const { baseUrl, calendar } = api;
-  const res = await fetch(`${baseUrl}${calendar}`);
-  return await res.json();
+  try {
+    const { baseUrl, calendar } = api;
+    const res = await fetch(`${baseUrl}${calendar}`);
+    return await res.json();
+  } catch (e) {
+    console.log(e);
+  }
+
   // return new Promise(resolve => {
   //   setTimeout(() => resolve({
   //     totalResource,

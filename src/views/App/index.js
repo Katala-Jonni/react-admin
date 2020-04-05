@@ -9,14 +9,15 @@ import {
   loadTill
 } from "../../modules/Till";
 import { loadTotalDay } from "../../modules/Shop";
-import { getDay, loadApp } from "../../modules/Admin";
+import { getDay, loadApp, startApp, getError } from "../../modules/Admin";
 import { connect } from "react-redux";
 import { loadResource } from "../../modules/Calendar";
 import App from "./App";
 
 const mapStateFromProps = state => ({
   isDay: getDay(state),
-  administrators: getAdministrators(state)
+  administrators: getAdministrators(state),
+  isError: getError(state)
 });
 
 const mapDispatchFromProps = {
@@ -26,9 +27,10 @@ const mapDispatchFromProps = {
   // loadTotalDay,
   // loadApp,
   // addInTill,
-  loadTill
+  loadTill,
   // openTill,
-  // loadStateTill
+  // loadStateTill,
+  startApp
 };
 
 export default connect(mapStateFromProps, mapDispatchFromProps)(App);
