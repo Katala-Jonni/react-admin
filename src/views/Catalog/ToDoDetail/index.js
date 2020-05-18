@@ -4,6 +4,7 @@ import { Redirect } from "react-router-dom";
 
 import Moment from "moment";
 import ProductForm from "../../../views/Catalog/Form/ProductForm";
+import CategoryForm from "../../../views/Catalog/Form/CategoryForm";
 
 // core components
 import IconButton from "@material-ui/core/IconButton";
@@ -22,6 +23,7 @@ import {
 
 // data
 import users from "../../../modules/Master/users";
+import { getErrorMessage, getLoaderForm, startEditCategory, startEditProduct } from "../../../modules/Catalog";
 
 const ITEM_HEIGHT = 34;
 
@@ -158,76 +160,99 @@ class ToDoDetail extends React.Component {
   }
 
   handleSubmit = values => {
-    console.log(values);
-    // const { todo: { _id }, startEditMasters } = this.props;
-    // if (_id && values && startEditMasters) {
-    //   return this.props.startEditMasters({ id: _id, values });
-    // }
+    const { isCategory, startEditProduct, startEditCategory } = this.props;
+    const { todo } = this.state;
+    if (isCategory) {
+      return (startEditCategory({ values, id: todo._id }));
+    }
+    return (startEditProduct({ values, id: todo._id }));
   };
 
   render() {
-    const { onToDoUpdate, onLabelUpdate, onDeleteToDo, labels, ignoreMembers } = this.props;
+    const { onToDoUpdate, onLabelUpdate, onDeleteToDo, labels, ignoreMembers, categories, isCategory, errorMessage, loaderForm } = this.props;
     const { todo, editNote, editTitle, title, notes, message, conversation } = this.state;
     const label = labels.find((item) => item._id === todo.category);
+
     return (
       <div className="module-detail module-list">
         <div className="module-list-scroll">
           <div className="module-detail-item module-detail-header">
-            <div className="row">
-              <div className="col-sm-6 col-md-8">
-                <div className="d-flex align-items-center">
-                  <div
-                    className="user-name mr-md-4 mr-2"
-                  >
-                    <div className="d-flex align-items-center pointer">
-                      <Avatar
-                        className="mr-2"
-                        src={todo.img}
-                        alt={todo.title}
-                      />
-                      <h4 className="mb-0">{todo.title}</h4>
+            {!isCategory
+              ? <div className="row">
+                <div className="col-sm-6 col-md-8">
+                  <div className="d-flex align-items-center">
+                    <div
+                      className="user-name mr-md-4 mr-2"
+                    >
+                      <div className="d-flex align-items-center pointer">
+                        <Avatar
+                          className="mr-2"
+                          src={todo.img}
+                          alt={todo.title}
+                        />
+                        <h4 className="mb-0">{todo.title}</h4>
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
-              <div className="col-sm-6 col-md-4">
-                <div className="d-flex flex-row-reverse">
-                  <IconButton>
+                <div className="col-sm-6 col-md-4">
+                  <div className="d-flex flex-row-reverse">
+                    <IconButton>
                      <span
                        className={`border-2 size-30 rounded-circle ${todo.active ? "text-green border-green" : "text-muted border-grey w-2"}`}
                      >
                     <i className="zmdi zmdi-check"/>
                   </span>
-                  </IconButton>
+                    </IconButton>
 
 
-                  <IconButton onClick={() => {
-                    // onDeleteToDo(todo);
-                    this.props.startDeleteMaster(todo);
-                  }}>
-                    <i className="zmdi zmdi-delete"/>
-                  </IconButton>
+                    <IconButton onClick={() => {
+                      // onDeleteToDo(todo);
+                      this.props.startDeleteMaster(todo);
+                    }}>
+                      <i className="zmdi zmdi-delete"/>
+                    </IconButton>
+                  </div>
+                </div>
+              </div>
+              : null
+            }
+          </div>
+          {!isCategory
+            ? <div className="module-detail-item">
+              <div className="labels">
+                <div
+                  className={`badge text-white bg-${label.color && label.color}`}
+                >
+                  {label.value}
                 </div>
               </div>
             </div>
-          </div>
+            : null
+          }
           <div className="module-detail-item">
-            <div className="labels">
-              <div
-                className={`badge text-white bg-${label.color}`}
-              >
-                {label.value}
-              </div>
-            </div>
-          </div>
-          <div className="module-detail-item">
-            <ProductForm
-              todo={todo}
-              labels={labels}
-              onSubmit={this.handleSubmit}
-              ignoreMembers={ignoreMembers}
-              onChangeIgnor={this.onChangeIgnor}
-            />
+            {!isCategory
+              ? <ProductForm
+                todo={todo}
+                labels={labels}
+                onSubmit={this.handleSubmit}
+                errorMessage={errorMessage}
+                loaderForm={loaderForm}
+                isEdit
+                // ignoreMembers={ignoreMembers}
+                // onChangeIgnor={this.onChangeIgnor}
+              />
+              : <CategoryForm
+                todo={todo}
+                labels={labels}
+                onSubmit={this.handleSubmit}
+                errorMessage={errorMessage}
+                loaderForm={loaderForm}
+                isEdit
+                // ignoreMembers={ignoreMembers}
+                // onChangeIgnor={this.onChangeIgnor}
+              />
+            }
           </div>
         </div>
       </div>
@@ -237,10 +262,15 @@ class ToDoDetail extends React.Component {
 
 
 const mapStateFromProps = state => ({
-  ignoreMembers: getIgnoreMembers(state)
+  ignoreMembers: getIgnoreMembers(state),
+  errorMessage: getErrorMessage(state),
+  loaderForm: getLoaderForm(state)
 });
 
-const mapDispatchFromProps = { changeIgnoreMembers, deleteIgnoreMembers, startEditMasters, startDeleteMaster };
+const mapDispatchFromProps = {
+  changeIgnoreMembers, deleteIgnoreMembers, startEditMasters, startDeleteMaster, startEditProduct,
+  startEditCategory
+};
 
 export default connect(mapStateFromProps, mapDispatchFromProps)(ToDoDetail);
 

@@ -40,13 +40,19 @@ import {
   changeIgnoreCounts,
   endEditMasters,
   endPostMasters,
-  changeReset, get_all_catalog
+  changeReset,
+  get_all_catalog,
+  endEditCategory,
+  endEditProduct,
+  currentTodoNull,
+  startErrorMessage
 } from "./actions";
 
 const INIT_STATE = {
   searchTodo: "",
   alertMessage: "",
   loader: false,
+  loaderForm: false,
   showMessage: false,
   drawerState: false,
   // allToDos: toDos,
@@ -69,13 +75,23 @@ const INIT_STATE = {
   labels: [],
   services: [],
   ignoreMembers: {},
-  resetForm: false
+  resetForm: false,
+  errorMessage: null
 };
 
 
 export default (state = INIT_STATE, action) => {
   const { payload } = action;
   switch (action.type) {
+    case startErrorMessage.toString(): {
+      console.log(payload);
+      return {
+        ...state,
+        // errorMessage: payload.errorMessage,
+        // loaderForm: payload.loaderForm
+        ...payload
+      };
+    }
     case changeIgnoreMembers.toString(): {
       // if (payload.value.servicesGroup) {
       return {
@@ -121,6 +137,33 @@ export default (state = INIT_STATE, action) => {
         toDos: payload.masters,
         labels: payload.labels
         // services: payload.services
+      };
+    }
+
+    case endEditProduct.toString(): {
+      return {
+        ...state,
+        masters: payload.masters,
+        allToDos: payload.masters,
+        toDos: payload.masters,
+        labels: payload.labels,
+        currentTodo: payload.currentTodo,
+        loaderForm: payload.loaderForm,
+        errorMessage: payload.errorMessage
+      };
+    }
+
+    case endEditCategory.toString(): {
+      return {
+        ...state,
+        masters: payload.masters,
+        allToDos: payload.masters,
+        toDos: payload.labels,
+        // toDos: payload.masters,
+        labels: payload.labels,
+        currentTodo: payload.currentTodo,
+        loaderForm: payload.loaderForm,
+        errorMessage: payload.errorMessage
       };
     }
 
@@ -199,7 +242,8 @@ export default (state = INIT_STATE, action) => {
       return {
         ...state,
         currentTodo: null,
-        toDos: state.allToDos,
+        // toDos: state.allToDos,
+        toDos: state.labels,
         searchTodo: ""
       };
     }
@@ -329,20 +373,21 @@ export default (state = INIT_STATE, action) => {
       };
     }
     case on_todo_update.toString(): {
-      const toDos = state.allToDos.map(todo => {
-        if (todo.id === action.payload.id) {
-          return action.payload;
-        } else {
-          return todo;
-        }
-      });
+      console.log("test");
+      // const toDos = state.allToDos.map(todo => {
+      //   if (todo.id === action.payload.id) {
+      //     return action.payload;
+      //   } else {
+      //     return todo;
+      //   }
+      // });
       return {
         ...state,
-        alertMessage: "ToDo Updated Successfully",
-        showMessage: true,
-        currentTodo: action.payload,
-        allToDos: toDos,
-        toDos: toDos
+        alertMessage: "Успешно добавлено!",
+        showMessage: true
+        // currentTodo: action.payload,
+        // allToDos: toDos,
+        // toDos: toDos
       };
     }
     case on_delete_todo.toString(): {
@@ -407,14 +452,21 @@ export default (state = INIT_STATE, action) => {
     }
 
     case search_todo.toString(): {
-      if (action.payload === "") {
-        return { ...state, toDos: [...state.allToDos] };
+      const { searchText, isCatalog } = action.payload;
+      if (searchText === "") {
+        return { ...state, toDos: isCatalog ? [...state.labels] : [...state.allToDos] };
       } else {
-        const searchToDos = state.allToDos.filter((todo) => {
-          const { surname, name, middleName, value } = todo;
-          const fullName = `${surname} ${name} ${middleName}`;
-          return fullName.toLowerCase().indexOf(action.payload.toLowerCase()) > -1;
+        let searchToDos = state.allToDos.filter((todo) => {
+          const { title } = todo;
+          return title.toLowerCase().indexOf(searchText.toLowerCase()) > -1;
         });
+        if (isCatalog) {
+          searchToDos = state.labels.filter((todo) => {
+            const { value } = todo;
+            return value.toLowerCase().indexOf(searchText.toLowerCase()) > -1;
+          });
+        }
+
         // !todo.deleted && todo.title.toLowerCase().indexOf(action.payload.toLowerCase()) > -1);
         return { ...state, toDos: searchToDos };
       }
@@ -479,6 +531,12 @@ export default (state = INIT_STATE, action) => {
         toDos: action.payload
       };
     }
+    case currentTodoNull.toString(): {
+      return {
+        ...state,
+        currentTodo: null
+      };
+    }
     case update_search.toString(): {
       return { ...state, searchTodo: action.payload };
     }
@@ -486,7 +544,15 @@ export default (state = INIT_STATE, action) => {
       return { ...state, drawerState: !state.drawerState };
     }
     case handle_request_close.toString(): {
-      return { ...state, showMessage: false, addTodo: false, labelMenuState: false, optionMenuState: false };
+      return {
+        ...state,
+        showMessage: false,
+        addTodo: false,
+        labelMenuState: false,
+        optionMenuState: false,
+        alertMessage: "",
+        loaderForm: false
+      };
     }
     case on_hide_loader.toString(): {
       return { ...state, loader: false };

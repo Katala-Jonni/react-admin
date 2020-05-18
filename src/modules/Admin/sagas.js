@@ -18,6 +18,7 @@ const fetchDay = async () => {
   //     error: true
   //   };
   // }
+  // console.log("test");
   return new Promise((resolve, reject) => {
     let timer = null;
     timer = setTimeout(async () => {

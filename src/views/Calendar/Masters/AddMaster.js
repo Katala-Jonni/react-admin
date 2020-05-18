@@ -83,7 +83,7 @@ class AddMaster extends React.Component {
 
   getTitleOptions = () => this.props.resource.map(item => item.resourceTitle && item.resourceTitle);
 
-  getOptions = () => this.props.masters.filter(item => !this.getTitleOptions().includes(item.value));
+  getOptions = () => this.props.masters && this.props.masters.filter(item => !this.getTitleOptions().includes(item.value));
 
   getStartOptions = () => {
     return this.props.masters.filter(item => {

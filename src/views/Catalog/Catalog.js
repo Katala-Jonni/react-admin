@@ -22,7 +22,7 @@ import Dialog from "@material-ui/core/Dialog";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import DialogContent from "@material-ui/core/DialogContent";
 
-// import CatalogComponent from "./CatalogComponent";
+import CatalogComponent from "./CatalogComponent";
 
 import customEventsStyle from "../../assets/jss/material-dashboard-react/components/customEventsStyle";
 
@@ -41,12 +41,22 @@ import labels from "../../modules/Master/labels";
 import options from "../../modules/Master/options";
 import { set_current_todo_null } from "../../modules/Master/actions";
 import { endRemoveDay } from "../../modules/Shop/actions";
+import CategoryForm from "./Form/CategoryForm";
+import ProductForm from "./Form/ProductForm";
+import { startSendCategory, startSendProduct } from "../../modules/Catalog";
+import { on_todo_update } from "../../modules/Catalog/actions";
+// import CatalogComponent from "./CatalogComponent";
 
 const ITEM_HEIGHT = 34;
 
 class Masters extends Component {
   state = {
-    isCatalog: false
+    isCatalog: false,
+    width: 1200,
+    anchorEl: null,
+    newProduct: false,
+    newCategory: false,
+    searchText: ""
   };
   onSortEnd = ({ oldIndex, newIndex }) => {
     this.props.on_sortend({ oldIndex, newIndex });
@@ -120,40 +130,34 @@ class Masters extends Component {
       this.props.get_unselected_all_todo();
     }
   };
-
   onTodoAdd = (data) => {
     this.props.on_todo_add(data);
   };
-
   onTodoSelect = (todo) => {
     this.props.on_todo_select(todo);
     setTimeout(() => {
       this.props.on_hide_loader();
     }, 1500);
   };
-
   removeLabel = (todo, label) => {
     todo.labels.splice(todo.labels.indexOf(label), 1);
     return todo.labels;
   };
-
   addLabel = (todo, label) => {
     todo.labels = todo.labels.concat(label);
     return todo.labels;
   };
-
   onToggleDrawer = () => {
     this.props.on_toggle_drawer();
 
   };
   onSearchTodo = (searchText) => {
-    this.props.search_todo(searchText);
+    this.props.search_todo({ searchText, isCatalog: this.state.isCatalog });
   };
   updateSearch = (evt) => {
     this.props.update_search(evt.target.value);
     this.onSearchTodo(evt.target.value);
   };
-
   getNavFilters = () => {
     return filters.map((filter, index) =>
       <li key={index} onClick={() => {
@@ -170,29 +174,30 @@ class Masters extends Component {
       </li>
     );
   };
-
   getNavLabels = () => {
-    // return labels.map((label, index) =>
-    // console.log(this.props.labels);
-    // console.log(this.props.categories);
-    // console.log(labels);
-    return this.props.labels.map((label, index) =>
-      <li
-        key={index}
-        onClick={() => {
-          this.props.get_nav_labels(label);
-          setTimeout(() => {
-            this.props.on_hide_loader();
-          }, 500);
-        }
-        }>
-        <a href="javascript:void(0)">
-          <i
-            className={`zmdi zmdi-label-alt text-${label.color}`}
-          />
-          <span>{label.value}</span>
-        </a>
-      </li>
+    return this.props.labels.map((label, index) => {
+        return (
+          <li
+            key={index}
+            onClick={() => {
+              this.setState({
+                isCatalog: false
+              });
+              this.props.get_nav_labels(label);
+              setTimeout(() => {
+                this.props.on_hide_loader();
+              }, 500);
+            }
+            }>
+            <a href="javascript:void(0)">
+              <i
+                className={`zmdi zmdi-label-alt text-${label.color}`}
+              />
+              <span>{label.value}</span>
+            </a>
+          </li>
+        );
+      }
     );
     // return this.props.labels.map((label, index) =>
     //   <li
@@ -213,7 +218,6 @@ class Masters extends Component {
     //   </li>
     // );
   };
-
   ToDoSideBar = () => {
     const { headerTitle, buttonAddProduct, buttonAddCatalog, filterTextAll, sectionFilterText, sectionLabelText, currentTodo, classes } = this.props;
     const { isCatalog } = this.state;
@@ -234,7 +238,7 @@ class Masters extends Component {
                   color="primary"
                   className="btn btn-primary btn-block"
                   onClick={() => {
-                    this.setState({ newMaster: true });
+                    this.setState({ newCategory: true });
                   }}
                   // onClick={this.handleClickCatalog}
                 >
@@ -245,7 +249,7 @@ class Masters extends Component {
                   color="primary"
                   className="btn btn-primary btn-block"
                   onClick={() => {
-                    this.setState({ newMaster: true });
+                    this.setState({ newProduct: true });
                   }}
                   // onClick={this.handleClickServices}
                 >
@@ -258,6 +262,9 @@ class Masters extends Component {
 
           <ul className="module-nav">
             <li onClick={() => {
+              this.setState({
+                isCatalog: false
+              });
               this.props.get_all_todo();
             }
             }>
@@ -284,13 +291,36 @@ class Masters extends Component {
       </div>
     </div>;
   };
-
-  showToDos = ({ currentTodo, toDos, conversation, user, masters, loadLabel, labels }) => {
-    // if (this.state.isCatalog) {
-    //   return (
-    //     <CatalogComponent/>
-    //   );
-    // }
+  showToDos = ({ currentTodo, toDos, conversation, user, masters, loadLabel, labels, categories }) => {
+    if (this.state.isCatalog) {
+      return (
+        currentTodo === null ?
+          <ToDoList
+            toDos={toDos || []}
+            // toDos={categories || []}
+            // toDos={masters}
+            labels={labels}
+            onSortEnd={this.onSortEnd}
+            onTodoSelect={this.onTodoSelect.bind(this)}
+            onTodoChecked={this.onTodoChecked.bind(this)}
+            useDragHandle={true}
+            categories={categories}
+            isCategory
+          />
+          : <ToDoDetail
+            todo={currentTodo}
+            user={user}
+            labels={labels}
+            loadLabel={loadLabel}
+            conversation={conversation}
+            onLabelUpdate={this.onLabelUpdate.bind(this)}
+            onToDoUpdate={this.onToDoUpdate.bind(this)}
+            onDeleteToDo={this.onDeleteToDo.bind(this)}
+            categories={categories}
+            isCategory
+          />
+      );
+    }
     return currentTodo === null ?
       <ToDoList
         toDos={toDos || []}
@@ -312,7 +342,6 @@ class Masters extends Component {
         onDeleteToDo={this.onDeleteToDo.bind(this)}
       />;
   };
-
   onChangeIgnor = () => {
     const { todo, changeIgnoreMembers } = this.props;
     // let keys = ["null"];
@@ -340,22 +369,29 @@ class Masters extends Component {
       });
     }
   };
-
   handleSubmit = values => {
-    // console.log(values);
-    console.log(this.props);
-    // console.log(this.props.form);
-    const { startMasters } = this.props;
-    this.setState({
-      newMaster: false
-    });
-    return startMasters({ values });
+    const { startSendCategory, startSendProduct, on_todo_update } = this.props;
+    const { isCatalog } = this.state;
+    isCatalog ? startSendCategory({ values }) : startSendProduct({ values });
+    // return isCatalog ? this.handleClickCanceledCategory() : this.handleClickCanceledProduct();
   };
 
-  handleClickCanceled = () => {
+  handleClickCanceledProduct = () => {
+    const { startErrorMessage } = this.props;
     this.setState({
-      newMaster: false
+      newProduct: false,
+      newCategory: false
     });
+    return startErrorMessage({ errorMessage: null, loaderForm: false });
+  };
+
+  handleClickCanceledCategory = () => {
+    const { startErrorMessage } = this.props;
+    this.setState({
+      newCategory: false,
+      newProduct: false
+    });
+    return startErrorMessage({ errorMessage: null, loaderForm: false });
   };
 
   handleClickVewCatalog = () => {
@@ -364,7 +400,6 @@ class Masters extends Component {
     });
     return this.props.get_all_catalog();
   };
-
   handleClickVewServices = () => {
     this.setState({
       isCatalog: false
@@ -376,14 +411,15 @@ class Masters extends Component {
   //
   // handleClickCatalog = () => this.props.get_all_catalog();
 
-  constructor() {
-    super();
-    this.state = {
-      width: 1200,
-      anchorEl: null,
-      newMaster: false
-    };
-  }
+  // constructor() {
+  //   super();
+  //   this.state = {
+  //     width: 1200,
+  //     anchorEl: null,
+  //     newProduct: false
+  //   };
+  // }
+
 
   componentDidMount() {
     this.props.loadMaster();
@@ -485,13 +521,14 @@ class Masters extends Component {
   }
 
   render() {
-    const { categories, products, classes, todo, descriptionButtonCatalog, descriptionButtonServices, ignoreMembers, buttonTotalServicesText, buttonTotalCatalogText, selectedToDos, descriptionButton, loader, currentTodo, toDos, conversation, user, alertMessage, showMessage, SearchBoxPlaceholder } = this.props;
+    const { categories, products, classes, todo, descriptionButtonCatalog, descriptionButtonServices, ignoreMembers, buttonTotalServicesText, buttonTotalCatalogText, selectedToDos, descriptionButton, loader, currentTodo, toDos, conversation, user, alertMessage, showMessage, SearchBoxPlaceholder, errorMessage, loaderForm, SearchBoxCategory } = this.props;
     const { isCatalog } = this.state;
-    if (!categories.length && !products.length) {
+    if (!categories && !products) {
       return (
         <Progress/>
       );
     }
+
     return (
       <div className="app-wrapper">
         <div className="animated slideInUpTiny animation-duration-3">
@@ -519,7 +556,7 @@ class Masters extends Component {
                   <i className="zmdi zmdi-menu"/>
                 </IconButton>
                 <SearchBox
-                  placeholder={SearchBoxPlaceholder}
+                  placeholder={!isCatalog ? SearchBoxPlaceholder : SearchBoxCategory}
                   value={this.props.searchTodo}
                   onChange={this.updateSearch.bind(this)}
                 />
@@ -548,9 +585,10 @@ class Masters extends Component {
                   : <div className="module-box-topbar">
                     <IconButton
                       onClick={() => {
-                        this.props.set_current_todo_null(this.props.products);
+                        // this.props.set_current_todo_null(isCatalog ? categories : products);
                         // this.props.set_current_todo_null(this.props.masters);
-                        this.props.loadMaster();
+                        this.props.currentTodoNull();
+                        // this.props.loadMaster();
                         // destroy(this.props.form);
                         console.log(this.props, "set_current_todo_null");
                       }}>
@@ -619,9 +657,6 @@ class Masters extends Component {
             open={showMessage}
             autoHideDuration={3000}
             onClose={this.handleRequestClose}
-            SnackbarContentProps={{
-              "aria-describedby": "message-id"
-            }}
             message={<span id="message-id">{alertMessage}</span>}
           />
         </div>
@@ -629,15 +664,34 @@ class Masters extends Component {
           maxWidth="sm"
           scroll="body"
           aria-labelledby="max-width-dialog-title"
-          open={this.state.newMaster}
+          open={this.state.newProduct || this.state.newCategory}
         >
           <DialogTitle id="max-width-dialog-title">
             {isCatalog ? descriptionButtonCatalog : descriptionButtonServices}
           </DialogTitle>
           <DialogContent>
             {isCatalog
-              ? <p>Каталог</p>
-              : <p>Услуги/товары</p>
+              ? <CategoryForm
+                todo={{}}
+                // labels={labels}
+                onSubmit={this.handleSubmit}
+                errorMessage={errorMessage}
+                loaderForm={loaderForm}
+                // ignoreMembers={ignoreMembers}
+                // onChangeIgnor={this.onChangeIgnor}
+                handleClickCanceled={this.handleClickCanceledCategory}
+              />
+              : <ProductForm
+                todo={{}}
+                labels={categories}
+                errorMessage={errorMessage}
+                loaderForm={loaderForm}
+                // labels={labels}
+                onSubmit={this.handleSubmit}
+                // ignoreMembers={ignoreMembers}
+                // onChangeIgnor={this.onChangeIgnor}
+                handleClickCanceled={this.handleClickCanceledProduct}
+              />
             }
 
             {/*<AddEventsForm*/}
@@ -653,21 +707,23 @@ class Masters extends Component {
 
 Masters.defaultProps = {
   SearchBoxPlaceholder: "Введите услугу/товар",
+  SearchBoxCategory: "Введите название категории",
   headerTitle: "Редактирование",
-  buttonAddCatalog: "Добавить раздел",
+  buttonAddCatalog: "Добавить категорию",
   buttonAddProduct: "Добавить услугу/товар",
-  descriptionButtonCatalog: "Добавить раздел",
+  descriptionButtonCatalog: "Добавить категорию",
   descriptionButtonServices: "Добавить услугу/товар",
   filterTextAll: "Весь каталог",
   sectionFilterText: "Фильтры",
   sectionLabelText: "Фильтры",
   buttonTotalServicesText: "Все услуги/товары",
-  buttonTotalCatalogText: "Разделы каталога"
+  buttonTotalCatalogText: "Категории"
 };
 
 Masters.propTypes = {
   classes: PropTypes.object,
   SearchBoxPlaceholder: PropTypes.string,
+  SearchBoxCategory: PropTypes.string,
   headerTitle: PropTypes.string,
   buttonAddCatalog: PropTypes.string,
   buttonAddProduct: PropTypes.string,

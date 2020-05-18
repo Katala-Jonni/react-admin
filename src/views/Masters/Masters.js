@@ -26,6 +26,8 @@ import ToDoDetail from "components/todo/ToDoDetail";
 import SearchBox from "components/SearchBox";
 import MasterForm from "views/Masters/Form";
 
+import Progress from "components/Progress/Progress";
+
 // @material-ui/icons
 
 // data
@@ -437,6 +439,16 @@ class Masters extends Component {
   render() {
     const { todo, ignoreMembers, selectedToDos, loader, currentTodo, toDos, conversation, user, alertMessage, showMessage, SearchBoxPlaceholder } = this.props;
     console.log(this.state.newMaster);
+
+    console.log(todo);
+
+    if (!toDos.length) {
+      return (
+        <Progress/>
+      );
+    }
+
+
     return (
       <div className="app-wrapper">
         <div className="animated slideInUpTiny animation-duration-3">

@@ -12,5 +12,7 @@ export default {
   till: "/till",
   master: "/master",
   label: "/label",
-  catalog: "/catalog"
+  catalog: "/catalog",
+  category: "/category",
+  product: "/product"
 };

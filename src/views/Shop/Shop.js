@@ -171,7 +171,8 @@ class Shop extends Component {
     const { classes, totalCart, isSubmit, categories } = this.props;
     const { viewCart, openViewCart, fullScreen } = this.state;
     const data = this.getSortData();
-
+    console.log(data);
+    console.log(categories);
     return (
       <div className={classes.root}>
         {data && data.length
@@ -226,11 +227,14 @@ class Shop extends Component {
                   close
                 />
               </ItemGrid>
-              <Grid item xs={viewCart || totalCart.length ? 11 : 12}>
-                <Search
-                  handleChange={this.handleChangeInputSearch}
-                />
-              </Grid>
+              {categories.length
+                ? <Grid item xs={viewCart || totalCart.length ? 11 : 12}>
+                  <Search
+                    handleChange={this.handleChangeInputSearch}
+                  />
+                </Grid>
+                : null
+              }
               {viewCart || totalCart.length
                 ? <Grid item xs={1}>
                   <Badge className={classes.margin} badgeContent={totalCart.length} color="secondary">
@@ -243,24 +247,29 @@ class Shop extends Component {
                 </Grid>
                 : null
               }
-              <Grid item xs={12} md={3} lg={3} xl={2}>
-                <Category
-                  handleChange={this.handleChangeCategory}
-                  categories={categories}
-                />
-              </Grid>
-              <Grid item xs={12} md={9} lg={9} xl={10} container spacing={16}>
-                {this.getSortData().map(el => {
-                  return (
-                    <Grid item xs={12} sm={6} md={6} lg={4} xl={2} key={el._id}>
-                      <Card
-                        product={el}
-                        changeViewCart={this.changeViewCart}
-                      />
-                    </Grid>
-                  );
-                })}
-              </Grid>
+              {categories.length
+                ? <Fragment>
+                  <Grid item xs={12} md={3} lg={3} xl={2}>
+                    <Category
+                      handleChange={this.handleChangeCategory}
+                      categories={categories}
+                    />
+                  </Grid>
+                  <Grid item xs={12} md={9} lg={9} xl={10} container spacing={16}>
+                    {this.getSortData().map(el => {
+                      return (
+                        <Grid item xs={12} sm={6} md={6} lg={4} xl={2} key={el._id}>
+                          <Card
+                            product={el}
+                            changeViewCart={this.changeViewCart}
+                          />
+                        </Grid>
+                      );
+                    })}
+                  </Grid>
+                </Fragment>
+                : <h2>Здесь ничего нет =)))</h2>
+              }
             </GridContainer>
           </Fragment>
           : <Progress/>

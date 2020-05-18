@@ -3,12 +3,23 @@ import { fork, takeLatest, put, call } from "redux-saga/effects";
 import api from "../../utils/api";
 import { destroy } from "redux-form";
 import {
-  changeIgnoreCounts, changeReset, endEditMasters,
+  changeIgnoreCounts,
+  changeReset,
+  endEditMasters,
   endLoadLabel,
-  endLoadMaster, endPostMasters,
+  endLoadMaster,
+  endPostMasters,
   loadLabel,
   loadMaster,
-  reduxFormMasterChange, reduxResetForm, set_current_todo_null, startDeleteMaster, startEditMasters, startMasters
+  reduxFormMasterChange,
+  reduxResetForm,
+  set_current_todo_null,
+  startDeleteMaster, startEditCategory,
+  startEditMasters,
+  startEditProduct,
+  startMasters,
+  endEditCategory,
+  endEditProduct, startSendCategory, startSendProduct, startErrorMessage
 } from "./actions";
 import { editMasters } from "../Calendar";
 import { loadView } from "../Shop";
@@ -90,6 +101,53 @@ const fetchPost = async ({ body }) => {
   }
 };
 
+const fetchChangeCatalog = async (id, body, isProduct = true) => {
+  const { baseUrl, catalog } = api;
+  const res = await fetch(`${baseUrl}${catalog}/${isProduct ? "product" : "category"}/${id}`,
+    {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json;charset=utf-8"
+      },
+      body: JSON.stringify(body)
+    });
+  return await res.json();
+};
+
+const fetchPostCategory = async (body) => {
+  try {
+    const { baseUrl, catalog, category } = api;
+    const res = await fetch(`${baseUrl}${catalog}${category}`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json;charset=utf-8"
+      },
+      body: JSON.stringify(body)
+    });
+    return await res.json();
+  } catch (e) {
+    return console.log(e);
+  }
+};
+
+const fetchPostProduct = async (body) => {
+  try {
+    const { baseUrl, catalog, product } = api;
+    const res = await fetch(`${baseUrl}${catalog}${product}`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json;charset=utf-8"
+      },
+      body: JSON.stringify(body)
+    });
+    return await res.json();
+  } catch (e) {
+    return console.log(e);
+  }
+};
+
+console.log("-------------");
+
 function* loadMasterResource() {
   const res = yield call(fetchViewShop);
   const { categories, products } = res;
@@ -163,6 +221,91 @@ function* deleteMasters(action) {
   // yield put(set_current_todo_null(masters));
 }
 
+function* editProduct(action) {
+  const { payload: { id, values } } = action;
+  // изменение продукта/услуги
+  const res = yield call(fetchChangeCatalog, id, values);
+  if (res.message === "error" && res.errorMessage) {
+    console.log(res, "res");
+    return yield put(startErrorMessage({ errorMessage: res.errorMessage, loaderForm: false }));
+  }
+  const { categories, products, currentTodo } = res;
+  yield put(endLoadView({ categories, products }));
+  return yield put(endEditProduct({
+    masters: products,
+    labels: categories,
+    currentTodo,
+    loaderForm: true,
+    errorMessage: null
+  }));
+}
+
+function* editCategory(action) {
+  const { payload: { id, values } } = action;
+  // изменение категории
+  const res = yield call(fetchChangeCatalog, id, values, false);
+  if (res.message === "error" && res.errorMessage) {
+    return yield put(startErrorMessage({ errorMessage: res.errorMessage, loaderForm: false }));
+  }
+  const { categories, products, currentTodo } = res;
+  yield put(endLoadView({ categories, products }));
+  return yield put(endEditCategory({
+    masters: products,
+    labels: categories,
+    currentTodo,
+    loaderForm: true,
+    errorMessage: null
+  }));
+}
+
+function* sendCategory(action) {
+  const { payload: { values } } = action;
+  // добавление категории
+  const res = yield call(fetchPostCategory, values);
+  if (res.message === "error" && res.errorMessage) {
+    return yield put(startErrorMessage({ errorMessage: res.errorMessage, loaderForm: false }));
+  }
+  const { categories, products } = res;
+  yield put(endLoadView({ categories, products }));
+  return yield put(endEditCategory({
+    masters: products,
+    labels: categories,
+    currentTodo: null,
+    loaderForm: true,
+    errorMessage: null
+  }));
+  // изменение категории
+  // const res = yield call(fetchChangeCatalog, id, values, false);
+  // const { categories, products, currentTodo } = res;
+  // yield put(endLoadView({ categories, products }));
+  // return yield put(endEditCategory({ masters: products, labels: categories, currentTodo }));
+}
+
+function* sendProduct(action) {
+  const { payload: { values } } = action;
+  // добавление товара/услуги
+  const res = yield call(fetchPostProduct, values);
+  if (res.message === "error" && res.errorMessage) {
+    console.log(res, "res");
+    return yield put(startErrorMessage({ errorMessage: res.errorMessage, loaderForm: false }));
+  }
+  const { categories, products } = res;
+  yield put(endLoadView({ categories, products }));
+  return yield put(endEditProduct({
+    masters: products,
+    labels: categories,
+    currentTodo: null,
+    loaderForm: true,
+    errorMessage: null
+  }));
+
+  // изменение категории
+  // const res = yield call(fetchChangeCatalog, id, values, false);
+  // const { categories, products, currentTodo } = res;
+  // yield put(endLoadView({ categories, products }));
+  // return yield put(endEditCategory({ masters: products, labels: categories, currentTodo }));
+}
+
 function* masterWatcher() {
   yield takeLatest(loadMaster, loadMasterResource);
   yield takeLatest(loadLabel, loadLabelResource);
@@ -171,6 +314,11 @@ function* masterWatcher() {
   yield takeLatest(startEditMasters, editMastersState);
   yield takeLatest(startMasters, startMastersState);
   yield takeLatest(startDeleteMaster, deleteMasters);
+
+  yield takeLatest(startEditProduct, editProduct);
+  yield takeLatest(startEditCategory, editCategory);
+  yield takeLatest(startSendCategory, sendCategory);
+  yield takeLatest(startSendProduct, sendProduct);
 }
 
 export default function* () {

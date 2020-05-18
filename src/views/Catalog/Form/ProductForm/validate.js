@@ -53,10 +53,14 @@ const verifyLength = (value, lth) => {
 
 const validate = values => {
   const errors = {};
-  const { title, icon, img, price } = values;
+  const { title, icon, img, price, category } = values;
   // const { surname, name, middleName, phone, members, labels } = values;
   if (!title) {
     errors.title = "Обязательное поле";
+  }
+
+  if (!category) {
+    errors.category = "Выберите категорию";
   }
 
   if (title && !verifyLength(title, 2)) {

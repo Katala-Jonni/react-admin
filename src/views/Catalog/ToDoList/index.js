@@ -2,7 +2,7 @@ import React from "react";
 import { SortableContainer } from "react-sortable-hoc";
 import ToDoItem from "./ToDoItem";
 
-const ToDoList = SortableContainer(({ toDos, onTodoSelect, onTodoChecked, labels }) => {
+const ToDoList = SortableContainer(({ toDos, onTodoSelect, onTodoChecked, labels, categories, isCategory }) => {
   return (
     <div className="module-list">
       <div className="module-list-scroll">
@@ -16,6 +16,8 @@ const ToDoList = SortableContainer(({ toDos, onTodoSelect, onTodoChecked, labels
                 todo={todo}
                 onTodoSelect={onTodoSelect}
                 onTodoChecked={onTodoChecked}
+                categories={categories || []}
+                isCategory={isCategory}
               />
             );
           }

@@ -49,7 +49,14 @@ import {
   deleteState,
   getServices,
   deleteIgnoreMembers,
-  changeIgnoreMembers, getIgnoreMembers, startMasters, get_all_catalog
+  changeIgnoreMembers,
+  getIgnoreMembers,
+  startMasters,
+  get_all_catalog,
+  startSendCategory,
+  startSendProduct,
+  currentTodoNull,
+  getErrorMessage, getLoaderForm, startErrorMessage
 } from "../../modules/Catalog";
 import { editMasters, getMasters } from "../../modules/Calendar";
 import { getCategory, getProducts, loadView } from "../../modules/Shop";
@@ -76,7 +83,9 @@ const mapStateFromProps = state => ({
   ignoreMembers: getIgnoreMembers(state),
   categories: getCategory(state),
   products: getProducts(state),
-  form: state.form
+  form: state.form,
+  errorMessage: getErrorMessage(state),
+  loaderForm: getLoaderForm(state)
 });
 
 const mapDispatchFromProps = {
@@ -114,7 +123,11 @@ const mapDispatchFromProps = {
   editMasters,
   loadView,
   endRemoveDay,
-  get_all_catalog
+  get_all_catalog,
+  startSendCategory,
+  startSendProduct,
+  currentTodoNull,
+  startErrorMessage
 };
 
 export default connect(mapStateFromProps, mapDispatchFromProps)(Catalog);

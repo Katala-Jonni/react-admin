@@ -10,7 +10,6 @@ class CustomSelectView extends Component {
     // console.log("test");
     const { selectEvent, defaultValue, input: { onChange }, isMaster, selectValues } = this.props;
     if (isMaster && selectValues.value) {
-      // console.log(selectValues);
       return onChange(selectValues.value);
     }
     selectEvent ? onChange(defaultValue) : onChange("");

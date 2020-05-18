@@ -21,6 +21,9 @@ function Snackbar({ ...props }) {
     open,
     rtlActive
   } = props;
+  console.log(color);
+  console.log(classes[color]);
+
   var action = [];
   const messageClasses = classNames({
     [classes.iconMessage]: icon !== undefined
@@ -34,7 +37,7 @@ function Snackbar({ ...props }) {
         color="inherit"
         onClick={() => props.closeNotification()}
       >
-        <Close className={classes.close} />
+        <Close className={classes.close}/>
       </IconButton>
     ];
   }
@@ -52,11 +55,12 @@ function Snackbar({ ...props }) {
       open={open}
       message={
         <div>
-          {icon !== undefined ? <props.icon className={classes.icon} /> : null}
+          {icon !== undefined ? <props.icon className={classes.icon}/> : null}
           <span className={messageClasses}>{message}</span>
         </div>
       }
       action={action}
+      severity="success"
       ContentProps={{
         classes: {
           root: classes.root + " " + classes[color],

@@ -25,6 +25,15 @@ class ProductForm extends Component {
     isMember: false
   };
 
+  static getDerivedStateFromProps(nextProps) {
+    const { errorMessage, loaderForm, handleClickCanceled, on_todo_update } = nextProps;
+    if (loaderForm && !errorMessage) {
+      handleClickCanceled && handleClickCanceled();
+      on_todo_update();
+    }
+    return null;
+  }
+
   componentDidMount() {
     const formKey = Object.keys(this.state.form);
     const form = formKey.reduce((start, item) => {
@@ -67,6 +76,8 @@ class ProductForm extends Component {
     if (this.props.resetForm) {
       return [];
     }
+
+    // console.log(this.props.labels);
     return this.props.labels
       .reduce((start, item) => {
         start.push({
@@ -85,10 +96,10 @@ class ProductForm extends Component {
   };
 
   getDefaultSelectOption = () => {
-    const { labels } = this.props;
-    if (labels && labels.length) {
+    const { labels, todo } = this.props;
+    if (labels && labels.length && todo.category) {
       const label = this.getCategory();
-      return this.getOptions().filter(item => label.value === item.value);
+      return this.getOptions().filter(item => label.value === item.value) || {};
     }
   };
 
@@ -121,14 +132,18 @@ class ProductForm extends Component {
       pristine,
       submitting,
       classes,
-      valid
+      valid,
+      isEdit,
+      currentTodoNull,
+      products
     } = this.props;
     const { form: { labels, active, isMaster } } = this.state;
-    const { ignoreMembers, handleClickCanceled, isNew, todo } = this.props;
+    const { ignoreMembers, handleClickCanceled, isNew, todo, errorMessage } = this.props;
     let keys = [];
     if (ignoreMembers) {
       keys = Object.keys(ignoreMembers);
     }
+
     return (
       <form onSubmit={handleSubmit}>
         <Field
@@ -167,36 +182,43 @@ class ProductForm extends Component {
           initialSelectValue={`${todo.price}`}
           component={CustomInputView}
         />
+        {isEdit
+          ? <Field
+            classes={classes}
+            name="active"
+            id="active"
+            component={(props) => {
+              return (
+                <FormControlLabel
+                  control={
+                    <Switch
+                      value="checkedC"
+                      checked={active}
+                      name={props.input.name}
+                      onChange={props.input.onChange}
+                    />
+                  }
+                  label="Активно?"/>
+              );
+            }}
+            onChange={this.handleChangeActive}
+          />
+          : null
+        }
+
         <Field
-          classes={classes}
-          name="active"
-          id="active"
-          component={(props) => {
-            return (
-              <FormControlLabel
-                control={
-                  <Switch
-                    value="checkedC"
-                    checked={active}
-                    name={props.input.name}
-                    onChange={props.input.onChange}
-                  />
-                }
-                label="Активно?"/>
-            );
-          }}
-          onChange={this.handleChangeActive}
-        />
-        <Field
+          selectEvent
           name="category"
-          // classes={classes}
+          classes={classes}
           id="category"
           // menuIsOpen
           // isMulti
           label='Выберите категорию'
           options={this.getOptions()}
           height={150}
-          selectValues={labels}
+          // selectValues={labels}
+          defaultValue={!isEdit ? undefined : labels[0] || this.getDefaultSelectOption()[0]}
+          // isMaster={isEdit}
           component={CustomSelectView}
           onChange={this.handleChangeType}
         />
@@ -221,6 +243,13 @@ class ProductForm extends Component {
           }}
           onChange={this.handleChangeIsMaster}
         />
+
+        {errorMessage
+          ? <div className="alert alert-danger" role="alert">
+            {errorMessage}
+          </div>
+          : null
+        }
 
         <div>
           <Button
@@ -254,7 +283,7 @@ class ProductForm extends Component {
             color='primary'
             variant="contained"
             className={classes.indent}
-            onClick={handleClickCanceled}
+            onClick={isEdit ? () => currentTodoNull() : handleClickCanceled}
           >
             {/*{btnAdd}*/}
             Отмена
