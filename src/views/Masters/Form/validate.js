@@ -43,7 +43,7 @@ const verifyLength = (value, lth) => {
 
 const validate = values => {
   const errors = {};
-  const { surname, name, middleName, phone, members, labels } = values;
+  const { surname, name, middleName, phone, members, labels, defaultPercent } = values;
   if (!surname) {
     errors.surname = "Обязательное поле";
   }
@@ -97,6 +97,14 @@ const validate = values => {
 
   if (phone && !verifyNumber(phone)) {
     errors.phone = "Номер телефона состоит только из цифр";
+  }
+
+  if (!defaultPercent) {
+    errors.defaultPercent = "Обязательное поле";
+  }
+
+  if (defaultPercent && !verifyNumber(defaultPercent)) {
+    errors.defaultPercent = "Состоит только из цифр";
   }
   // if (!members || !members.length) {
   //   errors.members = "Нет данных о записи";

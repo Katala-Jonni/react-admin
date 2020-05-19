@@ -25,6 +25,15 @@ class MasterForm extends Component {
     isMember: false
   };
 
+  static getDerivedStateFromProps(nextProps) {
+    const { errorMessage, loaderForm, handleClickCanceled, on_todo_update } = nextProps;
+    if (loaderForm && !errorMessage) {
+      handleClickCanceled && handleClickCanceled();
+      on_todo_update();
+    }
+    return null;
+  }
+
   componentDidMount() {
     const formKey = Object.keys(this.state.form);
     const form = formKey.reduce((start, item) => {
@@ -117,8 +126,7 @@ class MasterForm extends Component {
       // btnCanceled
     } = this.props;
     const { form: { surname, name, middleName, phone, defaultPercent, labels, active } } = this.state;
-    const { ignoreMembers, handleClickCanceled, isNew } = this.props;
-    console.log(ignoreMembers);
+    const { ignoreMembers, handleClickCanceled, isNew, isStart, errorMessage } = this.props;
     let keys = [];
     if (ignoreMembers) {
       keys = Object.keys(ignoreMembers);
@@ -177,29 +185,33 @@ class MasterForm extends Component {
           // onChange={this.handleChange}
           component={CustomInputView}
         />
-        <Field
-          classes={classes}
-          name="active"
-          id="active"
-          component={(props) => {
-            return (
-              <FormControlLabel
-                control={
-                  <Switch
-                    value="checkedC"
-                    checked={active}
-                    name={props.input.name}
-                    label='Действующий мастер?'
-                    onChange={props.input.onChange}
-                  />
-                }
-                label="Активный мастер?"/>
-            );
-          }}
-          // component={SwitchComponent}
-          // component={CustomRadioCheckBox}
-          onChange={this.handleChangeActive}
-        />
+        {!isStart
+          ? <Field
+            classes={classes}
+            name="active"
+            id="active"
+            component={(props) => {
+              return (
+                <FormControlLabel
+                  control={
+                    <Switch
+                      value="checkedC"
+                      checked={active}
+                      name={props.input.name}
+                      label='Действующий мастер?'
+                      onChange={props.input.onChange}
+                    />
+                  }
+                  label="Активный мастер?"/>
+              );
+            }}
+            // component={SwitchComponent}
+            // component={CustomRadioCheckBox}
+            onChange={this.handleChangeActive}
+          />
+          : null
+        }
+
         <Field
           name="labels"
           // classes={classes}
@@ -239,6 +251,13 @@ class MasterForm extends Component {
         {/*// ignoreMembers={ignoreMembers}*/}
         {/*onChangeIgnor={this.props.onChangeIgnor}*/}
         {/*/>*/}
+
+        {errorMessage
+          ? <div className="alert alert-danger" role="alert">
+            {errorMessage}
+          </div>
+          : null
+        }
 
         <div>
           <Button

@@ -40,12 +40,15 @@ import {
   changeIgnoreCounts,
   endEditMasters,
   endPostMasters,
-  changeReset
+  changeReset,
+  startErrorMessage
 } from "./actions";
 
 const INIT_STATE = {
   searchTodo: "",
   alertMessage: "",
+  errorMessage: null,
+  loaderForm: false,
   loader: false,
   showMessage: false,
   drawerState: false,
@@ -76,6 +79,13 @@ const INIT_STATE = {
 export default (state = INIT_STATE, action) => {
   const { payload } = action;
   switch (action.type) {
+    case startErrorMessage.toString(): {
+      return {
+        ...state,
+        errorMessage: payload.errorMessage,
+        loaderForm: payload.loaderForm
+      };
+    }
     case changeIgnoreMembers.toString(): {
       // if (payload.value.servicesGroup) {
       return {
@@ -123,18 +133,21 @@ export default (state = INIT_STATE, action) => {
     }
 
     case endEditMasters.toString(): {
-      console.log(payload.masters);
       return {
         ...state,
         masters: payload.masters,
-        currentTodo: payload.currentTodo
+        currentTodo: payload.currentTodo,
+        loaderForm: payload.loaderForm,
+        errorMessage: payload.errorMessage
       };
     }
 
     case endPostMasters.toString(): {
       return {
         ...state,
-        masters: payload.masters
+        masters: payload.masters,
+        loaderForm: payload.loaderForm,
+        errorMessage: payload.errorMessage
       };
     }
 
@@ -319,20 +332,20 @@ export default (state = INIT_STATE, action) => {
       };
     }
     case on_todo_update.toString(): {
-      const toDos = state.allToDos.map(todo => {
-        if (todo.id === action.payload.id) {
-          return action.payload;
-        } else {
-          return todo;
-        }
-      });
+      // const toDos = state.allToDos.map(todo => {
+      //   if (todo.id === action.payload.id) {
+      //     return action.payload;
+      //   } else {
+      //     return todo;
+      //   }
+      // });
       return {
         ...state,
-        alertMessage: "ToDo Updated Successfully",
-        showMessage: true,
-        currentTodo: action.payload,
-        allToDos: toDos,
-        toDos: toDos
+        alertMessage: "Успешно добавлено!",
+        showMessage: true
+        // currentTodo: action.payload,
+        // allToDos: toDos,
+        // toDos: toDos
       };
     }
     case on_delete_todo.toString(): {
@@ -479,7 +492,15 @@ export default (state = INIT_STATE, action) => {
       return { ...state, drawerState: !state.drawerState };
     }
     case handle_request_close.toString(): {
-      return { ...state, showMessage: false, addTodo: false, labelMenuState: false, optionMenuState: false };
+      return {
+        ...state,
+        showMessage: false,
+        addTodo: false,
+        labelMenuState: false,
+        optionMenuState: false,
+        alertMessage: "",
+        loaderForm: false
+      };
     }
     case on_hide_loader.toString(): {
       return { ...state, loader: false };

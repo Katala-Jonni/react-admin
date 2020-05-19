@@ -533,6 +533,7 @@ class Masters extends Component {
       <div className="app-wrapper">
         <div className="animated slideInUpTiny animation-duration-3">
           <div className="app-module">
+
             <div className="d-block d-xl-none">
               <Drawer
                 type="temporary"
@@ -542,6 +543,8 @@ class Masters extends Component {
                 {this.ToDoSideBar()}
               </Drawer>
             </div>
+
+
             <div className="app-module-sidenav d-none d-xl-flex">
               {this.ToDoSideBar()}
             </div>
@@ -652,6 +655,7 @@ class Masters extends Component {
               </div>
             </div>
           </div>
+
           <Snackbar
             anchorOrigin={{ vertical: "top", horizontal: "center" }}
             open={showMessage}

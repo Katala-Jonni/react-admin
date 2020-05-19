@@ -318,16 +318,16 @@ class Masters extends Component {
     console.log(this.props);
     // console.log(this.props.form);
     const { startMasters } = this.props;
-    this.setState({
-      newMaster: false
-    });
     return startMasters({ values });
+    // return this.handleClickCanceled();
   };
 
   handleClickCanceled = () => {
+    const { startErrorMessage } = this.props;
     this.setState({
       newMaster: false
     });
+    return startErrorMessage({ errorMessage: null, loaderForm: false });
   };
 
   constructor() {
@@ -437,12 +437,9 @@ class Masters extends Component {
   }
 
   render() {
-    const { todo, ignoreMembers, selectedToDos, loader, currentTodo, toDos, conversation, user, alertMessage, showMessage, SearchBoxPlaceholder } = this.props;
-    console.log(this.state.newMaster);
+    const { todo, ignoreMembers, selectedToDos, loader, currentTodo, toDos, conversation, user, loaderForm, errorMessage, alertMessage, showMessage, SearchBoxPlaceholder } = this.props;
 
-    console.log(todo);
-
-    if (!toDos.length) {
+    if (!toDos) {
       return (
         <Progress/>
       );
@@ -559,9 +556,6 @@ class Masters extends Component {
             open={showMessage}
             autoHideDuration={3000}
             onClose={this.handleRequestClose}
-            SnackbarContentProps={{
-              "aria-describedby": "message-id"
-            }}
             message={<span id="message-id">{alertMessage}</span>}
           />
         </div>
@@ -583,6 +577,9 @@ class Masters extends Component {
               ignoreMembers={ignoreMembers}
               onChangeIgnor={this.onChangeIgnor}
               handleClickCanceled={this.handleClickCanceled}
+              errorMessage={errorMessage}
+              loaderForm={loaderForm}
+              isStart
               // isNew
             />
             {/*<AddEventsForm*/}

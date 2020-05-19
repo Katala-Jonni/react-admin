@@ -5,12 +5,19 @@ import { destroy } from "redux-form";
 import {
   changeIgnoreCounts, changeReset, endEditMasters,
   endLoadLabel,
-  endLoadMaster, endPostMasters,
+  endLoadMaster,
+  endPostMasters,
   loadLabel,
   loadMaster,
-  reduxFormMasterChange, reduxResetForm, set_current_todo_null, startDeleteMaster, startEditMasters, startMasters
+  reduxFormMasterChange,
+  reduxResetForm,
+  set_current_todo_null,
+  startDeleteMaster,
+  startEditMasters,
+  startMasters
 } from "./actions";
 import { editMasters } from "../Calendar";
+import { startErrorMessage } from "../Master/actions";
 
 const fetchData = async () => {
   try {
@@ -51,8 +58,6 @@ const fetchDeleteMaster = async (id) => {
 const fetchEdit = async ({ id, body }) => {
   try {
     const { baseUrl, master } = api;
-    console.log(`${baseUrl}${master}/${id}`);
-    console.log();
     const res = await fetch(`${baseUrl}${master}/${id}`, {
       method: "PUT",
       headers: {
@@ -83,7 +88,6 @@ const fetchPost = async ({ body }) => {
 };
 
 function* loadMasterResource() {
-  console.log("test");
   const { masters, labels, services } = yield call(fetchData);
   yield put(endLoadMaster({ masters, labels, services }));
   yield put(editMasters({ masters }));
@@ -132,16 +136,30 @@ function* reduxFormReset(action) {
 
 function* editMastersState(action) {
   const { payload: { id, values } } = action;
-  const { masters } = yield call(fetchEdit, { id, body: values });
+  const res = yield call(fetchEdit, { id, body: values });
+  if (res.message === "error" && res.errorMessage) {
+    console.log(res, "res");
+    return yield put(startErrorMessage({ errorMessage: res.errorMessage, loaderForm: false }));
+  }
+  const { masters } = res;
   const currentTodo = masters.find((item) => item._id === id);
-  yield put(endEditMasters({ masters, currentTodo }));
+  yield put(endEditMasters({ masters, currentTodo, loaderForm: true, errorMessage: null }));
   yield put(editMasters({ masters }));
 }
 
 function* startMastersState(action) {
   const { payload: { values } } = action;
-  const { masters } = yield call(fetchPost, { body: values });
-  yield put(endPostMasters({ masters }));
+  const res = yield call(fetchPost, { body: values });
+  if (res.message === "error" && res.errorMessage) {
+    console.log(res, "res");
+    return yield put(startErrorMessage({ errorMessage: res.errorMessage, loaderForm: false }));
+  }
+  const { masters } = res;
+  yield put(endPostMasters({
+    masters,
+    loaderForm: true,
+    errorMessage: null
+  }));
   yield put(editMasters({ masters }));
   // set_current_todo_null(this.props.masters);
   yield put(set_current_todo_null(masters));

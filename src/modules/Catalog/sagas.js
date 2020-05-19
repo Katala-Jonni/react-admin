@@ -19,7 +19,10 @@ import {
   startEditProduct,
   startMasters,
   endEditCategory,
-  endEditProduct, startSendCategory, startSendProduct, startErrorMessage
+  endEditProduct,
+  startSendCategory,
+  startSendProduct,
+  startErrorMessage
 } from "./actions";
 import { editMasters } from "../Calendar";
 import { loadView } from "../Shop";

@@ -49,7 +49,12 @@ import {
   deleteState,
   getServices,
   deleteIgnoreMembers,
-  changeIgnoreMembers, getIgnoreMembers, startMasters
+  changeIgnoreMembers,
+  getIgnoreMembers,
+  startMasters,
+  getErrorMessage,
+  getLoaderForm,
+  startErrorMessage
 } from "../../modules/Master";
 import { editMasters, getMasters } from "../../modules/Calendar";
 
@@ -72,7 +77,9 @@ const mapStateFromProps = state => ({
   masters: getMasters(state),
   labels: getLabels(state),
   ignoreMembers: getIgnoreMembers(state),
-  form: state.form
+  form: state.form,
+  errorMessage: getErrorMessage(state),
+  loaderForm: getLoaderForm(state)
 });
 
 const mapDispatchFromProps = {
@@ -107,7 +114,8 @@ const mapDispatchFromProps = {
   changeIgnoreMembers,
   deleteIgnoreMembers,
   startMasters,
-  editMasters
+  editMasters,
+  startErrorMessage
 };
 
 export default connect(mapStateFromProps, mapDispatchFromProps)(Masters);

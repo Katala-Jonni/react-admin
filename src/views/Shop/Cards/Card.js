@@ -27,7 +27,7 @@ import DialogContent from "@material-ui/core/DialogContent";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import Button from "@material-ui/core/Button";
 import Tooltip from "@material-ui/core/Tooltip";
-import getWorkHourBool from '../../../utils/getWorkHourBool';
+import getWorkHourBool from "../../../utils/getWorkHourBool";
 
 const useStyles = theme => ({
   actionRoot: {
@@ -173,7 +173,6 @@ class RecipeReviewCard extends Component {
   render() {
     const { classes, product, typographyResourceError, typographyResourcePlaceholder } = this.props;
     const { countCart, viewNumber } = this.state;
-
     return (
       <Card className={cx(classes.card)}>
         <CardActionArea>
@@ -288,7 +287,7 @@ class RecipeReviewCard extends Component {
           <CardContent>
             <Typography component={"h6"}>Выберите мастера:</Typography>
             <Typography component={"div"} className={classes.typography}>
-              {this.getCurrentDayResource() && this.state.expanded
+              {this.getCurrentDayResource() && this.getCurrentDayResource().length && this.state.expanded
                 ? <Select
                   options={this.getCurrentDayResource()}
                   placeholder={typographyResourcePlaceholder}

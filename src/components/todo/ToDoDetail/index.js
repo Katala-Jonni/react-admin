@@ -16,7 +16,9 @@ import {
   getIgnoreMembers,
   getServices,
   startEditMasters,
-  startDeleteMaster
+  startDeleteMaster,
+  getErrorMessage,
+  getLoaderForm
 } from "../../../modules/Master";
 
 
@@ -165,7 +167,7 @@ class ToDoDetail extends React.Component {
   };
 
   render() {
-    const { onToDoUpdate, onLabelUpdate, onDeleteToDo, labels, ignoreMembers } = this.props;
+    const { onToDoUpdate, onLabelUpdate, onDeleteToDo, labels, ignoreMembers, errorMessage, loaderForm } = this.props;
     const { todo, editNote, editTitle, title, notes, message, conversation } = this.state;
     return (
       <div className="module-detail module-list">
@@ -229,6 +231,8 @@ class ToDoDetail extends React.Component {
               onSubmit={this.handleSubmit}
               ignoreMembers={ignoreMembers}
               onChangeIgnor={this.onChangeIgnor}
+              errorMessage={errorMessage}
+              loaderForm={loaderForm}
             />
           </div>
         </div>
@@ -239,7 +243,9 @@ class ToDoDetail extends React.Component {
 
 
 const mapStateFromProps = state => ({
-  ignoreMembers: getIgnoreMembers(state)
+  ignoreMembers: getIgnoreMembers(state),
+  errorMessage: getErrorMessage(state),
+  loaderForm: getLoaderForm(state)
 });
 
 const mapDispatchFromProps = { changeIgnoreMembers, deleteIgnoreMembers, startEditMasters, startDeleteMaster };

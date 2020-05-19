@@ -171,11 +171,9 @@ class Shop extends Component {
     const { classes, totalCart, isSubmit, categories } = this.props;
     const { viewCart, openViewCart, fullScreen } = this.state;
     const data = this.getSortData();
-    console.log(data);
-    console.log(categories);
     return (
       <div className={classes.root}>
-        {data && data.length
+        {data
           ? <Fragment>
             <Dialog
               maxWidth={"md"}
@@ -227,7 +225,7 @@ class Shop extends Component {
                   close
                 />
               </ItemGrid>
-              {categories.length
+              {categories.length && data.length
                 ? <Grid item xs={viewCart || totalCart.length ? 11 : 12}>
                   <Search
                     handleChange={this.handleChangeInputSearch}
@@ -247,7 +245,7 @@ class Shop extends Component {
                 </Grid>
                 : null
               }
-              {categories.length
+              {categories.length && data.length
                 ? <Fragment>
                   <Grid item xs={12} md={3} lg={3} xl={2}>
                     <Category
@@ -256,7 +254,7 @@ class Shop extends Component {
                     />
                   </Grid>
                   <Grid item xs={12} md={9} lg={9} xl={10} container spacing={16}>
-                    {this.getSortData().map(el => {
+                    {data.map(el => {
                       return (
                         <Grid item xs={12} sm={6} md={6} lg={4} xl={2} key={el._id}>
                           <Card
@@ -268,7 +266,7 @@ class Shop extends Component {
                     })}
                   </Grid>
                 </Fragment>
-                : <h2>Здесь ничего нет =)))</h2>
+                : null
               }
             </GridContainer>
           </Fragment>

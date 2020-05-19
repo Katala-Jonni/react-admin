@@ -268,7 +268,11 @@ const mapStateFromProps = state => ({
 });
 
 const mapDispatchFromProps = {
-  changeIgnoreMembers, deleteIgnoreMembers, startEditMasters, startDeleteMaster, startEditProduct,
+  changeIgnoreMembers,
+  deleteIgnoreMembers,
+  startEditMasters,
+  startDeleteMaster,
+  startEditProduct,
   startEditCategory
 };
 

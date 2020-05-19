@@ -21,8 +21,6 @@ function Snackbar({ ...props }) {
     open,
     rtlActive
   } = props;
-  console.log(color);
-  console.log(classes[color]);
 
   var action = [];
   const messageClasses = classNames({
