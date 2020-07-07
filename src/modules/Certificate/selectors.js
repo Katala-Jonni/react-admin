@@ -8,3 +8,4 @@ export const getVerifyMessage = createSelector(getCertificateState, state => sta
 export const getLoader = createSelector(getCertificateState, state => state.loader);
 export const getLoaderCertificate = createSelector(getCertificateState, state => state.loaderCertificate);
 export const getCertificateStatus = createSelector(getCertificateState, state => state.certificateStatus);
+export const getSuccessRegistration = createSelector(getCertificateState, state => state.successRegistration);

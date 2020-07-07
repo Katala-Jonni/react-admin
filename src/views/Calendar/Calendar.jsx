@@ -13,7 +13,7 @@ import defaultResource from "../../modules/Calendar/defaultResource";
 import Progress from "../../components/Progress/Progress";
 import Popup from "./Popup";
 import { startApp } from "../../modules/Admin/actions";
-import { loadResource } from "../../modules/Calendar";
+import { initialResource, loadResource } from "../../modules/Calendar";
 
 moment.locale("ru");
 const localizer = BigCalendar.momentLocalizer(moment);
@@ -70,7 +70,14 @@ class Calendar extends Component {
 
   componentDidMount() {
     this.props.startApp();
-    this.props.loadResource();
+
+
+    // console.log(this.props.place);
+    this.props.loadResource({ place: this.props.place });
+  }
+
+  componentWillUnmount() {
+    this.props.initialResource();
   }
 
   handleClickCloseSelectEvent = () => {
@@ -142,9 +149,9 @@ class Calendar extends Component {
   onChangeState = () => this.setState({ isDay: false });
 
   onNavigate = date => {
-    const { selectViewEvents } = this.props;
+    const { selectViewEvents, place } = this.props;
     const { view, isDay } = this.state;
-    selectViewEvents(date);
+    selectViewEvents({ day: date, place });
     const checkNavigate = view === "month" && !isDay;
 
     return this.setState({

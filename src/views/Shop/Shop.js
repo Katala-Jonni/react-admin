@@ -19,12 +19,15 @@ import Badge from "@material-ui/core/Badge";
 import CartTable from "./Cart";
 import Tooltip from "@material-ui/core/Tooltip";
 import AddAlert from "@material-ui/icons/AddAlert";
-import Snackbar from "components/Snackbar/Snackbar.jsx";
+// import Snackbar from "components/Snackbar/Snackbar.jsx";
+import Snackbar from "@material-ui/core/Snackbar";
 import ItemGrid from "components/Grid/GridItem.jsx";
 import Progress from "components/Progress/Progress";
 import category from "./data/category";
 
 import moment from "moment/min/moment-with-locales";
+import { openViewCart } from "../../modules/Shop/actions";
+import { closeCart, closeViewCart, openCart } from "../../modules/Shop";
 
 const styleShop = () => ({
   root: {
@@ -48,6 +51,7 @@ class Shop extends Component {
       // document.getElementById('showScroll').innerHTML = pageYOffset + 'px';
       console.log("test");
     });
+    // this.props.startApp();
     this.props.loadView();
   }
 
@@ -125,6 +129,7 @@ class Shop extends Component {
       openViewCart: true
     });
     // this.props.changeSubmitSwitch(false);
+    this.props.openCart();
     changeSubmitSwitch(false);
   };
 
@@ -135,7 +140,7 @@ class Shop extends Component {
       fullScreen: false
       // viewCart: false
     });
-    // this.props.changeSubmitSwitch(true);
+    this.props.closeCart();
     changeSubmitSwitch(true);
   };
 
@@ -167,17 +172,25 @@ class Shop extends Component {
     }
   };
 
+  handleRequestClose = event => {
+    this.props.handle_request_close();
+  };
+
   render() {
-    const { classes, totalCart, isSubmit, categories } = this.props;
-    const { viewCart, openViewCart, fullScreen } = this.state;
+    const { classes, totalCart, isSubmit, categories, showMessage, alertMessage, openViewCart } = this.props;
+    // const { viewCart, openViewCart, fullScreen } = this.state;
+    const { fullScreen } = this.state;
     const data = this.getSortData();
+    console.log(data);
+    console.log(categories);
     return (
       <div className={classes.root}>
         {data
           ? <Fragment>
             <Dialog
               maxWidth={"md"}
-              open={openViewCart && !isSubmit}
+              open={openViewCart && !isSubmit && !!totalCart.length}
+              // open={openViewCart && !isSubmit && !!totalCart.length}
               onClose={this.handleCloseViewCart}
               fullScreen={fullScreen}
               scroll="paper"
@@ -215,25 +228,33 @@ class Shop extends Component {
             </Dialog>
             <GridContainer spacing={16}>
               <ItemGrid xs={12} sm={12} md={3}>
+                {/*<Snackbar*/}
+                {/*place="tr"*/}
+                {/*color="success"*/}
+                {/*icon={AddAlert}*/}
+                {/*message="Заказ оформлен"*/}
+                {/*open={this.state.tr}*/}
+                {/*closeNotification={() => this.setState({ tr: false })}*/}
+                {/*close*/}
+                {/*/>*/}
                 <Snackbar
-                  place="tr"
-                  color="success"
-                  icon={AddAlert}
-                  message="Заказ оформлен"
-                  open={this.state.tr}
-                  closeNotification={() => this.setState({ tr: false })}
-                  close
+                  anchorOrigin={{ vertical: "top", horizontal: "center" }}
+                  open={showMessage}
+                  autoHideDuration={3000}
+                  onClose={this.handleRequestClose}
+                  message={<span id="message-id">{alertMessage}</span>}
                 />
               </ItemGrid>
-              {categories.length && data.length
-                ? <Grid item xs={viewCart || totalCart.length ? 11 : 12}>
+              {/*{categories.length && data.length*/}
+              {categories.length
+                ? <Grid item xs={totalCart.length ? 11 : 12}>
                   <Search
                     handleChange={this.handleChangeInputSearch}
                   />
                 </Grid>
                 : null
               }
-              {viewCart || totalCart.length
+              {totalCart.length
                 ? <Grid item xs={1}>
                   <Badge className={classes.margin} badgeContent={totalCart.length} color="secondary">
                     <Tooltip title={"Посмотреть корзину"} aria-label={"Посмотреть корзину"}>
@@ -245,7 +266,8 @@ class Shop extends Component {
                 </Grid>
                 : null
               }
-              {categories.length && data.length
+              {/*{categories.length && data.length*/}
+              {categories.length
                 ? <Fragment>
                   <Grid item xs={12} md={3} lg={3} xl={2}>
                     <Category
@@ -254,16 +276,19 @@ class Shop extends Component {
                     />
                   </Grid>
                   <Grid item xs={12} md={9} lg={9} xl={10} container spacing={16}>
-                    {data.map(el => {
-                      return (
-                        <Grid item xs={12} sm={6} md={6} lg={4} xl={2} key={el._id}>
-                          <Card
-                            product={el}
-                            changeViewCart={this.changeViewCart}
-                          />
-                        </Grid>
-                      );
-                    })}
+                    {data.length
+                      ? data.map(el => {
+                        return (
+                          <Grid item xs={12} sm={6} md={6} lg={4} xl={2} key={el._id}>
+                            <Card
+                              product={el}
+                              changeViewCart={this.changeViewCart}
+                            />
+                          </Grid>
+                        );
+                      })
+                      : <h3>Такой позиции нет!</h3>
+                    }
                   </Grid>
                 </Fragment>
                 : null

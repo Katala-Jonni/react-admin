@@ -28,7 +28,7 @@ class SelectEvent extends Component {
 
   handleSubmit = values => {
     // копипаст с добавления записи
-    const { handleClickCloseSelectEvent, updateEvents, addEvents } = this.props;
+    const { handleClickCloseSelectEvent, updateEvents, addEvents, place } = this.props;
     const { lastName, surname, phoneNumber, _id } = values;
     const members = values.members.map(item => {
       const milliseconds = moment(item.date).startOf("day");
@@ -47,10 +47,11 @@ class SelectEvent extends Component {
 
     const event = Object.assign({}, { ...members[0] }, { lastName, surname, phoneNumber });
     if (_id) {
-      Object.assign(event, { _id });
+      Object.assign(event, { _id }, { place });
       updateEvents(event);
     } else {
-      addEvents(event);
+      Object.assign(event, { place });
+      addEvents({ event, place });
     }
 
     this.switchButton(false);

@@ -24,3 +24,4 @@ export const getExpense = createSelector(getTillState, state => state.expense);
 export const getTotalDay = createSelector(getTillState, state => state.totalDay);
 export const getTotalOrders = createSelector(getTillState, state => state.totalOrders);
 export const getPay = createSelector(getTillState, state => state.pay);
+export const getLastDay = createSelector(getTillState, state => state.lastDay);

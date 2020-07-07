@@ -9,11 +9,20 @@ import {
   minusPayCount,
   endLoadView,
   addToCartEnd,
-  deleteStateShop
+  deleteStateShop,
+  handle_request_close,
+  openCart,
+  closeCart
 } from "./actions";
+import { startErrorMessage } from "../Catalog/actions";
+// import { openViewCart } from "./index";
 
 const initialData = () => {
   return {
+    errorMessage: null,
+    alertMessage: "",
+    showMessage: false,
+    openViewCart: false,
     categories: [],
     products: [],
     totalCart: [],
@@ -35,6 +44,33 @@ const initialState = {
 export default (state = initialState, action) => {
   const { type, payload } = action;
   switch (type) {
+
+    //openViewCart
+    case openCart.toString(): {
+      return {
+        ...state,
+        // errorMessage: payload.errorMessage,
+        // loaderForm: payload.loaderForm
+        openViewCart: true
+      };
+    }
+    case closeCart.toString(): {
+      return {
+        ...state,
+        // errorMessage: payload.errorMessage,
+        // loaderForm: payload.loaderForm
+        openViewCart: false
+      };
+    }
+    case startErrorMessage.toString(): {
+      console.log(payload);
+      return {
+        ...state,
+        // errorMessage: payload.errorMessage,
+        // loaderForm: payload.loaderForm
+        ...payload
+      };
+    }
     case endLoadView.toString(): {
       return {
         ...state,
@@ -49,13 +85,14 @@ export default (state = initialState, action) => {
         isSubmit: false
       };
     case endSendCart.toString():
-      console.log(payload);
       return {
         ...state,
         totalDay: payload.totalDay,
         totalOrders: { ...state.totalOrders, ...payload.totalOrders },
         totalCart: [],
-        isSubmit: true
+        isSubmit: true,
+        alertMessage: payload.alertMessage,
+        showMessage: true
       };
     case changeSubmitSwitch.toString():
       // console.log(payload);
@@ -98,6 +135,18 @@ export default (state = initialState, action) => {
         ...state,
         payCount: state.payCount - payload < 0 ? 0 : state.payCount - payload
       };
+
+    case handle_request_close.toString(): {
+      return {
+        ...state,
+        showMessage: false,
+        // addTodo: false,
+        // labelMenuState: false,
+        // optionMenuState: false,
+        alertMessage: ""
+        // loaderForm: false
+      };
+    }
     default: {
       return state;
     }

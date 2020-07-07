@@ -18,6 +18,9 @@ import {
 } from "./actions";
 import { editMasters } from "../Calendar";
 import { startErrorMessage } from "../Master/actions";
+import { Fetch } from "../../utils/fetch";
+
+const { baseUrl, master, label } = api;
 
 const fetchData = async () => {
   try {
@@ -88,14 +91,14 @@ const fetchPost = async ({ body }) => {
 };
 
 function* loadMasterResource() {
-  const { masters, labels, services } = yield call(fetchData);
+  const { masters, labels, services } = yield call(Fetch.get(`${baseUrl}${master}`));
   yield put(endLoadMaster({ masters, labels, services }));
   yield put(editMasters({ masters }));
 }
 
 function* loadLabelResource(action) {
   const { payload } = action;
-  const { masters } = yield call(fetchChangeLabel, payload.id, payload.label);
+  const { masters } = yield call(Fetch.put(`${baseUrl}${master}${label}/${payload.id}`, payload.label));
   // console.log(masters);
   yield put(endLoadLabel({ masters }));
   yield put(editMasters({ masters }));
@@ -136,7 +139,7 @@ function* reduxFormReset(action) {
 
 function* editMastersState(action) {
   const { payload: { id, values } } = action;
-  const res = yield call(fetchEdit, { id, body: values });
+  const res = yield call(Fetch.put(`${baseUrl}${master}/${id}`, values));
   if (res.message === "error" && res.errorMessage) {
     console.log(res, "res");
     return yield put(startErrorMessage({ errorMessage: res.errorMessage, loaderForm: false }));
@@ -149,7 +152,7 @@ function* editMastersState(action) {
 
 function* startMastersState(action) {
   const { payload: { values } } = action;
-  const res = yield call(fetchPost, { body: values });
+  const res = yield call(Fetch.post(`${baseUrl}${master}`, values));
   if (res.message === "error" && res.errorMessage) {
     console.log(res, "res");
     return yield put(startErrorMessage({ errorMessage: res.errorMessage, loaderForm: false }));

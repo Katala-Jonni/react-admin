@@ -18,3 +18,10 @@ export const clearTillInfo = createAction("@@Till/CLEAR_TILL_INFO");
 
 export const startLoadDay = createAction("@@Till/START_LOAD_DAY");
 export const endLoadDay = createAction("@@Till/END_LOAD_DAY");
+
+export const startAddDay = createAction("@@Till/START_ADD_DAY");
+export const endAddDay = createAction("@@Till/END_ADD_DAY");
+
+export const startLastAdd = createAction("@@Till/START_LAST_ADD");
+export const startLastDay = createAction("@@Till/START_LAST_DAY");
+export const endLastAdd = createAction("@@Till/END_LAST_ADD");

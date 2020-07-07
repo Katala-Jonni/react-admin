@@ -11,3 +11,4 @@ export const endSearchNumber = createAction("@@Certificate/END_SEARCH_NUMBER");
 export const turnOnLoader = createAction("@@Certificate/TURN_ON_LOADER");
 export const turnOnLoaderCertificate = createAction("@@Certificate/TURN_ON_LOADER_CERTIFICATE");
 export const deleteState = createAction("@@Certificate/DELETE_STATE");
+export const successRegistrationCertificate = createAction("@@Certificate/SUCCESS_REGISTRATION_CERTIFICATE");

@@ -5,7 +5,7 @@ import {
   endLoadInfoTill,
   changeTillInfo,
   endLockOpen,
-  openTill, endLoadDay
+  openTill, endLoadDay, endLastAdd
 } from "./actions";
 import outTillCategory from "./outTillCategory";
 import administrators from "./administrators";
@@ -37,7 +37,8 @@ const initialState = {
     card: 0,
     cash: 0,
     certificate: 0
-  }
+  },
+  lastDay: null
 };
 
 export default (state = initialState, action) => {
@@ -83,6 +84,11 @@ export default (state = initialState, action) => {
       return {
         ...state,
         viewTill: payload
+      };
+    case endLastAdd.toString():
+      return {
+        ...state,
+        lastDay: payload.lastDay
       };
     default: {
       return state;

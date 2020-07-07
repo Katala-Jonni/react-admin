@@ -8,6 +8,7 @@ import { sagas as certificateSagas } from "./Certificate";
 import { sagas as mixedPaySagas } from "./MixedPay";
 import { sagas as masterSagas } from "./Master";
 import { sagas as catalogSagas } from "./Catalog";
+import { sagas as loginSagas } from "./Login";
 
 export default function* rootSaga() {
   yield fork(adminSagas);
@@ -19,4 +20,5 @@ export default function* rootSaga() {
   yield fork(mixedPaySagas);
   yield fork(masterSagas);
   yield fork(catalogSagas);
+  yield fork(loginSagas);
 }

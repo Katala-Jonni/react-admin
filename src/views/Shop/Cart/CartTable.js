@@ -7,6 +7,7 @@ import DialogActions from "@material-ui/core/DialogActions";
 import DialogContent from "@material-ui/core/DialogContent";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import Button from "@material-ui/core/Button";
+import Snackbar from "@material-ui/core/Snackbar";
 
 // material-ui icons
 import Close from "@material-ui/icons/Close";
@@ -34,7 +35,8 @@ import { deleteState } from "../../../modules/Certificate/actions";
 class ExtendedTables extends Component {
   state = {
     tr: false,
-    openViewCertificate: false
+    openViewCertificate: false,
+    disabledBtn: false
   };
   handleClickAdd = item => {
     const { totalCart, addToCartStart } = this.props;
@@ -93,6 +95,9 @@ class ExtendedTables extends Component {
 
   handleClickSubmit = evt => {
     const { value, dataSetType } = evt.currentTarget;
+    this.setState({
+      disabledBtn: true
+    });
     const { totalCart, totalDay, totalOrders, startSendCart, masters } = this.props;
     const data = {
       totalCart,
@@ -104,8 +109,8 @@ class ExtendedTables extends Component {
       certificateNumber: 0
     };
     startSendCart(data);
-    this.props.handleCloseView();
-    this.props.showNotification("tr");
+    // this.props.handleCloseView();
+    // this.props.showNotification("tr");
   };
 
 
@@ -127,6 +132,9 @@ class ExtendedTables extends Component {
   // };
 
   handleClickSubmitMixed = values => {
+    this.setState({
+      disabledBtn: true
+    });
     const { members, number } = values;
     const { totalCart, totalDay, totalOrders, startSendCart, masters, certificate } = this.props;
     startSendCart({
@@ -200,9 +208,13 @@ class ExtendedTables extends Component {
     console.log(values, "values");
   };
 
+  // handleRequestClose = event => {
+  //   this.props.handle_request_close();
+  // };
+
   render() {
     const { classes } = this.props;
-    const { openViewCertificate } = this.state;
+    const { openViewCertificate, disabledBtn } = this.state;
     return (
       <GridContainer>
         <ItemGrid xs={12}>
@@ -220,6 +232,7 @@ class ExtendedTables extends Component {
             <DialogContent>
               <MixedPay
                 onSubmit={this.handleClickSubmitMixed}
+                disabledBtn={disabledBtn}
                 // onSubmit={this.handleSubmit}
                 totalPrice={this.getTotalPrice()}
               />
@@ -287,6 +300,7 @@ class ExtendedTables extends Component {
             size={"large"}
             className={classes.margin}
             onClick={this.handleClickMixed}
+            disabled={disabledBtn}
           >
             <CreditCard className={classes.extendedIcon}/>
             Смешанная оплата{" "}
@@ -300,6 +314,7 @@ class ExtendedTables extends Component {
             size={"large"}
             className={classes.margin}
             onClick={this.handleClickSubmit}
+            disabled={disabledBtn}
           >
             <AttachMoney className={classes.extendedIcon}/>
             Наличкой{" "}
@@ -313,6 +328,7 @@ class ExtendedTables extends Component {
             size={"large"}
             className={classes.margin}
             onClick={this.handleClickSubmit}
+            disabled={disabledBtn}
           >
             <CreditCard className={classes.extendedIcon}/>
             Картой{" "}
@@ -325,56 +341,3 @@ class ExtendedTables extends Component {
 }
 
 export default withStyles(extendedTablesStyle)(ExtendedTables);
-
-
-/*
-<Fragment>
-  <GridContainer justify={"space-between"} direction={"row"} spacing={8}>
-    <ItemGrid xs={3} item>
-      <Fab
-        variant="extended"
-        aria-label="mixed"
-        data-type={"mixed"}
-        size={"large"}
-        // className={classes.margin}
-        onClick={this.handleClickSubmit}
-      >
-        <CreditCard className={classes.extendedIcon}/>
-        Смешанная оплата{" "}
-        <KeyboardArrowRight className={classes.icon}/>
-      </Fab>
-    </ItemGrid>
-    <ItemGrid xs={3} item>
-      <Fab
-        variant="extended"
-        color="secondary"
-        aria-label="card"
-        data-type={"card"}
-        size={"large"}
-        // className={classes.margin}
-        onClick={this.handleClickSubmit}
-      >
-        <CreditCard className={classes.extendedIcon}/>
-        Картой{" "}
-        <KeyboardArrowRight className={classes.icon}/>
-      </Fab>
-    </ItemGrid>
-    <ItemGrid xs={3} item>
-      <Fab
-        variant="extended"
-        color="primary"
-        aria-label="cash"
-        data-type={"cash"}
-        size={"large"}
-        // className={classes.margin}
-        onClick={this.handleClickSubmit}
-      >
-        <AttachMoney className={classes.extendedIcon}/>
-        Наличкой{" "}
-        <KeyboardArrowRight className={classes.icon}/>
-      </Fab>
-    </ItemGrid>
-  </GridContainer>
-</Fragment>
-*/
-

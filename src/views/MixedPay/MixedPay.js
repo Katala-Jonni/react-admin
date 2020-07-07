@@ -19,7 +19,8 @@ class MixedPay extends Component {
   state = {};
 
   render() {
-    const { classes, handleSubmit, totalPrice } = this.props;
+    const { classes, handleSubmit, totalPrice, disabledBtn } = this.props;
+
     return (
       <Fragment>
         <GridContainer
@@ -34,6 +35,7 @@ class MixedPay extends Component {
                 name="members"
                 classes={classes}
                 component={RenderMembersType}
+                disabledBtn={disabledBtn}
                 reset={this.props.reset}
                 totalSum={totalPrice}
               />

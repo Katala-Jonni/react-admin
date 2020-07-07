@@ -12,12 +12,14 @@ import {
   addEvents
 } from "../../../../../modules/Calendar";
 import { deleteEvents } from "../../../../../modules/Calendar/actions";
+import { getPlace } from "../../../../../modules/Admin";
 
 const mapStateFromProps = state => ({
   resource: getResource(state),
   events: getEvents(state),
   masters: getTotalMasters(state),
   totalResource: getTotalResource(state),
+  place: getPlace(state),
   formRedux: state.form.fieldArraysSelectEvents
 });
 

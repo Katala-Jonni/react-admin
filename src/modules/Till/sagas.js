@@ -6,13 +6,25 @@ import {
   changeInTill,
   changeOutTill,
   loadInfoTill,
-  endLoadInfoTill, lockOpen, lockClose, clearTillInfo, loadStateTill, startLoadDay, endLoadDay
+  endLoadInfoTill,
+  lockOpen,
+  lockClose,
+  clearTillInfo,
+  loadStateTill,
+  startLoadDay,
+  endLoadDay,
+  startAddDay,
+  startLastAdd, endLastAdd, startLastDay
 } from "./actions";
 import moment from "moment/min/moment-with-locales";
 import { addOutTill, openTill } from "./index";
 import days from "../Shop/totalDay";
 import api from "../../utils/api.js";
 import { startApp } from "../Admin/actions";
+import { endRemoveDay } from "../Shop/actions";
+import { startStateAdmin } from "../Admin";
+import { Fetch } from "../../utils/fetch";
+import { Storage, storageKey } from "../../storage";
 
 moment.locale("ru");
 
@@ -26,6 +38,8 @@ let paymentByCard = 0;
 let revenue = 0;
 let income = 0;
 let lock = true;
+
+const { baseUrl, wallet, till } = api;
 
 const fetchLoadDay = async () => {
   const { baseUrl, wallet } = api;
@@ -110,18 +124,23 @@ const getAmount = array => {
 };
 // решить пробему с загрузкой
 // нужно отправлять данные моковые типо на сервер и получать их оттуда
+
 function* loadTillData({ action, payload }) {
-  // console.log(payload);
   console.log("Отправка прихода");
   console.log("формирование админа");
   const type = "inTill";
 
   const tillInfo = {
     count: payload.count,
-    time: moment().format("DD.MM.YY, LTS")
+    admin: payload.title,
+    time: moment().format("DD.MM.YY, LTS"),
+    // По дефолту
+    place: payload.place
   };
 
-  const { day } = yield call(fetchChangeTill, { tillInfo, type });
+  // const { day } = yield call(fetchChangeTill, { tillInfo, type });
+  const { day } = yield call(Fetch.post(`${baseUrl}${wallet}${till}`, { tillInfo, type }));
+  console.log(day);
   if (day) {
     return yield put(startApp(true));
   }
@@ -139,12 +158,14 @@ function* loadTillData({ action, payload }) {
 }
 
 function* addInTillData({ payload }) {
-  const { data, type } = payload;
+  const { data, type, place } = payload;
   if (data) {
     const tillInfo = {
       count: data.count,
-      time: moment().format("DD.MM.YY, LTS")
+      time: moment().format("DD.MM.YY, LTS"),
+      place
     };
+
     return yield updateTill(tillInfo, type);
   }
 
@@ -166,18 +187,21 @@ function* addInTillData({ payload }) {
 }
 
 function* updateTill(tillInfo, type) {
-  const { day } = yield call(fetchChangeTill, { tillInfo, type });
+  //const { day } = yield call(Fetch.post(`${baseUrl}${wallet}${till}`, { tillInfo, type }));
+  // const { day } = yield call(fetchChangeTill, { tillInfo, type });
+  const { day } = yield call(Fetch.post(`${baseUrl}${wallet}${till}`, { tillInfo, type }));
   if (day) {
     return yield updateState(day);
   }
 }
 
 function* addInOutTillData({ payload }) {
-  const { data, type } = payload;
+  const { data, type, place } = payload;
   const tillInfo = {
     title: data.title,
     count: data.count,
-    time: moment().format("DD.MM.YY, LTS")
+    time: moment().format("DD.MM.YY, LTS"),
+    place
   };
   return yield updateTill(tillInfo, type);
   // const loadData = yield call(addOutTillFetch, newOutTill);
@@ -187,7 +211,7 @@ function* addInOutTillData({ payload }) {
 }
 
 function* loadTillDataInfo({ payload }) {
-  const data = yield call(fetchData);
+  // const data = yield call(fetchData);
   const { totalDay, certificateSum, totalOrders } = payload;
   const keys = Object.keys(totalDay);
   const orderKeys = Object.keys(totalOrders);
@@ -271,6 +295,18 @@ const fetchEdit = ({ date, open, admins }) => {
     .then(res => res);
 };
 
+const fetchAddDay = async (body) => {
+  const { baseUrl, wallet, total } = api;
+  const res = await fetch(`${baseUrl}${wallet}${total}`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json;charset=utf-8"
+    },
+    body: JSON.stringify(body)
+  });
+  return await res.json();
+};
+
 function* getDay(date) {
   return yield call(fetchCurrentDay, date);
 }
@@ -313,7 +349,11 @@ function* updateState(day) {
 }
 
 function* loadDayInfo() {
-  const { day } = yield call(fetchLoadDay);
+  const storage = Storage.getStorage(storageKey.authKey);
+  if (!storage && !storage.id && !storage.roles && !storage.accessToken && !storage.userInfo && !storage.placeInfo && !storage.goodsId) {
+    return yield put({ day: false, error: true, administrators: null });
+  }
+  const { day } = yield call(Fetch.get(`${baseUrl}${wallet}/${storage.id}`));
   if (day) {
     return yield updateState(day);
   } else {
@@ -329,6 +369,61 @@ function* loadDayInfo() {
   }
 }
 
+function* loadStartAddDay(action) {
+  const { payload } = action;
+  const { baseUrl, wallet, total } = api;
+  console.log(payload);
+  const storage = Storage.getStorage(storageKey.authKey);
+  if (!storage && !storage.id && !storage.roles && !storage.accessToken && !storage.userInfo && !storage.placeInfo && !storage.goodsId) {
+    return yield put({ day: false, error: true, administrators: null });
+  }
+  const data = Object.assign({}, payload, { place: storage.id });
+  console.log(data);
+  const { message, administrators } = yield call(Fetch.post(`${baseUrl}${wallet}${total}`, data));
+
+  if (message === "OK") {
+    // yield call(fetchCurrentTill, {});
+    // yield call(fetchOrders, {});
+    // yield put(endRemoveDay());
+    // yield put(clearTillInfo());
+    // yield put(lockOpen(true));
+    // yield put(openTill(false));
+    // yield put(startStateAdmin({ administrators }));
+  }
+}
+
+function* loadStartLastDay(action) {
+  const { payload } = action;
+  const { baseUrl, wallet, day } = api;
+  console.log(payload);
+  const storage = Storage.getStorage(storageKey.authKey);
+  if (!storage && !storage.id && !storage.roles && !storage.accessToken && !storage.userInfo && !storage.placeInfo && !storage.goodsId) {
+    return yield put({ day: false, error: true, administrators: null });
+  }
+  const data = Object.assign({}, payload, { place: storage.id });
+  console.log(data);
+  const { message, administrators } = yield call(Fetch.post(`${baseUrl}${wallet}${day}`, data));
+
+  if (message === "OK") {
+    return yield put(endLastAdd({ lastDay: false }));
+  } else {
+    return yield put(endLastAdd({ lastDay: true }));
+  }
+}
+
+function* startLastDayInfo() {
+  const { baseUrl, wallet, day } = api;
+  const storage = Storage.getStorage(storageKey.authKey);
+  const place = storage.id;
+  const lastDay = yield call(Fetch.get(`${baseUrl}${wallet}${day}/${place}`));
+  console.log(lastDay);
+  if (lastDay.status) {
+    return yield put(endLastAdd({ lastDay: true }));
+  } else {
+    return yield put(endLastAdd({ lastDay: false }));
+  }
+}
+
 function* tillWatcher() {
   yield takeLatest(startLoadDay, loadDayInfo);
 
@@ -336,9 +431,15 @@ function* tillWatcher() {
   yield takeLatest(loadInfoTill, loadTillDataInfo);
   yield takeLatest(addInTill, addInTillData);
   yield takeLatest(addOutTill, addInOutTillData);
-  yield takeLatest(clearTillInfo, removeTillInfo);
-  yield takeLatest(lockOpen, lockOpenApp);
-  yield takeLatest(loadTill, loadTillCurrentTill);
+  // yield takeLatest(clearTillInfo, removeTillInfo);
+  // yield takeLatest(lockOpen, lockOpenApp);
+  // yield takeLatest(loadTill, loadTillCurrentTill);
+  yield takeLatest(startAddDay, loadStartAddDay);
+  yield takeLatest(startLastAdd, loadStartLastDay);
+  yield takeLatest(startLastDay, startLastDayInfo);
+
+
+  //loadTill
 
   // yield takeLatest(loadStateTill, loadStateCurrentTill);
 

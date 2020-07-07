@@ -284,7 +284,8 @@ class EditCertificate extends Component {
                     className={classes.addCardForm}
                     color={"textSecondary"}
                   >
-                    Место приобретения: <span style={{ color: "black", fontSize: 18 }}>{certificate.place}</span>
+                    Место приобретения: <span
+                    style={{ color: "black", fontSize: 18 }}>{certificate.place.address}</span>
                   </Typography>
                   <Typography
                     variant="body1"

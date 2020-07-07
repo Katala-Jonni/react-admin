@@ -15,3 +15,7 @@ export const plusPayCount = createAction("@@Shop/PLUS_PAY_COUNT");
 export const minusPayCount = createAction("@@Shop/MINUS_PAY_COUNT");
 export const loadView = createAction("@@Shop/LOAD_VIEW");
 export const endLoadView = createAction("@@Shop/END_LOAD_VIEW");
+export const handle_request_close = createAction("@@Shop/HANDLE_REQUEST_CLOSE");
+export const startErrorMessage = createAction("@@Shop/START_ERROR_MESSAGE");
+export const openCart = createAction("@@Shop/OPEN_CART");
+export const closeCart = createAction("@@Shop/CLOSE_CART");

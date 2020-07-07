@@ -10,6 +10,8 @@ import GridContainer from "components/Grid/GridContainer.jsx";
 import ActonTill from "../../views/Till/ActonTill";
 import isOnline from "is-online";
 // core components
+import Snackbar from "@material-ui/core/Snackbar";
+
 import Admin from "layouts/Admin.jsx";
 import Error from "components/Modal/Error";
 
@@ -24,6 +26,8 @@ class App extends Component {
   };
 
   componentDidMount() {
+    const { place } = this.props;
+    // this.props.startApp({ place: this.props.place });
     this.props.startApp();
   }
 
@@ -44,8 +48,12 @@ class App extends Component {
     });
   };
 
+  handleRequestClose = event => {
+    this.props.handle_request_close();
+  };
+
   render() {
-    const { administrators, isDay, isError } = this.props;
+    const { administrators, isDay, isError, showMessage, alertMessage, lastDay } = this.props;
     const { isClick } = this.state;
     // console.log(isError);
     if (isError === null) {
@@ -68,6 +76,13 @@ class App extends Component {
         {/*</div>*/}
         {/*: null*/}
         {/*}*/}
+        <Snackbar
+          anchorOrigin={{ vertical: "top", horizontal: "center" }}
+          open={showMessage}
+          autoHideDuration={3000}
+          onClose={this.handleRequestClose}
+          message={<span id="message-id">{alertMessage}</span>}
+        />
         {!isDay && !isClick
           ? <Dialog
             maxWidth={"lg"}

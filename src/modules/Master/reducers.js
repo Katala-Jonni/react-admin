@@ -101,7 +101,6 @@ export default (state = INIT_STATE, action) => {
       };
     }
     case changeIgnoreCounts.toString(): {
-      console.log(payload.value.servicesGroup);
       // if (payload.value.servicesGroup) {
       return {
         ...state,
@@ -482,7 +481,8 @@ export default (state = INIT_STATE, action) => {
         ignoreMembers: {},
         masters: action.payload,
         allToDos: action.payload,
-        toDos: action.payload
+        toDos: action.payload,
+        errorMessage: null
       };
     }
     case update_search.toString(): {

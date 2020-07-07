@@ -9,13 +9,15 @@ import {
   getOutTillSum
   // loadTill
 } from "../../../modules/Till";
+import { getPlace } from "../../../modules/Admin";
 
 const mapStateFromProps = state => ({
   inTill: getInTill(state),
   outTill: getOutTill(state),
   inTillSum: getInTillSum(state),
   outTillSum: getOutTillSum(state),
-  outTillCategory: getOutTillCategory(state)
+  outTillCategory: getOutTillCategory(state),
+  place: getPlace(state)
 });
 //loadTill
 const mapDispatchFromProps = { addInTill, addOutTill };

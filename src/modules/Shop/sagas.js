@@ -6,7 +6,11 @@ import {
   endTotalDay,
   startRemoveDay,
   endTotalOrders,
-  endRemoveDay, loadView, endLoadView, addToCartEnd
+  endRemoveDay,
+  loadView,
+  endLoadView,
+  addToCartEnd,
+  startErrorMessage
 } from "./actions";
 import moment from "moment/min/moment-with-locales";
 import currentTill from "./currentTill";
@@ -17,6 +21,10 @@ import { endLockOpen } from "../Till/actions";
 import { lockClose, lockOpen, clearTillInfo, openTill } from "../Till";
 import api from "../../utils/api";
 import { addToCartStart } from "./index";
+import { Fetch } from "../../utils/fetch";
+import { Storage, storageKey } from "../../storage";
+
+const { baseUrl, shop, day, wallet } = api;
 
 /* fetch */
 
@@ -339,13 +347,12 @@ function* sendCart(action) {
   // после отправки очистить в стейте сертификат
   const { payload: { totalCart, masters, payment, typeMixed, infoPay, values, certificateInfo: crtInfo } } = action;
   let data = {};
-  console.log(totalCart, "totalCart");
-  // console.log(typeMixed, "typeMixed");
-  // console.log(infoPay, "infoPay");
+  const storage = Storage.getStorage(storageKey.authKey);
 
-  const { day: dayInfo } = yield call(fetchCurrentDay);
+  const { day: dayInfo } = yield call(Fetch.get(`${baseUrl}${wallet}/${storage.id}`));
   let id = 1;
   let groupOrderId = 1;
+
   if (dayInfo && dayInfo.totalOrders) {
     groupOrderId = dayInfo.totalOrders.length + 1;
     id = dayInfo.totalOrders.length + 1;
@@ -366,13 +373,12 @@ function* sendCart(action) {
     }
   }
 
-
   let certificateSum = [];
   let totalSum = 0;
   totalCart.forEach(item => {
     const { name, price, title, count, category, isMaster } = item;
     const sumMaster = getSumMaster({ masters, name, title, price, count });
-    console.log(sumMaster);
+
     if (!data[name]) {
       data[name] = [];
     }
@@ -461,10 +467,7 @@ function* sendCart(action) {
       out: outMember ? outMember.count : null
       // amount: payInfo.certificate
     };
-    console.log(certificate.out);
   }
-
-  console.log(payInfo, "payInfo");
 
   const orders = {
     payment: payment,
@@ -475,11 +478,23 @@ function* sendCart(action) {
     certificate
   };
 
-  yield call(fetchDaysAdd, { totalDay: data, totalOrders: orders });
+  const res = yield call(Fetch.post(`${baseUrl}${shop}${day}`, {
+    totalDay: data,
+    totalOrders: orders,
+    place: storage.id
+  }));
+  if (res.message === "error" && res.errorMessage) {
+    return yield put(startErrorMessage({
+      errorMessage: res.errorMessage,
+      loaderForm: false,
+      alertMessage: res.alertMessage
+    }));
+  }
 
   yield put(endSendCart({
     totalDay: [],
-    totalOrders: []
+    totalOrders: [],
+    alertMessage: res.alertMessage
   }));
   console.log("---END---");
 }
@@ -656,7 +671,7 @@ function* startRemoveTotalDay({ payload }) {
 /* Загрузка shop */
 
 function* loadViewShop() {
-  const res = yield call(fetchViewShop);
+  const res = yield call(Fetch.get(`${baseUrl}${shop}`));
   const { categories, products } = res;
   return yield put(endLoadView({ categories, products }));
 }
@@ -671,8 +686,8 @@ function* shopWatcher() {
   yield takeLatest(addToCartStart, addToCart);
 
   yield takeLatest(startSendCart, sendCart);
-  yield takeLatest(loadTotalDay, loadCurrentDay);
-  yield takeLatest(startRemoveDay, startRemoveTotalDay);
+  // yield takeLatest(loadTotalDay, loadCurrentDay);
+  // yield takeLatest(startRemoveDay, startRemoveTotalDay);
 }
 
 export default function* () {

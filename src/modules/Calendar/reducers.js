@@ -7,7 +7,7 @@ import {
   editEvents,
   endLoadResource,
   loadViewEvents,
-  editResource, initialResource, editMasters
+  editResource, initialResource, editMasters, resetResource
 } from "./actions";
 
 const initialState = {
@@ -113,6 +113,12 @@ export default (state = initialState, action) => {
         ...state,
         resource: [],
         events: []
+        // totalResource: payload.totalResource
+      };
+    case resetResource.toString():
+      return {
+        ...state,
+        resource: []
         // totalResource: payload.totalResource
       };
     default: {

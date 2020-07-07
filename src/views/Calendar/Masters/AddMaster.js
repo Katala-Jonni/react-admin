@@ -34,7 +34,8 @@ class AddMaster extends React.Component {
   handleAdd = () => {
     this.state.value && this.state.value.length && this.props.addResource({
       resourcesInfo: this.state.value,
-      currentDate: moment(this.props.date).format("DD.MM.YY")
+      currentDate: moment(this.props.date).format("DD.MM.YY"),
+      place: this.props.place
     });
     this.setState({ value: [] });
     this.handleClose();
@@ -61,7 +62,8 @@ class AddMaster extends React.Component {
     this.props.editMastersStart({
       startResource,
       endResource,
-      currentDate: moment(this.props.date).valueOf()
+      currentDate: moment(this.props.date).valueOf(),
+      place: this.props.place
     });
 
     this.setState({ editValue: null });
@@ -86,9 +88,13 @@ class AddMaster extends React.Component {
   getOptions = () => this.props.masters && this.props.masters.filter(item => !this.getTitleOptions().includes(item.value));
 
   getStartOptions = () => {
-    return this.props.masters.filter(item => {
-      return this.getTitleOptions().includes(item.value) && item.value.toLowerCase() !== defaultResource[0].resourceTitle.toLowerCase();
-    });
+    console.log(this.props.masters);
+    if (this.props.masters && this.props.masters.length) {
+      return this.props.masters.filter(item => {
+        return this.getTitleOptions().includes(item.value) && item.value.toLowerCase() !== defaultResource[0].resourceTitle.toLowerCase();
+      });
+    }
+    return [];
   };
 
   render() {

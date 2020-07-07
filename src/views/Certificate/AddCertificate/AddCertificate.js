@@ -55,6 +55,15 @@ class AddCertificate extends Component {
     ...initialState()
   };
 
+  static getDerivedStateFromState(nextProps) {
+    if (nextProps.successRegistration) {
+      return {
+        ...initialState()
+      };
+    }
+    return null;
+  }
+
   componentDidMount() {
     const { form: { certificateNumber } } = this.state;
 
@@ -62,6 +71,15 @@ class AddCertificate extends Component {
     // console.log("test¬");
     // this.props.loadNumberCertificate({ value: certificateNumber });
   }
+
+  // static getDerivedStateFromState(nextProps) {
+  //   if (nextProps.successRegistration) {
+  //     return {
+  //       ...initialState()
+  //     };
+  //   }
+  //   return null;
+  // }
 
   addField = () => {
     this.setState({
@@ -71,7 +89,7 @@ class AddCertificate extends Component {
 
   handleSubmit = evt => {
     const { reset, handleSubmit, deleteState } = this.props;
-    deleteState();
+    // deleteState();
     reset();
     this.setState({
       ...initialState()
@@ -250,9 +268,6 @@ class AddCertificate extends Component {
       changeViewTab
     } = this.props;
 
-    console.log(this.props.isViev);
-
-    // console.log(changeViewTab);
     const {
       form: { certificateNumber, certificateSum },
       isDisabled,
@@ -264,6 +279,8 @@ class AddCertificate extends Component {
       radioValue,
       typeCard
     } = this.state;
+
+    // console.log(this.state.form);
 
     return (
       <Fragment>

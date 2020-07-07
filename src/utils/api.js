@@ -1,6 +1,6 @@
 export default {
-  // baseUrl: "http://localhost:3000/api/v.1.0/admin",
-  baseUrl: "https://salonadmin.herokuapp.com/api/v.1.0/admin",
+  baseUrl: "http://localhost:3000/api/v.1.0/admin",
+  // baseUrl: "https://salonadmin.herokuapp.com/api/v.1.0/admin",
   calendar: "/calendar",
   wallet: "/wallet",
   shop: "/shop",
@@ -14,5 +14,8 @@ export default {
   label: "/label",
   catalog: "/catalog",
   category: "/category",
-  product: "/product"
+  product: "/product",
+  total: "/total",
+  login: "/login",
+  auth: "/auth",
 };

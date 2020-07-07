@@ -24,7 +24,7 @@ import ItemGrid from "components/Grid/GridItem.jsx";
 import ActonTill from "../views/Till/ActonTill";
 import InfoPaper from "components/Typography/Info.jsx";
 
-import routes from "routes.js";
+import { dashboardRoutes as routes, adminRoutes } from "routes.js";
 
 import dashboardStyle from "assets/jss/material-dashboard-react/layouts/dashboardStyle.jsx";
 
@@ -48,8 +48,16 @@ import {
   getAdministrators
 } from "../modules/Till";
 import { getTotalDay, loadTotalDay } from "../modules/Shop";
-import { getDay, getLoad, loadApp } from "../modules/Admin";
+import { getDay, getIsAuthorized, getLoad, getRoles, loadApp } from "../modules/Admin";
 import administrators from "../modules/Till/administrators";
+import PrivateRoute from "../views/PrivateRoute";
+
+import LoginPage from "../views/LoginPage";
+import { Storage, storageKey } from "../storage";
+
+const storage = Storage.getStorage(storageKey.authKey);
+
+const newLogin = () => <LoginPage/>;
 
 const switchRoutes = (
   <Switch>
@@ -67,6 +75,21 @@ const switchRoutes = (
     })}
   </Switch>
 );
+
+// const switchRoutesLogin = (
+//   <Switch>
+//     <PrivateRoute
+//       path="/"
+//       component={newLogin}
+//       startUrl="/login"
+//       isAuthorized={isAuthorized}
+//     />
+//     {/*<Redirect*/}
+//     {/*path='/admin/login-page'*/}
+//     {/*component={newLogin}*/}
+//     {/*/>*/}
+//   </Switch>
+// );
 
 class Dashboard extends React.Component {
   constructor(props) {
@@ -100,7 +123,9 @@ class Dashboard extends React.Component {
   };
 
   getRoute() {
-    return this.props.location.pathname !== "/admin/maps";
+    // return this.props.location.pathname !== "/admin/maps";
+    // console.log(this.props.isAuthorized);
+    return this.props.isAuthorized;
   }
 
   resizeFunction = () => {
@@ -165,6 +190,12 @@ class Dashboard extends React.Component {
     });
   };
 
+  getRoutes = () => {
+    return routes.filter((elem) => {
+      return this.props.roles.includes(elem.access);
+    });
+  };
+
   render() {
     const { classes, lock, isLoad, viewTill, administrators, isDay, ...rest } = this.props;
     // console.log(!isDay);
@@ -173,12 +204,13 @@ class Dashboard extends React.Component {
         <Fragment>
           <Sidebar
             //!lock && isLoad && viewTill
-            routes={routes}
+            routes={this.getRoutes()}
             logo={logo}
             image={this.state.image}
             handleDrawerToggle={this.handleDrawerToggle}
             open={this.state.mobileOpen}
             color={this.state.color}
+            adminRoutes={adminRoutes}
             {...rest}
           />
           <div className={classes.mainPanel} ref="mainPanel">
@@ -193,7 +225,21 @@ class Dashboard extends React.Component {
                 <div className={classes.container}>{switchRoutes}</div>
               </div>
             ) : (
-              <div className={classes.map}>{switchRoutes}</div>
+              <div className={classes.content}>
+                <Switch>
+                  {/*<PrivateRoute*/}
+                  {/*path="/"*/}
+                  {/*component={newLogin}*/}
+                  {/*startUrl="/admin/login-page"*/}
+                  {/*isAuthorized={this.props.isAuthorized}*/}
+                  {/*/>*/}
+                  <Redirect to={"/auth"}/>
+                  {/*<Redirect*/}
+                  {/*path='/admin/login-page'*/}
+                  {/*component={newLogin}*/}
+                  {/*/>*/}
+                </Switch>
+              </div>
             )}
             {/*{this.getRoute() ? <Footer /> : null}*/}
             <FixedPlugin
@@ -222,7 +268,9 @@ const mapStateFromProps = state => ({
   isLoad: getLoad(state),
   viewTill: getstateTill(state),
   administrators: getAdministrators(state),
-  isDay: getDay(state)
+  isDay: getDay(state),
+  isAuthorized: getIsAuthorized(state),
+  roles: getRoles(state)
   // events: getEvents(state),
   // totalResource: getTotalResource(state)
 });

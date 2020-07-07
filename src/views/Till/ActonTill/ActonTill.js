@@ -8,6 +8,7 @@ import ItemGrid from "components/Grid/GridItem.jsx";
 import customEventsStyle from "assets/jss/material-dashboard-react/components/customEventsStyle";
 import InputNumber from "../../../components/Inputs/InputNumber";
 import Select from "react-select";
+import { startLastDay } from "../../../modules/Till";
 
 const getInitialState = () => ({
   selectValue: null,
@@ -19,6 +20,11 @@ class ActonTill extends Component {
   state = {
     ...getInitialState()
   };
+
+  componentDidMount() {
+    console.log("test");
+    this.props.startLastDay();
+  }
 
   handleChangeCountCart = value => {
     this.setState({
@@ -43,19 +49,21 @@ class ActonTill extends Component {
 
   handleClickAdd = () => {
     const { selectValue, countCart } = this.state;
+    const { place, handleClickAdd, changeClick } = this.props;
     if (!countCart) return;
     if (selectValue && !this.props.isOutTill) return;
     const data = {
       count: countCart,
-      title: selectValue ? selectValue.value : null
+      title: selectValue ? selectValue.value : null,
+      place
     };
-    this.props.handleClickAdd(data);
+    handleClickAdd(data);
     this.removeField();
     // this.setState({
     //   isClick: true
     // });
-    if (this.props.changeClick) {
-      this.props.changeClick();
+    if (changeClick) {
+      changeClick();
     }
   };
 
@@ -63,6 +71,18 @@ class ActonTill extends Component {
     if (evt.keyCode === 13) {
       this.handleClickAdd();
     }
+  };
+
+  handleClickCloseLast = () => {
+    const { inTill, outTill, totalDay, totalOrders, pay, place } = this.props;
+    const data = {
+      totalDay,
+      totalOrders,
+      pay,
+      inTill,
+      outTill
+    };
+    this.props.startLastAdd(data);
   };
 
   render() {
@@ -73,13 +93,46 @@ class ActonTill extends Component {
       options,
       label,
       selectLabel,
-      selectName
+      selectName,
+      btnClose,
+      lastDay,
+      isDay
     } = this.props;
     const { selectValue, countCart } = this.state;
     return (
       <div style={{ width: "100%" }}>
         <GridContainer spacing={16} direction="row" alignItems={"baseline"}>
-          {isOutTill
+          {
+            lastDay && !isDay
+              ? <ItemGrid xs={3}>
+                <Button
+                  variant="contained"
+                  color={"danger"}
+                  // disabled={!countCart && countCart < 1}
+                  onClick={this.handleClickCloseLast}
+                >
+                  {btnClose}
+                </Button>
+              </ItemGrid>
+              : null
+          }
+          {isOutTill && lastDay === false
+            ? <ItemGrid xs={3}>
+              <Select
+                options={options}
+                name={selectName}
+                type="text"
+                id={selectName}
+                label={selectLabel}
+                placeholder={selectLabel}
+                classes={classes}
+                value={selectValue}
+                onChange={this.handleChange}
+              />
+            </ItemGrid>
+            : null
+          }
+          {isOutTill && isDay
             ? <ItemGrid xs={3}>
               <Select
                 options={options}
@@ -139,6 +192,7 @@ class ActonTill extends Component {
 
 ActonTill.defaultProps = {
   btnAdd: "Внести",
+  btnClose: "Закрыть прошлую смену",
   label: "Введите число",
   selectLabel: "Выберите вид расхода",
   selectName: "outTillSelect"

@@ -15,6 +15,7 @@ import certificate from "../modules/Certificate";
 import mixedPay from "../modules/MixedPay";
 import master from "../modules/Master";
 import catalog from "../modules/Catalog";
+import login from "../modules/Login";
 import { reducer as formReducer } from "redux-form";
 
 const sagaMiddleware = createSagaMiddleware();
@@ -29,6 +30,7 @@ const mainReducer = combineReducers({
   mixedPay,
   master,
   catalog,
+  login,
   form: formReducer
 });
 

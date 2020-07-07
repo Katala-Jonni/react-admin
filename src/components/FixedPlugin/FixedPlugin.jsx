@@ -34,7 +34,7 @@ class FixedPlugin extends Component {
             <i className="fa fa-cog fa-2x" />
           </div>
           <ul className="dropdown-menu">
-            <li className="header-title">SIDEBAR FILTERS</li>
+            <li className="header-title">Фильтр навигации</li>
             <li className="adjustments-line">
               <a className="switch-trigger">
                 <div>
@@ -96,7 +96,7 @@ class FixedPlugin extends Component {
                 </div>
               </a>
             </li>
-            <li className="header-title">Images</li>
+            <li className="header-title">Картинка навигации</li>
             <li className={this.state["bgImage"] === imagine1 ? "active" : ""}>
               <a
                 className="img-holder switch-trigger"
@@ -142,40 +142,40 @@ class FixedPlugin extends Component {
               </a>
             </li>
 
-            <li className="button-container">
-              <div className="button-container">
-                <Button
-                  color="success"
-                  href="https://www.creative-tim.com/product/material-dashboard-react"
-                  target="_blank"
-                  fullWidth
-                >
-                  Download free!
-                </Button>
-              </div>
-            </li>
-            <li className="button-container">
-              <div className="button-container">
-                <Button
-                  color="warning"
-                  href="https://www.creative-tim.com/product/material-dashboard-pro-react"
-                  target="_blank"
-                  fullWidth
-                >
-                  Get PRO version
-                </Button>
-              </div>
-            </li>
-            <li className="button-container">
-              <Button
-                color="info"
-                fullWidth
-                href="https://demos.creative-tim.com/material-dashboard-react/#/documentation/tutorial"
-                target="_blank"
-              >
-                Documentation
-              </Button>
-            </li>
+            {/*<li className="button-container">*/}
+              {/*<div className="button-container">*/}
+                {/*<Button*/}
+                  {/*color="success"*/}
+                  {/*href="https://www.creative-tim.com/product/material-dashboard-react"*/}
+                  {/*target="_blank"*/}
+                  {/*fullWidth*/}
+                {/*>*/}
+                  {/*Download free!*/}
+                {/*</Button>*/}
+              {/*</div>*/}
+            {/*</li>*/}
+            {/*<li className="button-container">*/}
+              {/*<div className="button-container">*/}
+                {/*<Button*/}
+                  {/*color="warning"*/}
+                  {/*href="https://www.creative-tim.com/product/material-dashboard-pro-react"*/}
+                  {/*target="_blank"*/}
+                  {/*fullWidth*/}
+                {/*>*/}
+                  {/*Get PRO version*/}
+                {/*</Button>*/}
+              {/*</div>*/}
+            {/*</li>*/}
+            {/*<li className="button-container">*/}
+              {/*<Button*/}
+                {/*color="info"*/}
+                {/*fullWidth*/}
+                {/*href="https://demos.creative-tim.com/material-dashboard-react/#/documentation/tutorial"*/}
+                {/*target="_blank"*/}
+              {/*>*/}
+                {/*Documentation*/}
+              {/*</Button>*/}
+            {/*</li>*/}
             <li className="adjustments-line" />
           </ul>
         </div>

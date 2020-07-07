@@ -27,18 +27,20 @@ class OrderTable extends Component {
 
   handleClickAddInTill = data => {
     if (!this.isValidData(data)) return;
+    const { place } = this.props;
     console.log(data);
     const type = "inTill";
-    return this.props.addInTill({ data, type });
+    return this.props.addInTill({ data, type, place });
   };
 
   handleClickAddOutTill = data => {
     if (!this.isValidData(data)) return;
+    const { place } = this.props;
     this.setState({
       countCart: null
     });
     const type = "outTill";
-    return this.props.addOutTill({ data, type });
+    return this.props.addOutTill({ data, type, place });
   };
 
   getInTill = () => {

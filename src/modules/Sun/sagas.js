@@ -15,6 +15,11 @@ import {
 import moment from "moment";
 import api from "../../utils/api";
 import { endVerifyCertificate } from "../Certificate/actions";
+import { Fetch } from "../../utils/fetch";
+import { Storage, storageKey } from "../../storage";
+import { handle_request_open } from "../Admin";
+
+const { baseUrl, sun } = api;
 
 let cards = {};
 const numbers = {
@@ -161,7 +166,7 @@ function* delUseCard({ payload }) {
 }
 
 function* fetchStartSearchCard({ payload: { value } }) {
-  const { card, cardStatus } = yield call(fetchSearchCard, value);
+  const { card, cardStatus } = yield call(Fetch.get(`${baseUrl}${sun}/${value}?search=true`));
 
   return yield put(endSearchNumber({
     isCard: !!card,
@@ -176,8 +181,7 @@ function* fetchStartVerifyCard({ payload }) {
   if (!value) {
     return false;
   }
-  console.log(value);
-  const { isValidNumber, errorMessage } = yield call(fetchVerificate, value);
+  const { isValidNumber, errorMessage } = yield call(Fetch.get(`${baseUrl}${sun}/${value}`));
 
   return yield put(endVerifyCard({ isCard: isValidNumber, verifyMessage: errorMessage }));
 
@@ -230,14 +234,18 @@ function* fetchSendCard({ payload }) {
   // yield call(fetchCards);
   // return yield put(endSendCard({ errorMessage, serverMessage }));
 
+  const storage = Storage.getStorage(storageKey.authKey);
   console.log(payload);
   const card = {
     ...payload,
-    place: "Древлянка 14, корпус 1"
+    place: storage.id
   };
 
-  const result = yield call(fetchAddCard, card);
-  return yield put(deleteState());
+  const result = yield call(Fetch.post(`${baseUrl}${sun}/${card.cardNumber}`, card));
+  if (result.message === "ok") {
+    yield put(deleteState());
+  }
+  return yield put(handle_request_open({ alertMessage: result.alertMessage }));
   // console.log("Сделать концовку добавления");
 
 }
@@ -263,12 +271,14 @@ function* fetchStartUseCard({ payload }) {
   // const newCard = yield call(fetchSetCurrentCard, cardNumber, card);
   // yield put(endUseCard(newCard));
 
+  const storage = Storage.getStorage(storageKey.authKey);
+
   const useInfo = {
     out: addCount,
-    place: "Невского, 30"
+    place: storage.id
   };
 
-  const { card, isValidNumber, errorMessage } = yield call(fetchPutCard, { useInfo, cardNumber });
+  const { card, isValidNumber, errorMessage } = yield call(Fetch.put(`${baseUrl}${sun}/${cardNumber}`, useInfo));
   // console.log(card);
   yield put(endUseCard(card));
 };

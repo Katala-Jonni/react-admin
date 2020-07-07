@@ -1,7 +1,8 @@
 import {
+  getLastDay,
   // addInTill,
   // endLockOpen,
-  getAdministrators,
+  // getAdministrators,
   // loadStateTill,
   // loadTill,
   // lockOpen,
@@ -9,7 +10,16 @@ import {
   loadTill
 } from "../../modules/Till";
 import { loadTotalDay } from "../../modules/Shop";
-import { getDay, loadApp, startApp, getError } from "../../modules/Admin";
+import {
+  getDay,
+  loadApp,
+  startApp,
+  getError,
+  getAdministrators,
+  getPlace,
+  getAlertMessage,
+  getShowMessage, handle_request_close
+} from "../../modules/Admin";
 import { connect } from "react-redux";
 import { loadResource } from "../../modules/Calendar";
 import App from "./App";
@@ -17,7 +27,11 @@ import App from "./App";
 const mapStateFromProps = state => ({
   isDay: getDay(state),
   administrators: getAdministrators(state),
-  isError: getError(state)
+  isError: getError(state),
+  place: getPlace(state),
+  alertMessage: getAlertMessage(state),
+  showMessage: getShowMessage(state),
+  lastDay: getLastDay(state),
 });
 
 const mapDispatchFromProps = {
@@ -30,7 +44,8 @@ const mapDispatchFromProps = {
   loadTill,
   // openTill,
   // loadStateTill,
-  startApp
+  startApp,
+  handle_request_close
 };
 
 export default connect(mapStateFromProps, mapDispatchFromProps)(App);

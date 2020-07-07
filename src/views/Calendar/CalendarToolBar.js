@@ -13,8 +13,9 @@ import Typography from "@material-ui/core/Typography";
 import AddMaster from "./Masters";
 import { changeCalendar, getIsDay, getResource, initialResource, selectViewEvents } from "../../modules/Calendar";
 import AddEvents from "./Events/index";
-import { loadResource } from "../../modules/Calendar/actions";
+import { loadResource, resetResource } from "../../modules/Calendar/actions";
 import getWorkHourBool from "../../utils/getWorkHourBool";
+import { getPlace } from "../../modules/Admin";
 
 class CalendarToolBar extends Component {
   isPrev = () => {
@@ -52,13 +53,14 @@ class CalendarToolBar extends Component {
     onView("day");
     initialResource();
     loadResource();
-    return selectViewEvents(moment().startOf("day").toDate());
+    return selectViewEvents({ day: moment().startOf("day").toDate(), place: this.props.place });
   };
   onClickMonth = () => {
     const { onNavigate, onView, initialResource, loadResource, view } = this.props;
     console.log("onClickMonth");
-    initialResource();
+    this.props.initialResource();
     loadResource();
+    this.props.resetResource();
     if (view === "month") {
       return;
     }
@@ -172,9 +174,10 @@ CalendarToolBar.propTypes = {
 
 const mapStateFromProps = state => ({
   resource: getResource(state),
-  isDay: getIsDay(state)
+  isDay: getIsDay(state),
+  place: getPlace(state)
 });
 
-const mapDispatchFromProps = ({ changeCalendar, loadResource, initialResource, selectViewEvents });
+const mapDispatchFromProps = ({ changeCalendar, loadResource, initialResource, selectViewEvents, resetResource });
 
 export default connect(mapStateFromProps, mapDispatchFromProps)(CalendarToolBar);

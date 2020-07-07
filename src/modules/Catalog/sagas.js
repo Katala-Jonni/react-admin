@@ -14,7 +14,8 @@ import {
   reduxFormMasterChange,
   reduxResetForm,
   set_current_todo_null,
-  startDeleteMaster, startEditCategory,
+  startDeleteMaster,
+  startEditCategory,
   startEditMasters,
   startEditProduct,
   startMasters,
@@ -27,132 +28,14 @@ import {
 import { editMasters } from "../Calendar";
 import { loadView } from "../Shop";
 import { endLoadView } from "../Shop/actions";
+import { Fetch } from "../../utils/fetch";
 
-const fetchData = async () => {
-  try {
-    const { baseUrl, master } = api;
-    const res = await fetch(`${baseUrl}${master}`);
-    return await res.json();
-  } catch (e) {
-    console.log(e);
-  }
-};
-
-const fetchViewShop = () => {
-  const { baseUrl, shop } = api;
-  return fetch(`${baseUrl}${shop}`)
-    .then(res => res.json());
-};
-
-const fetchChangeLabel = async (id, body) => {
-  const { baseUrl, master, label } = api;
-  const res = await fetch(`${baseUrl}${master}${label}/${id}`,
-    {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json;charset=utf-8"
-      },
-      body: JSON.stringify(body)
-    });
-  return await res.json();
-};
-
-const fetchDeleteMaster = async (id) => {
-  console.log(id);
-  const { baseUrl, master } = api;
-  const res = await fetch(`${baseUrl}${master}/${id}`,
-    {
-      method: "DELETE",
-      headers: {
-        "Content-Type": "application/json;charset=utf-8"
-      }
-    });
-  return await res.json();
-};
-
-const fetchEdit = async ({ id, body }) => {
-  try {
-    const { baseUrl, master } = api;
-    console.log(`${baseUrl}${master}/${id}`);
-    console.log();
-    const res = await fetch(`${baseUrl}${master}/${id}`, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json;charset=utf-8"
-      },
-      body: JSON.stringify(body)
-    });
-    return await res.json();
-  } catch (e) {
-    return console.log(e);
-  }
-};
-
-const fetchPost = async ({ body }) => {
-  try {
-    const { baseUrl, master } = api;
-    const res = await fetch(`${baseUrl}${master}`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json;charset=utf-8"
-      },
-      body: JSON.stringify(body)
-    });
-    return await res.json();
-  } catch (e) {
-    return console.log(e);
-  }
-};
-
-const fetchChangeCatalog = async (id, body, isProduct = true) => {
-  const { baseUrl, catalog } = api;
-  const res = await fetch(`${baseUrl}${catalog}/${isProduct ? "product" : "category"}/${id}`,
-    {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json;charset=utf-8"
-      },
-      body: JSON.stringify(body)
-    });
-  return await res.json();
-};
-
-const fetchPostCategory = async (body) => {
-  try {
-    const { baseUrl, catalog, category } = api;
-    const res = await fetch(`${baseUrl}${catalog}${category}`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json;charset=utf-8"
-      },
-      body: JSON.stringify(body)
-    });
-    return await res.json();
-  } catch (e) {
-    return console.log(e);
-  }
-};
-
-const fetchPostProduct = async (body) => {
-  try {
-    const { baseUrl, catalog, product } = api;
-    const res = await fetch(`${baseUrl}${catalog}${product}`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json;charset=utf-8"
-      },
-      body: JSON.stringify(body)
-    });
-    return await res.json();
-  } catch (e) {
-    return console.log(e);
-  }
-};
+const { baseUrl, shop, master, label, catalog, category, product } = api;
 
 console.log("-------------");
 
 function* loadMasterResource() {
-  const res = yield call(fetchViewShop);
+  const res = yield call(Fetch.get(`${baseUrl}${shop}`));
   const { categories, products } = res;
   yield put(endLoadView({ categories, products }));
   return yield put(endLoadMaster({ masters: products, labels: categories }));
@@ -161,7 +44,7 @@ function* loadMasterResource() {
 function* loadLabelResource(action) {
   console.log("testLabel");
   const { payload } = action;
-  const { masters } = yield call(fetchChangeLabel, payload.id, payload.label);
+  const { masters } = yield call(Fetch.put(`${baseUrl}${master}${label}/${payload.id}`, payload.label));
   // console.log(masters);
   yield put(endLoadLabel({ masters }));
   yield put(editMasters({ masters }));
@@ -201,7 +84,7 @@ function* reduxFormReset(action) {
 
 function* editMastersState(action) {
   const { payload: { id, values } } = action;
-  const { masters } = yield call(fetchEdit, { id, body: values });
+  const { masters } = yield call(Fetch.put(`${baseUrl}${master}/${id}`, values));
   const currentTodo = masters.find((item) => item._id === id);
   yield put(endEditMasters({ masters, currentTodo }));
   yield put(editMasters({ masters }));
@@ -209,7 +92,7 @@ function* editMastersState(action) {
 
 function* startMastersState(action) {
   const { payload: { values } } = action;
-  const { masters } = yield call(fetchPost, { body: values });
+  const { masters } = yield call(Fetch.post(`${baseUrl}${master}`, values));
   yield put(endPostMasters({ masters }));
   yield put(editMasters({ masters }));
   // set_current_todo_null(this.props.masters);
@@ -227,7 +110,9 @@ function* deleteMasters(action) {
 function* editProduct(action) {
   const { payload: { id, values } } = action;
   // изменение продукта/услуги
-  const res = yield call(fetchChangeCatalog, id, values);
+  // const res = yield call(fetchChangeCatalog, id, values);
+  const res = yield call(Fetch.put(`${baseUrl}${catalog}${product}/${id}`, values));
+  console.log(res);
   if (res.message === "error" && res.errorMessage) {
     console.log(res, "res");
     return yield put(startErrorMessage({ errorMessage: res.errorMessage, loaderForm: false }));
@@ -246,7 +131,7 @@ function* editProduct(action) {
 function* editCategory(action) {
   const { payload: { id, values } } = action;
   // изменение категории
-  const res = yield call(fetchChangeCatalog, id, values, false);
+  const res = yield call(Fetch.put(`${baseUrl}${catalog}${category}/${id}`, values));
   if (res.message === "error" && res.errorMessage) {
     return yield put(startErrorMessage({ errorMessage: res.errorMessage, loaderForm: false }));
   }
@@ -264,7 +149,7 @@ function* editCategory(action) {
 function* sendCategory(action) {
   const { payload: { values } } = action;
   // добавление категории
-  const res = yield call(fetchPostCategory, values);
+  const res = yield call(Fetch.post(`${baseUrl}${catalog}${category}`, values));
   if (res.message === "error" && res.errorMessage) {
     return yield put(startErrorMessage({ errorMessage: res.errorMessage, loaderForm: false }));
   }
@@ -287,9 +172,10 @@ function* sendCategory(action) {
 function* sendProduct(action) {
   const { payload: { values } } = action;
   // добавление товара/услуги
-  const res = yield call(fetchPostProduct, values);
+  const res = yield call(Fetch.post(`${baseUrl}${catalog}${product}`, values));
   if (res.message === "error" && res.errorMessage) {
     console.log(res, "res");
+    // alertMessage
     return yield put(startErrorMessage({ errorMessage: res.errorMessage, loaderForm: false }));
   }
   const { categories, products } = res;

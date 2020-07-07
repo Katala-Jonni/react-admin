@@ -42,7 +42,7 @@ class Certificate extends React.Component {
   handleSubmit = values => {
     const { sendCertificate } = this.props;
     console.log(values);
-    sendCertificate(values);
+    sendCertificate({ values, props: this.props });
     // console.log(values);
     // console.log(rest);
     // const { sendCard } = this.props;

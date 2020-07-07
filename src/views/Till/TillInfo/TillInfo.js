@@ -2,6 +2,8 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import moment from "moment/min/moment-with-locales";
 
+import { Router, Route, Switch, Redirect } from "react-router-dom";
+
 // material-ui components
 import { withStyles } from "@material-ui/core/styles";
 import Chip from "@material-ui/core/Chip";
@@ -40,7 +42,8 @@ class TillInfo extends Component {
   state = {
     inTillDialog: false,
     outTillDialog: false,
-    alert: null
+    alert: null,
+    finish: null
   };
 
   handleClick = data => {
@@ -59,6 +62,7 @@ class TillInfo extends Component {
 
   successDelete = () => {
     // this.props.deleteEvents();
+    // console.log("send");
     this.setState({
       alert: (
         <SweetAlert
@@ -66,6 +70,8 @@ class TillInfo extends Component {
           style={{ display: "block", marginTop: "-100px" }}
           title={this.props.successAlertTitle}
           onConfirm={() => {
+            console.log("Компонент TillInfo");
+            window.location.assign("/");
           }}
           onCancel={() => {
           }}
@@ -77,20 +83,19 @@ class TillInfo extends Component {
         </SweetAlert>
       )
     });
-    const { startRemoveDay, inTill, outTill, paymentByCard, revenue, income, totalDay, totalOrders, inTillSum, outTillSum } = this.props;
+    const { startRemoveDay, inTill, outTill, paymentByCard, revenue, income, totalDay, totalOrders, inTillSum, outTillSum, pay, place, startAddDay } = this.props;
     const cash = revenue + inTillSum - (revenue - income) - outTillSum - paymentByCard;
     const data = {
-      inTill,
-      outTill,
-      paymentByCard,
-      revenue,
-      income,
+      place,
       totalDay,
       totalOrders,
-      cash,
-      date: moment().format("DD.MM.YY")
+      pay,
+      inTill,
+      outTill
+      // date: moment().format("DD.MM.YY")
     };
-    console.log(data);
+    // console.log(place);
+    startAddDay(data);
     // startRemoveDay(data);
   };
 
@@ -155,7 +160,7 @@ class TillInfo extends Component {
 
   render() {
     const { classes, inTillSum, outTillSum } = this.props;
-    const { inTillDialog, outTillDialog } = this.state;
+    const { inTillDialog, outTillDialog, finish } = this.state;
     return (
       <div className={classes.root}>
         {this.state.alert}

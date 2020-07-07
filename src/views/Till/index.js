@@ -9,7 +9,6 @@ const mapStateFromProps = state => ({
   totalOrders: getTotalOrders(state),
   tillInfoView: getTillInfoView(state),
   pay: getPay(state)
-
 });
 
 const mapDispatchFromProps = { changeTill, startLoadDay };

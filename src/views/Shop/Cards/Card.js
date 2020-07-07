@@ -199,7 +199,8 @@ class RecipeReviewCard extends Component {
             </Typography>
           </CardContent>
         </CardActionArea>
-        {getWorkHourBool()
+        {/*{getWorkHourBool()*/}
+        {true
           ? <CardActions className={classes.actionRoot}>
             <Tooltip title={"Уменьшить на один"} aria-label={"Уменьшить на один"}>
               <IconButton aria-label="Уменьшить на один" onClick={this.handleClickRemove}>

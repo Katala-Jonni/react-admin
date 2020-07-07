@@ -21,9 +21,24 @@ import {
   editResource,
   updateResource
 } from "./actions";
+import { Fetch } from "../../utils/fetch";
+import { Storage, storageKey } from "../../storage";
+
+const { baseUrl, calendar, event, resource } = api;
 
 
 const editEvent = (events) => {
+  // if (Array.isArray(events)) {
+  //   return events.map((item) => {
+  //     const start = moment(item.date).set({ "hour": moment(item.start).hour(), "minute": moment(item.start).minute() });
+  //     const end = moment(item.date).set({ "hour": moment(item.end).hour(), "minute": moment(item.end).minute() });
+  //     item.start = start._d;
+  //     item.end = end._d;
+  //     item.date = start._d;
+  //     return item;
+  //   });
+  // }
+
   return events.map((item) => {
     const start = moment(item.date).set({ "hour": moment(item.start).hour(), "minute": moment(item.start).minute() });
     const end = moment(item.date).set({ "hour": moment(item.end).hour(), "minute": moment(item.end).minute() });
@@ -32,6 +47,7 @@ const editEvent = (events) => {
     item.date = start._d;
     return item;
   });
+  // return [];
 };
 
 /* fetch */
@@ -136,10 +152,25 @@ function* addMastersDay(action) {
 }
 
 
-function* loadTotalResource() {
-  const totalResource = yield call(fetchData);
-  totalResource.events = editEvent(totalResource.events);
-  yield put(endLoadResource(totalResource));
+function* loadTotalResource(action) {
+  try {
+    const { payload } = action;
+    // const totalResource = yield call(fetchData);
+    // console.log(payload.place);
+    // if (payload && payload.place) {
+    //
+    // }
+    const storage = Storage.getStorage(storageKey.authKey);
+    const res = yield call(Fetch.get(`${baseUrl}${calendar}/${storage.id}`));
+    if (!res.message) {
+      res.events = editEvent(res.events);
+      yield put(endLoadResource(res));
+      // return console.log(res.message, "@CalendarSaga loadTotalResource");
+    }
+
+  } catch (e) {
+    console.log(e, "@CalendarSaga loadTotalResource");
+  }
 }
 
 function* selectCurrentDay(action) {
@@ -159,29 +190,33 @@ function* selectCurrentDay(action) {
 
 function* addEventsDay(action) {
   const { payload } = action;
-  const res = yield call(fetchEventsPost, payload);
+  console.log(payload);
+  // const res = yield call(fetchEventsPost, payload);
+  const res = yield call(Fetch.post(`${baseUrl}${calendar}${event}`, payload));
   const events = editEvent(res);
   return yield put(editEvents(events));
 }
 
 function* updateEventsDay(action) {
   const { payload } = action;
-  const res = yield call(fetchEventsPut, payload);
+  console.log(payload);
+  // const res = yield call(fetchEventsPut, payload);
+  const res = yield call(Fetch.put(`${baseUrl}${calendar}${event}/${payload._id}`, payload));
   const events = editEvent(res);
   return yield put(editEvents(events));
 }
 
 function* deleteEventsDay(action) {
   const { payload } = action;
-  const res = yield call(fetchEventsDelete, payload);
+  const res = yield call(Fetch.delete(`${baseUrl}${calendar}${event}/${payload}`, payload));
   const events = editEvent(res.events);
   return yield put(editEvents(events));
 }
 
 function* selectView(action) {
   const { payload } = action;
-  console.log(payload);
-  const res = yield call(fetchCurrentEvent, moment(payload).valueOf());
+  // const res = yield call(fetchCurrentEvent, moment(payload).valueOf());
+  const res = yield call(Fetch.get(`${baseUrl}${calendar}${event}/${moment(payload.day).valueOf()}/${payload.place}`));
   const { resource: { resourcesInfo: resource }, events } = res;
   return yield put(loadViewEvents({
     resource,
@@ -192,7 +227,8 @@ function* selectView(action) {
 
 function* addResourceMasters(action) {
   const { payload } = action;
-  const res = yield call(fetchResourcePut, payload);
+  // const res = yield call(fetchResourcePut, payload);
+  const res = yield call(Fetch.put(`${baseUrl}${calendar}${api.resource}`, payload));
   const { resource: { resourcesInfo: resource }, totalResource } = res;
   return yield put(loadViewEvents({
     resource,
@@ -203,7 +239,8 @@ function* addResourceMasters(action) {
 
 function* editMastersDay(action) {
   const { payload } = action;
-  const res = yield call(fetchResourceEventPut, payload);
+  // const res = yield call(fetchResourceEventPut, payload);
+  const res = yield call(Fetch.put(`${baseUrl}${calendar}${api.resource}${event}`, payload));
   const { resource: { resourcesInfo: resource }, events, totalResource } = res;
   return yield put(loadViewEvents({
     resource,

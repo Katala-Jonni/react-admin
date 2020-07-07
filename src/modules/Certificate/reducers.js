@@ -3,7 +3,7 @@ import {
   endVerifyCertificate,
   endSearchNumber,
   turnOnLoader,
-  turnOnLoaderCertificate, deleteState
+  turnOnLoaderCertificate, deleteState, successRegistrationCertificate
 } from "./actions";
 
 const getInitialState = () => {
@@ -14,7 +14,8 @@ const getInitialState = () => {
     verifyMessage: null,
     loader: false,
     loaderCertificate: false,
-    certificateStatus: false
+    certificateStatus: false,
+    successRegistration: false
   };
 
 };
@@ -52,6 +53,12 @@ export default (state = initialState, action) => {
       return {
         ...getInitialState()
       };
+    case successRegistrationCertificate.toString():
+      return {
+        ...state,
+        successRegistration: true
+      };
+    //successRegistrationCertificate
     default: {
       return state;
     }

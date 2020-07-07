@@ -72,8 +72,9 @@ class RenderMembers extends Component {
   };
 
   render() {
-    const { fields, classes, btnText, totalSum, cash, card, certificate } = this.props;
+    const { fields, classes, btnText, totalSum, cash, card, certificate, disabledBtn } = this.props;
     const { addType } = this.state;
+    console.log(disabledBtn);
     const deposit = cash + card + certificate;
     const balance = totalSum - deposit;
     return (
@@ -155,7 +156,8 @@ class RenderMembers extends Component {
             type="submit"
             color='primary'
             variant="contained"
-            // disabled={!this.state.isMember || (!valid && !submitting)}
+            onClick={this.handleClick}
+            disabled={disabledBtn}
             className={classes.indent}
           >
             Отправить
@@ -168,7 +170,7 @@ class RenderMembers extends Component {
 }
 
 RenderMembers.defaultProps = {
-  btnText: "Добавить тип оплаты",
+  btnText: "Добавить тип оплаты"
   // totalSum: 0
 };
 

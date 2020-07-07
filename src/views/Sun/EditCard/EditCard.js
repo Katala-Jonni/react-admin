@@ -317,7 +317,7 @@ class EditCard extends Component {
                     className={classes.addCardForm}
                     color={"textSecondary"}
                   >
-                    Место приобретения: <span style={{ color: "black", fontSize: 18 }}>{card.place}</span>
+                    Место приобретения: <span style={{ color: "black", fontSize: 18 }}>{card.place.address}</span>
                   </Typography>
                   <Typography
                     variant="body1"

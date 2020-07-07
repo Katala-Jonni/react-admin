@@ -14,13 +14,15 @@ import {
   getDefaultResource, initialResource
 } from "../../modules/Calendar";
 import { startApp } from "../../modules/Admin/actions";
+import { getPlace } from "../../modules/Admin";
 
 const mapStateFromProps = state => ({
   resource: getResource(state),
   events: getEvents(state),
   totalResource: getTotalResource(state),
   currentEvents: getCurrentEvents(state),
-  defaultResource: getDefaultResource(state)
+  defaultResource: getDefaultResource(state),
+  place: getPlace(state)
 });
 
 const mapDispatchFromProps = {

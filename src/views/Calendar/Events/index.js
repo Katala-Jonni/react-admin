@@ -11,12 +11,14 @@ import {
   updateEvents,
   addEvents
 } from "../../../modules/Calendar";
+import { getPlace } from "../../../modules/Admin";
 
 const mapStateFromProps = state => ({
   resource: getResource(state),
   events: getEvents(state),
   masters: getTotalMasters(state),
-  totalResource: getTotalResource(state)
+  totalResource: getTotalResource(state),
+  place: getPlace(state)
 });
 
 const mapDispatchFromProps = { changeMasters, editMastersStart, editEvents, updateEvents, addEvents };

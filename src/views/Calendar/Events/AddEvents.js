@@ -8,6 +8,7 @@ import DialogTitle from "@material-ui/core/DialogTitle";
 import AddIcon from "@material-ui/icons/Add";
 import AddEventsForm from "./Forms/AddEventsForm";
 import moment from "moment";
+import { Storage, storageKey } from "../../../storage";
 
 class AddEvents extends React.Component {
   state = {
@@ -24,6 +25,7 @@ class AddEvents extends React.Component {
 
   handleSubmit = values => {
     const { lastName, surname, phoneNumber } = values;
+    const storage = Storage.getStorage(storageKey.authKey);
     const events = values.members.map(item => {
       const milliseconds = moment(item.date).startOf("day");
       const start = moment(item.date).set({ "hour": moment(item.start).hour(), "minute": moment(item.start).minute() });
@@ -38,10 +40,12 @@ class AddEvents extends React.Component {
         lastName,
         surname,
         phoneNumber,
-        milliseconds: milliseconds.valueOf()
+        milliseconds: milliseconds.valueOf(),
+        place: storage.id
       };
     });
-    this.props.addEvents(events);
+    const event = Object.assign({}, { event: events, place: storage.id });
+    this.props.addEvents(event);
     this.handleClickClose();
   };
 

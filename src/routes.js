@@ -30,6 +30,8 @@ import Picker from "./components/Inputs/Picker";
 import Masters from "./views/Masters";
 import Catalog from "./views/Catalog";
 
+import Fingerprint from "@material-ui/icons/Fingerprint";
+import LoginPage from "views/LoginPage";
 
 const newCal = () => <CalendarPage/>;
 const newShop = () => <ShopPage/>;
@@ -38,6 +40,7 @@ const newSun = () => <SunPage/>;
 const newCertificate = () => <CertificatePage/>;
 const newMasters = () => <Masters/>;
 const newCatalog = () => <Catalog/>;
+const newLogin = () => <LoginPage/>;
 
 const CustomComponent = () => {
   return (
@@ -45,22 +48,23 @@ const CustomComponent = () => {
   );
 };
 
-const dashboardRoutes = [
-  {
-    path: "/dashboard",
-    name: "Dashboard",
-    rtlName: "لوحة القيادة",
-    icon: Dashboard,
-    component: DashboardPage,
-    layout: "/admin"
-  },
+export const dashboardRoutes = [
+  // {
+  //   path: "/dashboard",
+  //   name: "Dashboard",
+  //   rtlName: "لوحة القيادة",
+  //   icon: Dashboard,
+  //   component: DashboardPage,
+  //   layout: "/admin"
+  // },
   {
     path: "/calendar",
     name: "Запись Клиентов",
     rtlName: "لوحة القيادة",
     icon: "query_builder",
     component: newCal,
-    layout: "/admin"
+    layout: "/admin",
+    access: "ROLE_USER"
   },
   {
     path: "/shop",
@@ -68,7 +72,8 @@ const dashboardRoutes = [
     rtlName: "ملف تعريفي للمستخدم",
     icon: "shopping_cart",
     component: newShop,
-    layout: "/admin"
+    layout: "/admin",
+    access: "ROLE_USER"
   },
   {
     path: "/wallet",
@@ -76,7 +81,8 @@ const dashboardRoutes = [
     rtlName: "ملف تعريفي للمستخدم",
     icon: "account_balance_wallet",
     component: newTill,
-    layout: "/admin"
+    layout: "/admin",
+    access: "ROLE_USER"
   },
   {
     path: "/sun",
@@ -84,7 +90,8 @@ const dashboardRoutes = [
     rtlName: "ملف تعريفي للمستخدم",
     icon: "wb_sunny",
     component: newSun,
-    layout: "/admin"
+    layout: "/admin",
+    access: "ROLE_USER"
   },
   {
     path: "/certificate",
@@ -92,7 +99,8 @@ const dashboardRoutes = [
     rtlName: "ملف تعريفي للمستخدم",
     icon: "card_giftcard",
     component: newCertificate,
-    layout: "/admin"
+    layout: "/admin",
+    access: "ROLE_USER"
   },
   {
     path: "/master",
@@ -100,8 +108,8 @@ const dashboardRoutes = [
     rtlName: "ملف تعريفي للمستخدم",
     icon: "face",
     component: newMasters,
-    // component: newTemplate,
-    layout: "/admin"
+    layout: "/admin",
+    access: "ROLE_ADMIN"
   },
   {
     path: "/catalog",
@@ -110,8 +118,30 @@ const dashboardRoutes = [
     icon: "folder-special",
     component: newCatalog,
     // component: newTemplate,
-    layout: "/admin"
+    layout: "/admin",
+    access: "ROLE_ADMIN"
   }
+
+
+  // {
+  //   path: "/login-page",
+  //   name: "Login Page",
+  //   rtlName: "ملف تعريفي للمستخدم",
+  //   icon: Fingerprint,
+  //   component: newLogin,
+  //   // component: newTemplate,
+  //   layout: "/admin"
+  // }
+
+  // path: "/login-page",
+  // name: "Login Page",
+  // short: "Login",
+  // layout: "/admin",
+  // mini: "LP",
+  // icon: Fingerprint,
+  // component: LoginPage
+
+
   // {
   //   path: "/table",
   //   name: "Table List",
@@ -170,4 +200,24 @@ const dashboardRoutes = [
   // }
 ];
 
-export default dashboardRoutes;
+export const adminRoutes = [
+  {
+    path: "/master",
+    name: "Мастера",
+    rtlName: "ملف تعريفي للمستخدم",
+    icon: "face",
+    component: newMasters,
+    layout: "/admin",
+    access: ["ROLE_ADMIN"]
+  },
+  {
+    path: "/catalog",
+    name: "Редактирование услуг",
+    rtlName: "ملف تعريفي للمستخدم",
+    icon: "folder-special",
+    component: newCatalog,
+    // component: newTemplate,
+    layout: "/admin",
+    access: ["ROLE_ADMIN"]
+  }
+];

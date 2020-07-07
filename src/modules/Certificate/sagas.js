@@ -1,16 +1,22 @@
 import { fork, takeLatest, put, call } from "redux-saga/effects";
+import { reset } from "redux-form";
 import {
   sendCertificate,
   endSendCertificate,
   startVerifyCertificate,
   endVerifyCertificate,
   startSearchNumber,
-  endSearchNumber, deleteState
+  endSearchNumber, deleteState, successRegistrationCertificate
 } from "./actions";
 import moment from "moment/moment";
 import api from "../../utils/api";
 import momentTimeZone from "moment-timezone";
+import { Fetch } from "../../utils/fetch";
+import { Storage, storageKey } from "../../storage";
+import { handle_request_open } from "../Admin";
 // import { endSearchNumber, startSearchNumber } from "../Sun/actions";
+
+const { baseUrl, certificate } = api;
 
 let certificates = {
   12345: {}
@@ -60,7 +66,6 @@ const fetchSearchCertificate = async (number) => {
   }
 };
 
-
 const fetchCertificate = value => {
   return new Promise(resolve => {
     resolve(certificateNumbers[value]);
@@ -107,7 +112,9 @@ function* verifyCertificateNumber({ payload }) {
   if (!value) {
     return false;
   }
-  const { isValidNumber, errorMessage } = yield call(fetchVerificate, value);
+
+  console.log(value, "@@Certificate/saga/verifyCertificateNumber");
+  const { isValidNumber, errorMessage } = yield call(Fetch.get(`${baseUrl}${certificate}/${value}`));
 
   return yield put(endVerifyCertificate({ isCertificate: isValidNumber, verifyMessage: errorMessage }));
 
@@ -130,47 +137,52 @@ function* fetchSendCertificate({ payload }) {
   let errorMessage = false;
   let serverMessage = "Сертификат зарегистрирован";
   let totalCards = yield call(fetchCertificates);
-  const { certificateNumber } = payload;
+  const { values: { certificateNumber } } = payload;
   const date = moment().format("DD.MM.YY");
+  const storage = Storage.getStorage(storageKey.authKey);
   totalCards = {
     ...totalCards,
     [certificateNumber]: {
-      ...payload,
+      ...payload.values,
       date,
       dateEnd: moment(date, "DD.MM.YY").add(6, "month").format("DD.MM.YY"),
-      place: "Древлянка 14, корпус 1",
+      place: storage.id,
       history: [],
       used: true
     }
   };
 
-  if (payload.typeCertificate === "amount" && payload.servicesType) {
+  if (payload.values.typeCertificate === "amount" && payload.values.servicesType) {
     delete payload.servicesType;
   }
 
-  const certificate = {
-    ...payload,
-    place: "Древлянка 14, корпус 1"
+  const certificateData = {
+    ...payload.values,
+    place: storage.id
   };
 
-  const result = yield call(fetchAddCertificateE, certificate);
+  const result = yield call(Fetch.post(`${baseUrl}${certificate}/${certificateData.certificateNumber}`, certificateData));
 
-  console.log(result);
+  console.log(result, "@@Certificate/saga/fetchSendCertificate");
 
-
-  const res = yield call(fetchAddCertificate);
-  const totalCertificate = yield call(fetchAddCertificate, totalCards);
-  if (!totalCertificate) {
-    errorMessage = true;
-    serverMessage = "Произошла ошибка, попробуйте снова!";
+  if (result.message === "ok") {
+    yield put(deleteState());
+    // yield put(successRegistrationCertificate());
+    // yield put({
+    //   type: "@@redux-form/RESET", meta: {
+    //     form: "addCertificate"
+    //   }
+    // });
+    // yield call(reset("addCertificate"));
+    // payload.props.dispatch(reset("addCertificate"));
   }
-  console.log(totalCertificate);
-  return yield put(deleteState());
-  // return yield put(endSendCertificate({ errorMessage, serverMessage }));
+  return yield put(handle_request_open({ alertMessage: result.alertMessage }));
+
 }
 
 function* startSearchCertificate({ payload: { value, isPay } }) {
-  const { certificate, certificateStatus: crtStatus } = yield call(fetchSearchCertificate, value);
+  const { baseUrl, certificate: certificateUrl } = api;
+  const { certificate, certificateStatus: crtStatus } = yield call(Fetch.get(`${baseUrl}${certificateUrl}/${value}?search=true`));
   if (isPay && certificate) {
     return yield put(endSearchNumber({
       isCertificate: true,
